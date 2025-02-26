@@ -4,6 +4,6 @@ public class Mul extends Operator {
     }
 
     public int getResult() {
-        // TODO
+        return getLeft().getResult() * getRight().getResult();
     }
 }

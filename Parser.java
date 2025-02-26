@@ -3,7 +3,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Parser {
-    private final Pattern numberPattern = ; // TODO
+    private final Pattern numberPattern = Pattern.compile("\\d+"); // TODO
     private final HashMap<String, Integer> parameters;
     
     public Parser(HashMap<String, Integer> parameters) {
@@ -28,9 +28,15 @@ public class Parser {
             } else {
                 if (!expression.equals("")) {
                     Matcher matcher = numberPattern.matcher(expression);
-                    
+                    if(matcher.matches()){
+                        //System.out.println("num "+expression);
+                        return new Num(Integer.parseInt(expression));
+                    }
+                    else{
+                        //System.out.println("para "+expression);
+                        return new Num(parameters.get(expression));
+                    }
                     // TODO
-
                 } else {
                     return new Num(0);
                 }
@@ -50,9 +56,11 @@ public class Parser {
 
     private int findMul(String expression) {
         int position = -1;
-        
-        // TODO
-
+        for (int i = 0; i < expression.length(); i++) {
+            if (expression.charAt(i) == '*') {
+                position = i;
+            }
+        }
         return position;
     }
 }
