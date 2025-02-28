@@ -1,5 +1,4 @@
 import java.math.BigInteger;
-import java.util.HashMap;
 
 public class Mono {
     private final BigInteger radio;

@@ -8,6 +8,7 @@ public class Lexer {
 
     public Lexer(String input) {
         this.expr = preProcess(input);
+        //System.out.println(expr);
         lexerTokens();
     }
 

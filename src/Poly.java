@@ -1,7 +1,6 @@
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class Poly {
     private ArrayList<Mono> monos;
@@ -69,9 +68,34 @@ public class Poly {
     public void print() {
         StringBuilder sb = new StringBuilder();
         for (Mono m : monos) {
-            sb.append(m.getRadio().toString() + "*x^" + String.valueOf(m.getIndex()) + "+");
+            if (m.getIndex() == 0) {
+                sb.append(m.getRadio().toString() + "+");
+            }
+            else if (m.getRadio().equals(BigInteger.ZERO)) {
+                sb.append("0+");
+            }
+            else if (m.getIndex() == 1) {
+                if (m.getRadio().equals(BigInteger.ONE)) {
+                    sb.append("x+");
+                }
+                else {
+                    sb.append(m.getRadio().toString() + "*x" + "+");
+                }
+            }
+            else if (m.getRadio().equals(BigInteger.ONE)) {
+                sb.append("x^" + String.valueOf(m.getIndex()) + "+");
+            }
+            else if (m.getRadio().equals(BigInteger.valueOf(-1))) {
+                sb.append("-x^" + String.valueOf(m.getIndex()) + "+");
+            }
+            else {
+                sb.append(m.getRadio().toString() + "*x^" + String.valueOf(m.getIndex()) + "+");
+            }
         }
-        System.out.println(sb.substring(0, sb.length() - 1));
+        String str = sb.substring(0, sb.length() - 1);
+        str = str.replaceAll("\\+-", "-");
+        str = str.replaceAll("-\\+", "-");
+        System.out.println(str);
     }
 
 }

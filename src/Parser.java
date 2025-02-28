@@ -64,7 +64,8 @@ public class Parser {
             lexer.nextToken();
         }
 
-        //System.out.println(factor.getClass().getName() + ": " + factor.toString() + " Index: " + factor.getIndex());
+        //System.out.println(factor.getClass().getName() + ": "
+        //+ factor.toString() + " Index: " + factor.getIndex());
         return factor;
     }
 
