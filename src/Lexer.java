@@ -8,7 +8,6 @@ public class Lexer {
 
     public Lexer(String input) {
         this.expr = preProcess(input);
-        //System.out.println(expr);
         lexerTokens();
     }
 
@@ -72,9 +71,7 @@ public class Lexer {
     }
 
     private void parseNumber(int sign) {
-        while (expr.charAt(pos) == '0' && pos < expr.length() - 1) {
-            pos++;
-        }
+
         char now = expr.charAt(pos);
         StringBuilder sb = new StringBuilder();
         if (sign == -1) {
