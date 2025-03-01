@@ -72,7 +72,7 @@ public class Poly {
                 sb.append(m.getRadio().toString() + "+");
             }
             else if (m.getRadio().equals(BigInteger.ZERO)) {
-                sb.append("0+");
+                //sb.append("0+");
             }
             else if (m.getIndex() == 1) {
                 if (m.getRadio().equals(BigInteger.ONE)) {
@@ -92,10 +92,15 @@ public class Poly {
                 sb.append(m.getRadio().toString() + "*x^" + String.valueOf(m.getIndex()) + "+");
             }
         }
-        String str = sb.substring(0, sb.length() - 1);
-        str = str.replaceAll("\\+-", "-");
-        str = str.replaceAll("-\\+", "-");
-        System.out.println(str);
+        if(sb.length() > 0) {
+            String str = sb.substring(0, sb.length() - 1);
+            str = str.replaceAll("\\+-", "-");
+            str = str.replaceAll("-\\+", "-");
+            System.out.println(str);
+        }
+        else {
+            System.out.println("0");
+        }
     }
 
 }
