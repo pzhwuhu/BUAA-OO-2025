@@ -92,7 +92,7 @@ public class Poly {
                 sb.append(m.getRadio().toString() + "*x^" + String.valueOf(m.getIndex()) + "+");
             }
         }
-        if(sb.length() > 0) {
+        if (sb.length() > 0) {
             String str = sb.substring(0, sb.length() - 1);
             str = str.replaceAll("\\+-", "-");
             str = str.replaceAll("-\\+", "-");

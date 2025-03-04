@@ -4,7 +4,7 @@ public class NumFactor extends Factor {
     private BigInteger num;
 
     public NumFactor(String num) {
-        this.num = BigInteger.valueOf(Long.parseLong(num));
+        this.num = new BigInteger(num);
     }
 
     @Override
