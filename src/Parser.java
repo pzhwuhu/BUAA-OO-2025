@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 public class Parser {
     private final Lexer lexer;
 
@@ -51,22 +53,52 @@ public class Parser {
             factor = new VarFactor(token.getValue());
             lexer.nextToken();
         }
+        else if (token.getType() == Token.Type.TRI) {
+            String tri = token.getValue();
+            lexer.moveToken(2);
+            Factor subFactor = parseFactor();
+            factor = new TriFactor(subFactor, tri);
+            lexer.nextToken();
+        }
+        else if (token.getType() == Token.Type.FUNC) {
+            factor = parseFuncFactor();
+        }
         else {
             lexer.nextToken();
-            factor = new ExprFactor(parseExpr());
+            Expr expr = parseExpr();
+            factor = new ExprFactor(expr);
             lexer.nextToken();
         } //token.getType() == Token.Type.LPAREN
 
         if (!lexer.isEnd() && lexer.getCurrentToken().getType() == Token.Type.POWER) {
             lexer.nextToken();
-            int index = Integer.parseInt(lexer.getCurrentToken().getValue());
+            String index = lexer.getCurrentToken().getValue();
             factor.setIndex(index);
             lexer.nextToken();
         }
-
-        //System.out.println(factor.getClass().getName() + ": "
-        //+ factor.toString() + " Index: " + factor.getIndex());
+        //System.out.println(factor.getClass().getName() + ": "+ factor.toString() + " Index: " + factor.getIndex());
         return factor;
     }
 
+    public FuncFactor parseFuncFactor() {
+        String funcName = lexer.getCurrentToken().getValue();
+        ArrayList<Factor> actualParams = new ArrayList<>();
+        lexer.moveToken(2);
+        int n = Integer.parseInt(lexer.getCurrentToken().getValue());
+        lexer.moveToken(3);
+        actualParams.add(parseFactor());
+        while (lexer.getCurrentToken().getType() == Token.Type.COMMA) {
+            lexer.nextToken();
+            actualParams.add(parseFactor());
+        }
+        lexer.nextToken();//退出括号
+
+        String func = DiyFunc.deployFunc(n, funcName, actualParams);
+        //System.out.println(func);
+        Lexer newLexer = new Lexer(func);
+        Parser newParser = new Parser(newLexer);
+        Expr expr = newParser.parseExpr();
+
+        return new FuncFactor(func, expr);
+    }
 }

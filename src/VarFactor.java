@@ -17,6 +17,6 @@ public class VarFactor extends Factor {
 
     @Override
     public String toString() {
-        return variable;
+        return variable + "^" + super.getIndex().toString();
     }
 }

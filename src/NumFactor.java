@@ -10,7 +10,7 @@ public class NumFactor extends Factor {
     @Override
     public Poly toPoly() {
         Poly poly = new Poly();
-        poly.addMono(new Mono(num, 0));
+        poly.addMono(new Mono(num, BigInteger.ZERO));
         //System.out.println("NumFactor toPoly finished, size:" + poly.getMonos().size());
         return poly;
     }

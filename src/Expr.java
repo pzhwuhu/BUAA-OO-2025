@@ -20,6 +20,7 @@ public class Expr {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         for (Term t : terms) {
+            if (t.getSign() == -1) { sb.append("-"); }
             sb.append(t.toString());
             sb.append("+");
         }

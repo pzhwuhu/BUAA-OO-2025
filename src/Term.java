@@ -9,6 +9,10 @@ public class Term {
         this.factors = new ArrayList<>();
     }
 
+    public int getSign() {
+        return sign;
+    }
+
     public void addFactor(Factor factor) {
         factors.add(factor);
     }

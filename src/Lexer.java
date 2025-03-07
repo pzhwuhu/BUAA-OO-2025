@@ -25,33 +25,29 @@ public class Lexer {
 
     private void lexerTokens() {
         while (pos < expr.length()) {
-            if (expr.charAt(pos) == '(') {
-                tokens.add(new Token(Token.Type.LPAREN, "("));
+            if (expr.charAt(pos) == '(' || expr.charAt(pos) == '{') {
+                tokens.add(new Token(Token.Type.LPAREN, String.valueOf(expr.charAt(pos))));
                 pos++;
             }
-            else if (expr.charAt(pos) == ')') {
-                tokens.add(new Token(Token.Type.RPAREN, ")"));
+            else if (expr.charAt(pos) == ')' || expr.charAt(pos) == '}') {
+                tokens.add(new Token(Token.Type.RPAREN, String.valueOf(expr.charAt(pos))));
                 pos++;
             }
             else if (expr.charAt(pos) == '+') {
                 if (pos > 1 && (expr.charAt(pos - 1) == '^' || expr.charAt(pos - 1) == '*')) {
                     pos++;
                     parseNumber(1);
-                }
-                else {
+                } else {
                     tokens.add(new Token(Token.Type.OP, "+"));
-                    pos++;
-                }
+                    pos++; }
             }
             else if (expr.charAt(pos) == '-') {
                 if (pos > 1 && expr.charAt(pos - 1) == '*') {
                     pos++;
                     parseNumber(-1);
-                }
-                else {
+                } else {
                     tokens.add(new Token(Token.Type.OP, "-"));
-                    pos++;
-                }
+                    pos++; }
             }
             else if (expr.charAt(pos) == '*') {
                 tokens.add(new Token(Token.Type.MUL, "*"));
@@ -64,8 +60,20 @@ public class Lexer {
             else if (expr.charAt(pos) == 'x') {
                 tokens.add(new Token(Token.Type.VAR, "x"));
                 pos++;
+            } else if (expr.charAt(pos) == ',') {
+                tokens.add(new Token(Token.Type.COMMA, ","));
+                pos++;
+            } else if (expr.charAt(pos) == 's' || expr.charAt(pos) == 'c') {
+                if (expr.charAt(pos) == 's') {
+                    tokens.add(new Token(Token.Type.TRI, "sin"));
+                } else {
+                    tokens.add(new Token(Token.Type.TRI, "cos")); }
+                pos += 3;
             }
-            else {
+            else if (expr.charAt(pos) == 'f') {
+                tokens.add(new Token(Token.Type.FUNC, "f"));
+                pos++;
+            } else {
                 parseNumber(1);
             }
         }
@@ -95,6 +103,10 @@ public class Lexer {
 
     public void nextToken() {
         index++;
+    }
+
+    public void moveToken(int move) {
+        index += move;
     }
 
     public boolean isEnd() {

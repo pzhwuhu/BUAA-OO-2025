@@ -1,11 +1,13 @@
-public class Factor {
-    private int index = 1;
+import java.math.BigInteger;
 
-    public void setIndex(int index) {
-        this.index = index;
+public class Factor {
+    private BigInteger index = BigInteger.ONE;
+
+    public void setIndex(String index) {
+        this.index = new BigInteger(index);
     }
 
-    public int getIndex() {
+    public BigInteger getIndex() {
         return index;
     }
 
