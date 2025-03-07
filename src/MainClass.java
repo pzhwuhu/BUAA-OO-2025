@@ -17,6 +17,6 @@ public class MainClass {
         Parser parser = new Parser(lexer);
         Expr expr = parser.parseExpr();
         Poly poly = expr.toPoly();
-        poly.print();
+        System.out.println(poly.print());
     }
 }

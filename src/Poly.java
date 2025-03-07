@@ -72,7 +72,7 @@ public class Poly {
         return newPoly;
     }
 
-    public void print() {
+    public String print() {
         StringBuilder sb = new StringBuilder();
         for (Mono m : monos) {
             if (m.getTriFactors().isEmpty()) {
@@ -111,10 +111,10 @@ public class Poly {
             String str = sb.substring(0, sb.length() - 1);
             str = str.replaceAll("\\+-", "-");
             str = str.replaceAll("-\\+", "-");
-            System.out.println(str);
+            return str;
         }
         else {
-            System.out.println("0");
+            return "0";
         }
     }
 
