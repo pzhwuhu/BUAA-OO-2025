@@ -55,9 +55,9 @@ public class Poly {
             for (Mono other : others.getMonos()) {
                 BigInteger radio = m.getRadio().multiply(other.getRadio());
                 BigInteger index = m.getIndex().add(other.getIndex());
-                Mono res = new Mono(radio, index);
-                res.addTriFactors(other.getTriFactors());
-                res.addTriFactors(m.getTriFactors());
+                ArrayList<TriFactor> triFactors = new ArrayList<>();
+                triFactors = m.mergeTriFactors(other.getTriFactors());
+                Mono res = new Mono(radio, index, triFactors);
                 newPoly.addMono(res);
             }
         }
@@ -75,37 +75,7 @@ public class Poly {
     public String print() {
         StringBuilder sb = new StringBuilder();
         for (Mono m : monos) {
-            if (m.getTriFactors().isEmpty()) {
-                if (m.getIndex().equals(BigInteger.ZERO)) {
-                    sb.append(m.getRadio().toString() + "+");
-                }
-                else if (m.getRadio().equals(BigInteger.ZERO)) {
-                    //sb.append("0+");
-                }
-                else if (m.getIndex().equals(BigInteger.ONE)) {
-                    if (m.getRadio().equals(BigInteger.ONE)) {
-                        sb.append("x+");
-                    }
-                    else if (m.getRadio().equals(BigInteger.valueOf(-1))) {
-                        sb.append("-x" + "+");
-                    }
-                    else {
-                        sb.append(m.getRadio().toString() + "*x" + "+");
-                    }
-                }
-                else if (m.getRadio().equals(BigInteger.ONE)) {
-                    sb.append("x^" + String.valueOf(m.getIndex()) + "+");
-                }
-                else if (m.getRadio().equals(BigInteger.valueOf(-1))) {
-                    sb.append("-x^" + String.valueOf(m.getIndex()) + "+");
-                }
-                else {
-                    sb.append(m.getRadio().toString() + "*x^" + String.valueOf(m.getIndex()) + "+");
-                }
-            }
-            else {
-                sb.append(m.toString() + "+");
-            }
+            sb.append(m.toString() + "+");
         }
         if (sb.length() > 0) {
             String str = sb.substring(0, sb.length() - 1);

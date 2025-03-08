@@ -17,6 +17,14 @@ public class VarFactor extends Factor {
 
     @Override
     public String toString() {
-        return variable + "^" + super.getIndex().toString();
+        if (super.getIndex().equals(BigInteger.ZERO)) {
+            return "1";
+        }
+        else if (super.getIndex().equals(BigInteger.ONE)) {
+            return variable;
+        }
+        else {
+            return variable + "^" + super.getIndex().toString();
+        }
     }
 }

@@ -9,6 +9,12 @@ public class TriFactor extends Factor {
         this.type = type;
     }
 
+    public TriFactor deepClone() {
+        TriFactor triFactor = new TriFactor(subFactor, type);
+        triFactor.setIndex(super.getIndex());
+        return triFactor;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();

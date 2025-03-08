@@ -16,8 +16,33 @@ public class Mono {
         this.triFactors.add(triFactor);
     }
 
-    public void addTriFactors(ArrayList<TriFactor> newTriFactors) {
-        this.triFactors.addAll(newTriFactors);
+    public Mono(BigInteger radio, BigInteger index, ArrayList<TriFactor> triFactors) {
+        this.radio = radio;
+        this.index = index;
+        this.triFactors = triFactors;
+    }
+
+    public ArrayList<TriFactor> mergeTriFactors(ArrayList<TriFactor> newTriFactors) {
+        ArrayList<TriFactor> mergedTriFactors = new ArrayList<>();
+        for (TriFactor triFactor : triFactors) {
+            mergedTriFactors.add(triFactor.deepClone());
+        }
+        for (TriFactor newTriFactor : newTriFactors) {
+            int flag = 0;
+            for (TriFactor triFactor : mergedTriFactors) {
+                String newTri = newTriFactor.toString();
+                String oldTri = triFactor.toString();
+                if (newTri.equals(oldTri)) {
+                    triFactor.setIndex(triFactor.getIndex().add(newTriFactor.getIndex()));
+                    flag = 1;
+                    break;
+                }
+            }
+            if (flag == 0) {
+                mergedTriFactors.add(newTriFactor.deepClone());
+            }
+        }
+        return mergedTriFactors;
     }
 
     public void addRadio(BigInteger newRadio) {
@@ -46,9 +71,53 @@ public class Mono {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(radio.toString() + "*x^" + index.toString());
-        for (TriFactor triFactor : triFactors) {
-            sb.append("*" + triFactor.toString());
+        if (radio.equals(BigInteger.ZERO)) {
+            sb.append("0");
+        }
+        else {
+            if (index.equals(BigInteger.ZERO)) {
+                if (radio.equals(BigInteger.ONE)) {
+                    if (triFactors.isEmpty()) {
+                        sb.append("1");
+                    }
+                }
+                else if (radio.equals(BigInteger.valueOf(-1))) {
+                    sb.append("-1");
+                }
+                else {
+                    sb.append(radio);
+                }
+            }
+            else if (index.equals(BigInteger.ONE)) {
+                if (radio.equals(BigInteger.valueOf(-1))) {
+                    sb.append("-x");
+                }
+                else if (radio.equals(BigInteger.ONE)) {
+                    sb.append("x");
+                }
+                else {
+                    sb.append(radio + "*x");
+                }
+            }
+            else {
+                if (radio.equals(BigInteger.valueOf(-1))) {
+                    sb.append("-x^" + index);
+                }
+                else if (radio.equals(BigInteger.ONE)) {
+                    sb.append("x^" + index);
+                }
+                else {
+                    sb.append(radio + "*x^" + index);
+                }
+            }
+            for (TriFactor triFactor : triFactors) {
+                if (sb.length() > 0) {
+                    sb.append("*" + triFactor.toString());
+                }
+                else {
+                    sb.append(triFactor.toString());
+                }
+            }
         }
         return sb.toString();
     }

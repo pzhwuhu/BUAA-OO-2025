@@ -62,7 +62,8 @@ public class DiyFunc {
         }
     }
 
-    public static String recurrence1(int i, String a, ArrayList<String> formParaList, ArrayList<String> fnParaList) {
+    public static String recurrence1(int i, String a,
+        ArrayList<String> formParaList, ArrayList<String> fnParaList) {
         String formPara = formParaList.get(0);
         if (i == 0) {
             return f0.replace(formPara, a);
@@ -81,7 +82,8 @@ public class DiyFunc {
         }
     }
 
-    public static String recurrence2(int i, String a, String b, ArrayList<String> formParaList, ArrayList<String> fnParaList) {
+    public static String recurrence2(int i, String a, String b,
+        ArrayList<String> formParaList, ArrayList<String> fnParaList) {
         String formPara1 = formParaList.get(0);
         String formPara2 = formParaList.get(1);
         if (i == 0) {
@@ -99,7 +101,8 @@ public class DiyFunc {
             String b2 = fnParaList.get(3);
             String f3 = "(" + recurrence2(i - 2, a2, b2, formParaList, fnParaList) + ")";
             String sb2 = "f{n-2}(" + a2 + "," + b2 + ")";
-            return fn.replace(sb1, f2).replace(sb2, f3).replace(formPara1, "(" + a + ")").replace(formPara2, "(" + b + ")");
+            return fn.replace(sb1, f2).replace(sb2, f3).
+            replace(formPara1, "(" + a + ")").replace(formPara2, "(" + b + ")");
         }
     }
 

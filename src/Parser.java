@@ -1,3 +1,4 @@
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 public class Parser {
@@ -73,18 +74,17 @@ public class Parser {
         if (!lexer.isEnd() && lexer.getCurrentToken().getType() == Token.Type.POWER) {
             lexer.nextToken();
             String index = lexer.getCurrentToken().getValue();
-            factor.setIndex(index);
+            factor.setIndex(new BigInteger(index));
             lexer.nextToken();
         }
-        //System.out.println(factor.getClass().getName() + ": "+ factor.toString() + " Index: " + factor.getIndex());
         return factor;
     }
 
     public FuncFactor parseFuncFactor() {
-        String funcName = lexer.getCurrentToken().getValue();
+        final String funcName = lexer.getCurrentToken().getValue();
         ArrayList<Factor> actualParams = new ArrayList<>();
         lexer.moveToken(2);
-        int n = Integer.parseInt(lexer.getCurrentToken().getValue());
+        final int n = Integer.parseInt(lexer.getCurrentToken().getValue());
         lexer.moveToken(3);
         actualParams.add(parseFactor());
         while (lexer.getCurrentToken().getType() == Token.Type.COMMA) {
