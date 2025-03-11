@@ -52,7 +52,8 @@ public class DiyFunc {
             String para1 = actualParam.get(0).toString();
             String para2 = actualParam.get(1).toString();
             //System.out.println(func);
-            return func.replace(formPara1, "(" + para1 + ")").replace(formPara2, "(" + para2 + ")");
+            return func.replace(formPara1, "$0").replace(formPara2, "$1")
+                    .replace("$0", "(" + para1 + ")").replace("$1", "(" + para2 + ")");
         }
         else {
             String func = recurrence1(n, formPara1, formParaList, fnParaList);
@@ -87,10 +88,12 @@ public class DiyFunc {
         String formPara1 = formParaList.get(0);
         String formPara2 = formParaList.get(1);
         if (i == 0) {
-            return f0.replace(formPara1, "(" + a + ")").replace(formPara2, "(" + b + ")");
+            return f0.replace(formPara1, "$0").replace(formPara2, "$1")
+                    .replace("$0", "(" + a + ")").replace("$1", "(" + b + ")");
         }
         else if (i == 1) {
-            return f1.replace(formPara1,"(" + a + ")").replace(formPara2,"(" + b + ")");
+            return f1.replace(formPara1,"$0").replace(formPara2,"$1")
+                    .replace("$0", "(" + a + ")").replace("$1", "(" + b + ")");
         }
         else {
             String a1 = fnParaList.get(0);
@@ -101,8 +104,8 @@ public class DiyFunc {
             String b2 = fnParaList.get(3);
             String f3 = "(" + recurrence2(i - 2, a2, b2, formParaList, fnParaList) + ")";
             String sb2 = "f{n-2}(" + a2 + "," + b2 + ")";
-            return fn.replace(sb1, f2).replace(sb2, f3).
-            replace(formPara1, "(" + a + ")").replace(formPara2, "(" + b + ")");
+            return fn.replace(sb1, f2).replace(sb2, f3).replace(formPara1, "$0").
+                    replace(formPara2,"$1").replace("$0","(" + a + ")").replace("$1","(" + b + ")");
         }
     }
 
