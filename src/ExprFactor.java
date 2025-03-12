@@ -16,11 +16,6 @@ public class ExprFactor extends Factor {
     @Override
     public String toString() {
         Poly poly = this.toPoly();
-        if (expr.getSize() > 1) {
-            return "(" + poly.print() + ")";
-        }
-        else {
-            return poly.print();
-        }
+        return poly.print();
     }
 }
