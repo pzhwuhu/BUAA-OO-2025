@@ -20,6 +20,8 @@ public class Cos implements Factor {
     @Override
     public Factor derive() {
         Term term = new Term();
+        term.addFactor(toSin());
+        term = Term.mergeTerm(term, (Term) factor.derive());
         /* TODO 3 */
         return term;
     }

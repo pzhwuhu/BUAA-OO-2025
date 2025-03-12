@@ -16,6 +16,7 @@ public class Var implements Factor {
     @Override
     public Factor derive() {
         Term term = new Term();
+        term.addFactor(new Number("1"));
         /* TODO 2 */
         return term;
     }

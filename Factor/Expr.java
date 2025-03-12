@@ -47,6 +47,7 @@ public class Expr implements Factor {
     public Factor expand() {
         Expr expr = new Expr();
         for (int i = 0; i < terms.size(); i++) {
+            expr = mergeExpr(expr, (Expr) terms.get(i).expand());
             //TODO 7
         }
         return expr;
@@ -56,6 +57,7 @@ public class Expr implements Factor {
     public Factor derive() {
         Expr expr = new Expr();
         for (int i = 0; i < terms.size(); i++) {
+            expr = mergeExpr(expr, (Expr)terms.get(i).derive());
             /* TODO 5 ps:注意term求导会变成expr */
         }
         Term term = new Term();

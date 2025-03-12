@@ -57,6 +57,7 @@ public class Term implements Factor {
                 }
                 Expr e = (Expr) factor;
                 for (Term t : e.getTerms()) {
+                    expr.addTerm(mergeTerm(t,other));
                     /* TODO 6 ps:实现乘法分配律 */
                 }
                 break;
@@ -77,6 +78,7 @@ public class Term implements Factor {
             Term t = (Term) factors.get(i).derive();
             for (int j = 0; j < factors.size(); j++) {
                 if (i != j) {
+                    t.addFactor(factors.get(j).clone());
                     /* TODO 4 ps:链式法则 */
                 }
             }

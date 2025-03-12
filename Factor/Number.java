@@ -18,6 +18,7 @@ public class Number implements Factor {
     @Override
     public Factor derive() {
         Term term = new Term();
+        term.addFactor(new Number("0"));
         /* TODO 1 */
         return term;
     }
