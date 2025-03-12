@@ -16,4 +16,9 @@ public class Expr {
         return poly;
     }
 
+    @Override
+    public String toString() {
+        Poly poly = this.toPoly();
+        return poly.print();
+    }
 }

@@ -9,6 +9,11 @@ public class Poly {
         monos = new ArrayList<>();
     }
 
+    public Poly(Mono mono) {
+        monos = new ArrayList<>();
+        monos.add(mono);
+    }
+
     public Poly(int sign) {
         monos = new ArrayList<>();
         monos.add(new Mono(BigInteger.valueOf(sign),BigInteger.ZERO));
@@ -49,7 +54,6 @@ public class Poly {
     }
 
     public Poly multiPoly(Poly others) {
-        Poly empty = new Poly(); //空的，用来将多项式相加合并
         Poly newPoly = new Poly(); //存储结果
         for (Mono m : monos) {
             for (Mono other : others.getMonos()) {
@@ -58,10 +62,10 @@ public class Poly {
                 ArrayList<TriFactor> triFactors = new ArrayList<>();
                 triFactors = m.mergeTriFactors(other.getTriFactors());
                 Mono res = new Mono(radio, index, triFactors);
-                newPoly.addMono(res);
+                newPoly = newPoly.addPoly(new Poly(res));
             }
         }
-        return empty.addPoly(newPoly);
+        return newPoly;
     }
 
     public Poly powerPoly(BigInteger index) {
