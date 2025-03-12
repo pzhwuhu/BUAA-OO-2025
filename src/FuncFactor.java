@@ -15,6 +15,6 @@ public class FuncFactor extends Factor {
 
     @Override
     public String toString() {
-        return expr.toString();
+        return "(" + expr.toString() + ")";
     }
 }
