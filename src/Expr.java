@@ -7,6 +7,10 @@ public class Expr {
         terms.add(t);
     }
 
+    public int getSize() {
+        return terms.size();
+    }
+
     public Poly toPoly() {
         Poly poly = new Poly();
         for (Term t : terms) {
