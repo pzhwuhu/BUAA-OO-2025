@@ -21,6 +21,7 @@ public class Cos implements Factor {
     public Factor derive() {
         Term term = new Term();
         term.addFactor(toSin());
+        term.addFactor(new Number("-1"));
         term = Term.mergeTerm(term, (Term) factor.derive());
         /* TODO 3 */
         return term;
