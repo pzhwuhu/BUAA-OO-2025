@@ -67,10 +67,10 @@ public class DiyFunc {
         ArrayList<String> formParaList, ArrayList<String> fnParaList) {
         String formPara = formParaList.get(0);
         if (i == 0) {
-            return f0.replace(formPara, a);
+            return f0.replace(formPara, "(" + a + ")");
         }
         else if (i == 1) {
-            return f1.replace(formPara, a);
+            return f1.replace(formPara, "(" + a + ")");
         }
         else {
             String a1 = fnParaList.get(0);
