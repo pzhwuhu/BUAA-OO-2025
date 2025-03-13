@@ -4,6 +4,13 @@ import java.util.Scanner;
 public class MainClass {
     public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
+        int numG = Integer.parseInt(scanner.nextLine());
+        for (int i = 0;i < numG;i++) {
+            ArrayList<String> define = new ArrayList<>();
+            define.add(scanner.nextLine().replaceAll("[ \t]", ""));
+            define.add(scanner.nextLine().replaceAll("[ \t]", ""));
+            NormalFunc.addFunc(define);
+        }
         int numF = Integer.parseInt(scanner.nextLine());
         for (int i = 0;i < numF;i++) {
             ArrayList<String> define = new ArrayList<>();

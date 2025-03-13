@@ -19,6 +19,15 @@ public class Poly {
         monos.add(new Mono(BigInteger.valueOf(sign),BigInteger.ZERO));
     } //便于控制符号(前导-1)
 
+    public Poly derive() {
+        Poly poly = new Poly();
+        for (Mono mono : monos) {
+            Poly derived = mono.derive();
+            poly.addPoly(derived);
+        }
+        return poly;
+    }
+
     public void addMono(Mono m) {
         monos.add(m);
     }
@@ -79,7 +88,7 @@ public class Poly {
     public String print() {
         StringBuilder sb = new StringBuilder();
         for (Mono m : monos) {
-            sb.append(m.toString() + "+");
+            sb.append(m.toString());
         }
         if (sb.length() > 0) {
             String str = sb.substring(0, sb.length() - 1);

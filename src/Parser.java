@@ -62,7 +62,18 @@ public class Parser {
             lexer.nextToken();
         }
         else if (token.getType() == Token.Type.FUNC) {
-            factor = parseFuncFactor();
+            if(token.getValue().equals("f")) {
+                factor = parseRecurFuncFactor();
+            }
+            else {
+                factor = parseNormalFuncFactor();
+            }
+        }
+        else if(token.getType() == Token.Type.DERIVE) {
+            lexer.moveToken(2);
+            Expr expr = parseExpr();
+            factor = new DeriveFactor(expr);
+            lexer.nextToken();
         }
         else {
             lexer.nextToken();
@@ -80,7 +91,7 @@ public class Parser {
         return factor;
     }
 
-    public FuncFactor parseFuncFactor() {
+    public FuncFactor parseRecurFuncFactor() {
         final String funcName = lexer.getCurrentToken().getValue();
         ArrayList<Factor> actualParams = new ArrayList<>();
         lexer.moveToken(2);
@@ -94,6 +105,26 @@ public class Parser {
         lexer.nextToken();//退出括号
 
         String func = DiyFunc.deployFunc(n, funcName, actualParams);
+        //System.out.println(func);
+        Lexer newLexer = new Lexer(func);
+        Parser newParser = new Parser(newLexer);
+        Expr expr = newParser.parseExpr();
+
+        return new FuncFactor(func, expr);
+    }
+
+    public FuncFactor parseNormalFuncFactor() {
+        final String funcName = lexer.getCurrentToken().getValue();
+        ArrayList<Factor> actualParams = new ArrayList<>();
+        lexer.moveToken(2);
+        actualParams.add(parseFactor());
+        while (lexer.getCurrentToken().getType() == Token.Type.COMMA) {
+            lexer.nextToken();
+            actualParams.add(parseFactor());
+        }
+        lexer.nextToken();//退出括号
+
+        String func = NormalFunc.deploy(funcName, actualParams);
         //System.out.println(func);
         Lexer newLexer = new Lexer(func);
         Parser newParser = new Parser(newLexer);

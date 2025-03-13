@@ -22,6 +22,48 @@ public class Mono {
         this.triFactors = triFactors;
     }
 
+    public ArrayList<TriFactor> triFactorsClone () {
+        ArrayList<TriFactor> triFactorsClone = new ArrayList<>();
+        for(TriFactor triFactor : triFactors) {
+            triFactorsClone.add(triFactor.deepClone());
+        }
+        return triFactorsClone;
+    }
+
+    public Poly derive() {
+        Poly newPoly = new Poly();
+        if(triFactors.isEmpty()) {
+            if(index.equals(BigInteger.ZERO)) {
+                Mono mono = new Mono(BigInteger.ZERO, BigInteger.ZERO);
+                newPoly.addMono(mono);
+                return newPoly;
+            }
+            else {
+                Mono mono = new Mono(radio.multiply(index), index.add(new BigInteger("-1")));
+                newPoly.addMono(mono);
+                return newPoly;
+            }
+        }
+        else {
+            Mono mono0 = new Mono(radio.multiply(index), index.add(new BigInteger("-1")), this.triFactorsClone());
+            newPoly.addMono(mono0);
+            for(TriFactor triFactor : triFactors) {
+                Poly derived = triFactor.derive();//某一个三角求导得到的Poly
+                Poly tmpPoly = new Poly();//剩余项组成的Poly
+                ArrayList<TriFactor> otherTriFactors = new ArrayList<>();
+                for(TriFactor other : triFactors) {
+                    if(other != triFactor) {
+                        otherTriFactors.add(other.deepClone());
+                    }
+                }
+                Mono tmoMono = new Mono(radio, index, otherTriFactors);
+                tmpPoly.addMono(tmoMono);
+                Poly multy = tmpPoly.multiPoly(derived);
+                newPoly = newPoly.addPoly(multy);
+            }
+            return newPoly;
+        }
+    }
     public ArrayList<TriFactor> mergeTriFactors(ArrayList<TriFactor> newTriFactors) {
         ArrayList<TriFactor> mergedTriFactors = new ArrayList<>();
         for (TriFactor triFactor : triFactors) {
@@ -72,7 +114,7 @@ public class Mono {
     public String toString() {
         StringBuilder sb = new StringBuilder();
         if (radio.equals(BigInteger.ZERO)) {
-            sb.append("0");
+            return "";
         }
         else {
             if (index.equals(BigInteger.ZERO)) {
@@ -119,7 +161,7 @@ public class Mono {
                 }
             }
         }
-        return sb.toString();
+        return sb.toString() + "+";
     }
 
 }

@@ -74,8 +74,12 @@ public class Lexer {
                     tokens.add(new Token(Token.Type.TRI, "cos")); }
                 pos += 3;
             }
-            else if (expr.charAt(pos) == 'f') {
-                tokens.add(new Token(Token.Type.FUNC, "f"));
+            else if(expr.charAt(pos) == 'd') {
+                tokens.add(new Token(Token.Type.DERIVE, "dx"));
+                pos += 2;
+            }
+            else if (expr.charAt(pos) == 'f' || expr.charAt(pos) == 'g' || expr.charAt(pos) == 'h') {
+                tokens.add(new Token(Token.Type.FUNC, String.valueOf(expr.charAt(pos))));
                 pos++;
             } else {
                 parseNumber(1);
