@@ -17,13 +17,14 @@ public class TriFactor extends Factor {
     }
 
     public Poly derive() {
-        Poly derived ;
+        Poly derived;
         Mono mono;
         ArrayList<TriFactor> newTriFactors = new ArrayList<>();
-        if(type.equals("sin")) {
-            if(super.getIndex().equals(BigInteger.ZERO)) {
+        if (type.equals("sin")) {
+            if (super.getIndex().equals(BigInteger.ZERO)) {
+                ;
             }
-            else if(super.getIndex().equals(BigInteger.ONE)) {
+            else if (super.getIndex().equals(BigInteger.ONE)) {
                 TriFactor triFactor2 = new TriFactor(subFactor, "cos");
                 newTriFactors.add(triFactor2);
             }
@@ -37,9 +38,10 @@ public class TriFactor extends Factor {
             mono = new Mono(super.getIndex(), BigInteger.ZERO, newTriFactors);
         }
         else {
-            if(super.getIndex().equals(BigInteger.ZERO)) {
+            if (super.getIndex().equals(BigInteger.ZERO)) {
+                ;
             }
-            else if(super.getIndex().equals(BigInteger.ONE)) {
+            else if (super.getIndex().equals(BigInteger.ONE)) {
                 TriFactor triFactor2 = new TriFactor(subFactor, "sin");
                 newTriFactors.add(triFactor2);
             }

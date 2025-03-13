@@ -27,12 +27,10 @@ public class Lexer {
         while (pos < expr.length()) {
             if (expr.charAt(pos) == '(' || expr.charAt(pos) == '{') {
                 tokens.add(new Token(Token.Type.LPAREN, String.valueOf(expr.charAt(pos))));
-                pos++;
-            }
+                pos++; }
             else if (expr.charAt(pos) == ')' || expr.charAt(pos) == '}') {
                 tokens.add(new Token(Token.Type.RPAREN, String.valueOf(expr.charAt(pos))));
-                pos++;
-            }
+                pos++; }
             else if (expr.charAt(pos) == '+') {
                 if (pos > 2 && (expr.charAt(pos - 1) == '^' || expr.charAt(pos - 1) == '*'
                     || expr.charAt(pos - 1) == ',' || expr.charAt(pos - 2) == '}' ||
@@ -55,12 +53,10 @@ public class Lexer {
             }
             else if (expr.charAt(pos) == '*') {
                 tokens.add(new Token(Token.Type.MUL, "*"));
-                pos++;
-            }
+                pos++; }
             else if (expr.charAt(pos) == '^') {
                 tokens.add(new Token(Token.Type.POWER, "^"));
-                pos++;
-            }
+                pos++; }
             else if (expr.charAt(pos) == 'x') {
                 tokens.add(new Token(Token.Type.VAR, "x"));
                 pos++;
@@ -74,11 +70,11 @@ public class Lexer {
                     tokens.add(new Token(Token.Type.TRI, "cos")); }
                 pos += 3;
             }
-            else if(expr.charAt(pos) == 'd') {
+            else if (expr.charAt(pos) == 'd') {
                 tokens.add(new Token(Token.Type.DERIVE, "dx"));
-                pos += 2;
-            }
-            else if (expr.charAt(pos) == 'f' || expr.charAt(pos) == 'g' || expr.charAt(pos) == 'h') {
+                pos += 2; }
+            else if (expr.charAt(pos) == 'f' || expr.charAt(pos) == 'g'
+                || expr.charAt(pos) == 'h') {
                 tokens.add(new Token(Token.Type.FUNC, String.valueOf(expr.charAt(pos))));
                 pos++;
             } else {

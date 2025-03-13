@@ -62,14 +62,14 @@ public class Parser {
             lexer.nextToken();
         }
         else if (token.getType() == Token.Type.FUNC) {
-            if(token.getValue().equals("f")) {
+            if (token.getValue().equals("f")) {
                 factor = parseRecurFuncFactor();
             }
             else {
                 factor = parseNormalFuncFactor();
             }
         }
-        else if(token.getType() == Token.Type.DERIVE) {
+        else if (token.getType() == Token.Type.DERIVE) {
             lexer.moveToken(2);
             Expr expr = parseExpr();
             factor = new DeriveFactor(expr);

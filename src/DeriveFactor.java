@@ -1,4 +1,4 @@
-public class DeriveFactor extends Factor{
+public class DeriveFactor extends Factor {
     private Expr expr;
     private Poly poly;
 
