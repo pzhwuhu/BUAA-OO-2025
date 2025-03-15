@@ -14,6 +14,6 @@ public class DeriveFactor extends Factor {
 
     @Override
     public String toString() {
-        return poly.print();
+        return "(" + poly.print() + ")";
     }
 }

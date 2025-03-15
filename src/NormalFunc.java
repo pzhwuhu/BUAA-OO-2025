@@ -30,9 +30,9 @@ public class NormalFunc {
         if (actualParas.size() == 2) {
             String formPara2 = String.valueOf(formParas.get(funcName).charAt(1));
             String actualPara2 = actualParas.get(1).toString();
-            realFunc = realFunc.replace(formPara2, actualPara2);
+            realFunc = realFunc.replace(formPara2, "(" + actualPara2 + ")");
         }
-        realFunc = realFunc.replace("$0", actualPara1);
+        realFunc = realFunc.replace("$0", "(" + actualPara1 + ")");
         return realFunc;
     }
 }

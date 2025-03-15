@@ -120,12 +120,17 @@ public class DiyFunc {
                 while (i < fn.length() && flag > 0) {
                     char c = fn.charAt(i);
                     if (c == '(') { flag++; }
-                    else if (c == ')') { flag--; }
+                    else if (c == ')') { flag--; } //更新括号层级
+
+                    if ((c == ',' && flag == 1) || (c == ')' && flag == 0)) {
+                        fnParaList.add(sb.toString());
+                        sb = new StringBuilder();
+                        i++;
+                        continue;
+                    }
                     if (flag > 0) { sb.append(c); }
                     i++;
                 }
-                String[] paras = sb.toString().split(",");
-                fnParaList.addAll(Arrays.asList(paras));
             }
         }
         return fnParaList;

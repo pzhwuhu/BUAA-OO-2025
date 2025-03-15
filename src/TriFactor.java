@@ -81,4 +81,8 @@ public class TriFactor extends Factor {
         poly.addMono(new Mono(this));
         return poly;
     }
+
+    public boolean equals(TriFactor triFactor) {
+        return this.toString().equals(triFactor.toString());
+    }
 }

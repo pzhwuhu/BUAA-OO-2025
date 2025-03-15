@@ -32,7 +32,7 @@ public class Lexer {
                 tokens.add(new Token(Token.Type.RPAREN, String.valueOf(expr.charAt(pos))));
                 pos++; }
             else if (expr.charAt(pos) == '+') {
-                if (pos > 2 && (expr.charAt(pos - 1) == '^' || expr.charAt(pos - 1) == '*'
+                if (pos > 1 && (expr.charAt(pos - 1) == '^' || expr.charAt(pos - 1) == '*'
                     || expr.charAt(pos - 1) == ',' || expr.charAt(pos - 2) == '}' ||
                     (expr.charAt(pos - 1) == '(' && Character.isDigit(expr.charAt(pos + 1))))) {
                     pos++;
@@ -42,7 +42,7 @@ public class Lexer {
                     pos++; }
             }
             else if (expr.charAt(pos) == '-') {
-                if (pos > 2 && (expr.charAt(pos - 1) == '*' || expr.charAt(pos - 1) == ',' ||
+                if (pos > 1 && (expr.charAt(pos - 1) == '*' || expr.charAt(pos - 1) == ',' ||
                     expr.charAt(pos - 2) == '}' || (expr.charAt(pos - 1) == '('
                     && Character.isDigit(expr.charAt(pos + 1))))) {
                     pos++;
