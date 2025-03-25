@@ -7,7 +7,8 @@ public class ProcessingQueue {
     private final ArrayList<Order> eatInOrders = new ArrayList<>();
     private boolean isEnd = false;
 
-    public synchronized void offer(Order order) {
+    public synchronized void offer(Order order, String chef) {
+        System.out.printf("scheduled-%d-to-%s\n", order.getId(), chef);
         if (order.getType().equals("Eat In")) {
             eatInOrders.add(order);
         } else {
@@ -16,7 +17,7 @@ public class ProcessingQueue {
         notifyAll();
     }
 
-    public synchronized Order poll() {
+    public synchronized Order poll(String type) {
         if (isEmpty() && !isEnd()) {
             try {
                 wait();

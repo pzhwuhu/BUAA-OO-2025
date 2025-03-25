@@ -16,7 +16,7 @@ public class ChefThread extends Thread {
                 System.out.printf("ChefThread %s ends\n", type);
                 break;
             }
-            Order order = queue.poll();
+            Order order = queue.poll(type);
             if (order == null) {
                 continue;
             }
@@ -30,7 +30,7 @@ public class ChefThread extends Thread {
 
     private void makeAppetizer(Order order) {
         try {
-            System.out.printf("working-%d-by-%s\n", order.getId(), type);
+
             sleep(1000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -40,7 +40,6 @@ public class ChefThread extends Thread {
 
     private void makeMainCourse(Order order) {
         try {
-            System.out.printf("working-%d-by-%s\n", order.getId(), type);
             sleep(2000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
@@ -49,7 +48,6 @@ public class ChefThread extends Thread {
 
     private void makeDessert(Order order) {
         try {
-            System.out.printf("working-%d-by-%s\n", order.getId(), type);
             sleep(1500);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);

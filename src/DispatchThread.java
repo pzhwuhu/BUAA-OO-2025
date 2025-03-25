@@ -37,7 +37,6 @@ public class DispatchThread extends Thread {
             default:
                 throw new IllegalArgumentException("Invalid order type");
         }
-        System.out.printf("scheduled-%d-to-%s\n", order.getId(), chef);
         // TODO: 将订单加入到对应厨师的处理队列中
     }
 }
