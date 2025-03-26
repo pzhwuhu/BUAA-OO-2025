@@ -14,7 +14,7 @@ public class InputThread extends Thread {
         while (true) {
             Order order = orderInput.nextOrder();
             // TODO: 将foo替换为合适的内容
-            if (foo) {
+            if (order == null) {
                 orderQueue.setEnd();
                 System.out.println("InputThread ends");
                 break;

@@ -8,6 +8,7 @@ public class OrderQueue {
 
     public synchronized void offer(Order order) {
         orders.add(order);
+        notifyAll();
         // TODO: 唤醒在同一对象监视器上等待的所有线程
     }
 
@@ -15,9 +16,9 @@ public class OrderQueue {
         // TODO: 从列表中取出第一个订单
         // HINT: 如果当前订单列表为空，且线程尚未结束，则在当前线程处等待，直到被其他线程唤醒
         // 根据TODO和HINT将foo和bar替换为合适的内容
-        if (foo) {
+        if (isEmpty() && !isEnd()) {
             try {
-                bar();
+                wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }

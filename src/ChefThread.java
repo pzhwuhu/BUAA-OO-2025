@@ -21,6 +21,15 @@ public class ChefThread extends Thread {
                 continue;
             }
             switch (order.getDish()) {
+                case "Appetizer":
+                    makeAppetizer(order);
+                    break;
+                case "Main Course":
+                    makeMainCourse(order);
+                    break;
+                case "Dessert":
+                    makeDessert(order);
+                    break;
                 // TODO: 完成order
                 default:
                     throw new IllegalArgumentException("Unknown order type: " + order.getType());

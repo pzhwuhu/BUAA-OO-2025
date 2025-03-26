@@ -26,6 +26,17 @@ public class ProcessingQueue {
             }
         }
         notifyAll();
+        Order order = null;
+        if(!eatInOrders.isEmpty()) {
+            order = eatInOrders.remove(0);
+        }
+        else if(!takeAwayOrders.isEmpty()) {
+            order = takeAwayOrders.remove(0);
+        }
+        if(order != null) {
+            System.out.printf("working-%d-by-%s\n", order.getId(), type);
+            return order;
+        }
         // TODO：按照优先级取出需要处理的订单，在这里输出 working
         else {
             return null;
