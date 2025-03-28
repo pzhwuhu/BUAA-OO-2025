@@ -28,7 +28,7 @@ public class Strategy {
     }
 
     public Action getAction(int people, int floor, int direction, ArrayList<Integer> man) {
-        if (inElevator(people, floor, direction, man) || outElevator(people, floor)) {
+        if (inElevator(people, floor, direction, man) || outElevator(people, floor, man)) {
             return Action.OPEN;
         }
         if (people > 0) {
@@ -67,13 +67,13 @@ public class Strategy {
         return false;
     }
 
-    public boolean outElevator(int people, int floor) {
+    public boolean outElevator(int people, int floor, ArrayList<Integer> man) {
         if (people == 0) {
             return false;
         }
         for (Request req : requests.getRequests()) {
             PersonRequest preq = (PersonRequest) req;
-            if (convertToInt(preq.getToFloor()) == floor) {
+            if (convertToInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
                 return true;
             }
         }

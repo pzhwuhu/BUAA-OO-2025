@@ -83,7 +83,7 @@ public class ElevatorThread extends Thread {
             PersonRequest preq = (PersonRequest) req;
             if (floor == Strategy.convertToInt(preq.getFromFloor())) {
                 int move = Strategy.convertToInt(preq.getToFloor()) - floor;
-                if (move * direction > 0) {
+                if (move * direction > 0 && !peopleInEle.contains(preq.getPersonId())) {
                     peopleInEle.add(preq.getPersonId());
                     TimableOutput.println("IN-" + preq.getPersonId() + "-"
                         + Strategy.convertToStr(floor) + "-" + elevatorId);
@@ -100,7 +100,8 @@ public class ElevatorThread extends Thread {
         Iterator<Request> iterator = subRequests.getRequests().iterator();
         while (iterator.hasNext()) {
             PersonRequest preq = (PersonRequest)iterator.next();
-            if (Strategy.convertToInt(preq.getToFloor()) == floor) {
+            if (Strategy.convertToInt(preq.getToFloor()) == floor
+                && peopleInEle.contains(preq.getPersonId())) {
                 peopleInEle.remove(Integer.valueOf(preq.getPersonId()));
                 TimableOutput.println("OUT-" + preq.getPersonId() + "-"
                     + Strategy.convertToStr(floor) + "-" + elevatorId);
