@@ -6,7 +6,8 @@ public class Requests {
     private final ArrayList<Request> requests = new ArrayList<>();
     private boolean done = false;
 
-    public ArrayList<Request> getRequests() {
+    public synchronized ArrayList<Request> getRequests() {
+        notifyAll();
         return requests;
     }
 

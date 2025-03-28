@@ -34,6 +34,7 @@ public class Strategy {
         if (people > 0) {
             return Action.MOVE;
         }
+        //电梯为空
         else {
             if (requests.isEmpty()) {
                 if (requests.isDone()) {
@@ -81,15 +82,19 @@ public class Strategy {
     }
 
     public boolean reverse(int floor, int direction) {
-        for (Request req : requests.getRequests()) {
-            PersonRequest preq = (PersonRequest) req;
-            int dir = convertToInt(preq.getFromFloor()) - floor;
-            if (dir * direction < 0) {
-                return true;
+        Request req = null;
+        for (Request r : requests.getRequests()) {
+            if (r != null) {
+                req = r;
             }
-            else if (dir == 0) {
-                return  (convertToInt(preq.getToFloor()) - floor) * direction < 0;
-            }
+        }
+        PersonRequest preq = (PersonRequest) req;
+        int dir = convertToInt(preq.getFromFloor()) - floor;
+        if (dir * direction < 0) {
+            return true;
+        }
+        else if (dir == 0) {
+            return  (convertToInt(preq.getToFloor()) - floor) * direction < 0;
         }
         return false;
     }
