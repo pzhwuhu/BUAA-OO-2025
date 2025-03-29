@@ -1,6 +1,8 @@
+import com.oocourse.elevator1.PersonRequest;
 import com.oocourse.elevator1.Request;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 public class Requests {
     private final ArrayList<Request> requests = new ArrayList<>();
@@ -9,6 +11,10 @@ public class Requests {
     public synchronized ArrayList<Request> getRequests() {
         notifyAll();
         return requests;
+    }
+
+    public synchronized void sortByPriority() {
+        requests.sort(Comparator.comparingInt(r -> ((PersonRequest) r).getPriority()).reversed());
     }
 
     public synchronized void push(Request request) {

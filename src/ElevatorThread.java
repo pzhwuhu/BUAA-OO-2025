@@ -80,6 +80,7 @@ public class ElevatorThread extends Thread {
             return;
         }
         synchronized (subRequests) {
+            subRequests.sortByPriority();
             for (Request req : subRequests.getRequests()) {
                 PersonRequest preq = (PersonRequest) req;
                 if (floor == Strategy.convertToInt(preq.getFromFloor())) {
