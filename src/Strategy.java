@@ -87,12 +87,14 @@ public class Strategy {
     }
 
     public boolean keepDirection(int floor, int direction) {
-        requests.sortByPriority();
-        for (Request req : requests.getRequests()) {
-            PersonRequest preq = (PersonRequest) req;
-            int need = convertToInt(preq.getFromFloor()) - floor;
-            if (need * direction > 0) {
-                return true;
+        synchronized (requests) {
+            requests.sortByPriority();
+            for (Request req : requests.getRequests()) {
+                PersonRequest preq = (PersonRequest) req;
+                int need = convertToInt(preq.getFromFloor()) - floor;
+                if (need * direction > 0) {
+                    return true;
+                }
             }
         }
         return false;
