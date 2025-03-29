@@ -4,7 +4,7 @@ import com.oocourse.elevator1.Request;
 import java.util.ArrayList;
 
 public class Strategy {
-    private Requests requests;
+    private final Requests requests;
 
     public Strategy(Requests requests) {
         this.requests = requests;
@@ -56,12 +56,15 @@ public class Strategy {
         if (people == 6) {
             return false;
         }
-        for (Request req : requests.getRequests()) {
-            PersonRequest preq = (PersonRequest) req;
-            if (floor == convertToInt(preq.getFromFloor()) && !man.contains(preq.getPersonId())) {
-                int move = convertToInt(preq.getToFloor()) - floor;
-                if (move * direction > 0) {
-                    return true;
+        synchronized (requests) {
+            for (Request req : requests.getRequests()) {
+                PersonRequest preq = (PersonRequest) req;
+                if (floor == convertToInt(preq.getFromFloor())
+                    && !man.contains(preq.getPersonId())) {
+                    int move = convertToInt(preq.getToFloor()) - floor;
+                    if (move * direction > 0) {
+                        return true;
+                    }
                 }
             }
         }
@@ -72,10 +75,12 @@ public class Strategy {
         if (people == 0) {
             return false;
         }
-        for (Request req : requests.getRequests()) {
-            PersonRequest preq = (PersonRequest) req;
-            if (convertToInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
-                return true;
+        synchronized (requests) {
+            for (Request req : requests.getRequests()) {
+                PersonRequest preq = (PersonRequest) req;
+                if (convertToInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
+                    return true;
+                }
             }
         }
         return false;
