@@ -44,10 +44,10 @@ public class Strategy {
                 }
             }
             //还有请求
-            if (reverse(floor, direction)) {
-                return Action.REVERSE;
-            } else {
+            if(keepDirection(floor, direction)) {
                 return Action.MOVE;
+            } else {
+                return Action.REVERSE;
             }
         }
     }
@@ -81,20 +81,13 @@ public class Strategy {
         return false;
     }
 
-    public boolean reverse(int floor, int direction) {
-        Request req = null;
-        for (Request r : requests.getRequests()) {
-            if (r != null) {
-                req = r;
+    public boolean keepDirection(int floor, int direction) {
+        for (Request req : requests.getRequests()) {
+            PersonRequest preq = (PersonRequest) req;
+            int need = convertToInt(preq.getFromFloor()) - floor;
+            if (need * direction > 0) {
+                return true;
             }
-        }
-        PersonRequest preq = (PersonRequest) req;
-        int dir = convertToInt(preq.getFromFloor()) - floor;
-        if (dir * direction < 0) {
-            return true;
-        }
-        else if (dir == 0) {
-            return  (convertToInt(preq.getToFloor()) - floor) * direction < 0;
         }
         return false;
     }
