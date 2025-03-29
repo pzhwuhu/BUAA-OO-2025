@@ -44,7 +44,7 @@ public class Strategy {
                 }
             }
             //还有请求
-            if(keepDirection(floor, direction)) {
+            if (keepDirection(floor, direction)) {
                 return Action.MOVE;
             } else {
                 return Action.REVERSE;
