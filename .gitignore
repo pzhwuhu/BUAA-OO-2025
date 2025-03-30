@@ -1,2 +1,5 @@
-*
-!src/
+.idea/
+.vscode/
+out/
+__pycache__/
+*.MF

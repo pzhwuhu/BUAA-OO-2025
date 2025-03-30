@@ -1,0 +1,6 @@
+{
+    "command_limit": 70,
+    "time_limit": 100.0,
+    "request_count_range": [30, 70],
+    "increase_same_elevator_prob": true
+}
