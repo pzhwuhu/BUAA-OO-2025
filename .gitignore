@@ -1,6 +1,2 @@
-.idea/
-.vscode/
-out/
-__pycache__/
-*.MF
-hw5/
+*
+!src/
