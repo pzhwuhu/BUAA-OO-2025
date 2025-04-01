@@ -82,6 +82,9 @@ public class ElevatorThread extends Thread {
         synchronized (subRequests) {
             subRequests.sortByPriority();
             for (Request req : subRequests.getRequests()) {
+                if (people >= 6) {
+                    break;
+                }
                 PersonRequest preq = (PersonRequest) req;
                 if (floor == Strategy.convertToInt(preq.getFromFloor())) {
                     int move = Strategy.convertToInt(preq.getToFloor()) - floor;
