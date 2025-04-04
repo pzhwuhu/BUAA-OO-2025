@@ -9,17 +9,18 @@ import java.util.Iterator;
 
 public class ElevatorThread extends Thread {
     private final int elevatorId;
+    private final Requests mainRequests;
     private final Requests subRequests;
     private final ArrayList<Integer> peopleInEle = new ArrayList<>();
-    private final HashMap<Integer, Integer> peopleTmpOut = new HashMap<>();
 
     private int direction;
     private int floor;
     private int people;
     private Strategy strategy;
 
-    public ElevatorThread(int elevatorId, Requests subRequests) {
+    public ElevatorThread(int elevatorId, Requests mainRequests, Requests subRequests) {
         this.elevatorId = elevatorId;
+        this.mainRequests = mainRequests;
         this.subRequests = subRequests;
         this.direction = 1;
         this.floor = 5; //5 -> F1
@@ -90,9 +91,6 @@ public class ElevatorThread extends Thread {
     }
 
     public void scheOutPerson() {
-        if (people == 0) {
-            return;
-        }
         synchronized (subRequests) {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
             while (iterator.hasNext()) {
@@ -107,9 +105,16 @@ public class ElevatorThread extends Thread {
                         TimableOutput.println("OUT-S-" + personId + "-" + str + "-" + elevatorId);
                         iterator.remove();
                     } else {
-                        peopleTmpOut.put(personId, toFloor);
+                        synchronized (mainRequests) {
+                            mainRequests.push(preq); }
+                        iterator.remove();
                         TimableOutput.println("OUT-F-" + personId + "-" + str + "-" + elevatorId);
                     }
+                } else {
+                    synchronized (mainRequests) {
+                        mainRequests.push(preq); }
+                    iterator.remove();
+                    //TimableOutput.println(personId + " need to be redispatched");
                 }
             }
         }
@@ -148,8 +153,7 @@ public class ElevatorThread extends Thread {
                     break;
                 }
                 PersonRequest preq = (PersonRequest) req;
-                if (floor == Strategy.toInt(preq.getFromFloor()) || (peopleTmpOut.containsKey(
-                    preq.getPersonId()) && floor == peopleTmpOut.get(preq.getPersonId()))) {
+                if (floor == Strategy.toInt(preq.getFromFloor())) {
                     int move = Strategy.toInt(preq.getToFloor()) - floor;
                     if (move * direction > 0 && !peopleInEle.contains(preq.getPersonId())) {
                         peopleInEle.add(preq.getPersonId());

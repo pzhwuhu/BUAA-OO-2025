@@ -12,7 +12,7 @@ public class MainClass {
         for (int i = 1;i <= 6;i++) {
             Requests subRequests = new Requests();
             subRequestMap.put(i, subRequests);
-            ElevatorThread elevatorThread = new ElevatorThread(i, subRequests);
+            ElevatorThread elevatorThread = new ElevatorThread(i, mainRequests, subRequests);
             elevatorThread.start();
         }
         InputThread inputThread = new InputThread(mainRequests);
