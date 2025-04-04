@@ -61,30 +61,32 @@ public class ElevatorThread extends Thread {
 
     public void tmpShedule() {
         TimableOutput.println("SCHE-BEGIN-" + elevatorId);
-        ScheRequest scheRequest = subRequests.getScheRequest();
-        int toFloor = Strategy.toInt(scheRequest.getToFloor());
-        if ((toFloor - floor) * direction < 0) {
-            direction = -direction;
-        }
-        while (floor != toFloor) {
+        synchronized (subRequests) {
+            ScheRequest scheRequest = subRequests.getScheRequest();
+            int toFloor = Strategy.toInt(scheRequest.getToFloor());
+            if ((toFloor - floor) * direction < 0) {
+                direction = -direction;
+            }
+            while (floor != toFloor) {
+                try {
+                    sleep((int)(1000 * scheRequest.getSpeed()));
+                    floor += direction;
+                    TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
+            scheOutPerson();
             try {
-                sleep((int)(1000 * scheRequest.getSpeed()));
-                floor += direction;
-                TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
+                sleep(1000);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+            TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
+            TimableOutput.println("SCHE-END-" + elevatorId);
+            subRequests.setScheRequest(null);
         }
-        TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
-        scheOutPerson();
-        try {
-            sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
-        TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
-        TimableOutput.println("SCHE-END-" + elevatorId);
-        subRequests.setScheRequest(null);
     }
 
     public void scheOutPerson() {
