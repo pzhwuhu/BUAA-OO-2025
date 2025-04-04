@@ -63,17 +63,18 @@ public class ElevatorThread extends Thread {
         TimableOutput.println("SCHE-BEGIN-" + elevatorId);
         ScheRequest scheRequest = subRequests.getScheRequest();
         int toFloor = Strategy.toInt(scheRequest.getToFloor());
-        int time =  (int) (1000 * Math.abs(toFloor - floor) * scheRequest.getSpeed());
         if ((toFloor - floor) * direction < 0) {
             direction = -direction;
         }
-        try {
-            sleep(time);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
+        while (floor != toFloor) {
+            try {
+                sleep((int)(1000 * scheRequest.getSpeed()));
+                floor += direction;
+                TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
-        floor = toFloor;
-        TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
         TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
         scheOutPerson();
         try {
@@ -145,8 +146,8 @@ public class ElevatorThread extends Thread {
                     break;
                 }
                 PersonRequest preq = (PersonRequest) req;
-                if (floor == Strategy.toInt(preq.getFromFloor())
-                    || floor == peopleTmpOut.get(preq.getPersonId())) {
+                if (floor == Strategy.toInt(preq.getFromFloor()) || (peopleTmpOut.containsKey(
+                    preq.getPersonId()) && floor == peopleTmpOut.get(preq.getPersonId()))) {
                     int move = Strategy.toInt(preq.getToFloor()) - floor;
                     if (move * direction > 0 && !peopleInEle.contains(preq.getPersonId())) {
                         peopleInEle.add(preq.getPersonId());
