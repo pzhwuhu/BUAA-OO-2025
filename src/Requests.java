@@ -1,16 +1,26 @@
-import com.oocourse.elevator1.PersonRequest;
-import com.oocourse.elevator1.Request;
+import com.oocourse.elevator2.PersonRequest;
+import com.oocourse.elevator2.Request;
+import com.oocourse.elevator2.ScheRequest;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 
 public class Requests {
     private final ArrayList<Request> requests = new ArrayList<>();
+    private ScheRequest scheRequest = null;
     private boolean done = false;
 
     public synchronized ArrayList<Request> getRequests() {
         notifyAll();
         return requests;
+    }
+
+    public synchronized void setScheRequest(ScheRequest scheRequest) {
+        this.scheRequest = scheRequest;
+    }
+
+    public synchronized ScheRequest getScheRequest() {
+        return scheRequest;
     }
 
     public synchronized void sortByPriority() {

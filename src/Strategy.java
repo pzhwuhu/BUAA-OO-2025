@@ -1,5 +1,5 @@
-import com.oocourse.elevator1.PersonRequest;
-import com.oocourse.elevator1.Request;
+import com.oocourse.elevator2.PersonRequest;
+import com.oocourse.elevator2.Request;
 
 import java.util.ArrayList;
 
@@ -10,7 +10,7 @@ public class Strategy {
         this.requests = requests;
     }
 
-    public static String convertToStr(int floor) {
+    public static String toStr(int floor) {
         if (floor >= 5) {
             return "F" + String.valueOf(floor - 4);
         } else {
@@ -18,7 +18,7 @@ public class Strategy {
         }
     }
 
-    public static int convertToInt(String str) {
+    public static int toInt(String str) {
         if (str.charAt(0) == 'F') {
             return str.charAt(1) - '0' + 4;
         }
@@ -28,6 +28,9 @@ public class Strategy {
     }
 
     public Action getAction(int people, int floor, int direction, ArrayList<Integer> man) {
+        if (requests.getScheRequest() != null) {
+            return Action.SCHE;
+        }
         if (inElevator(people, floor, direction, man) || outElevator(people, floor, man)) {
             return Action.OPEN;
         }
@@ -59,9 +62,9 @@ public class Strategy {
         synchronized (requests) {
             for (Request req : requests.getRequests()) {
                 PersonRequest preq = (PersonRequest) req;
-                if (floor == convertToInt(preq.getFromFloor())
+                if (floor == toInt(preq.getFromFloor())
                     && !man.contains(preq.getPersonId())) {
-                    int move = convertToInt(preq.getToFloor()) - floor;
+                    int move = toInt(preq.getToFloor()) - floor;
                     if (move * direction > 0) {
                         return true;
                     }
@@ -78,7 +81,7 @@ public class Strategy {
         synchronized (requests) {
             for (Request req : requests.getRequests()) {
                 PersonRequest preq = (PersonRequest) req;
-                if (convertToInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
+                if (toInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
                     return true;
                 }
             }
@@ -91,7 +94,7 @@ public class Strategy {
             requests.sortByPriority();
             for (Request req : requests.getRequests()) {
                 PersonRequest preq = (PersonRequest) req;
-                int need = convertToInt(preq.getFromFloor()) - floor;
+                int need = toInt(preq.getFromFloor()) - floor;
                 if (need * direction > 0) {
                     return true;
                 }

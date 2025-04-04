@@ -1,5 +1,5 @@
-import com.oocourse.elevator1.ElevatorInput;
-import com.oocourse.elevator1.Request;
+import com.oocourse.elevator2.ElevatorInput;
+import com.oocourse.elevator2.Request;
 
 public class InputThread extends Thread {
     private final Requests mainRequests;

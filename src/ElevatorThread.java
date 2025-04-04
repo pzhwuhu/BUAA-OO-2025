@@ -1,14 +1,17 @@
-import com.oocourse.elevator1.PersonRequest;
-import com.oocourse.elevator1.Request;
-import com.oocourse.elevator1.TimableOutput;
+import com.oocourse.elevator2.PersonRequest;
+import com.oocourse.elevator2.Request;
+import com.oocourse.elevator2.ScheRequest;
+import com.oocourse.elevator2.TimableOutput;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 
 public class ElevatorThread extends Thread {
     private final int elevatorId;
     private final Requests subRequests;
     private final ArrayList<Integer> peopleInEle = new ArrayList<>();
+    private final HashMap<Integer, Integer> peopleTmpOut = new HashMap<>();
 
     private int direction;
     private int floor;
@@ -29,7 +32,10 @@ public class ElevatorThread extends Thread {
         while (true) {
             Action action = strategy.getAction(people, floor, direction, peopleInEle);
 
-            if (action == Action.MOVE) {
+            if (action == Action.SCHE) {
+                tmpShedule();
+            }
+            else if (action == Action.MOVE) {
                 move();
             }
             else if (action == Action.WAIT) {
@@ -53,6 +59,59 @@ public class ElevatorThread extends Thread {
         }
     }
 
+    public void tmpShedule() {
+        TimableOutput.println("SCHE-BEGIN-" + elevatorId);
+        ScheRequest scheRequest = subRequests.getScheRequest();
+        int toFloor = Strategy.toInt(scheRequest.getToFloor());
+        int time =  (int) (1000 * Math.abs(toFloor - floor) * scheRequest.getSpeed());
+        if ((toFloor - floor) * direction < 0) {
+            direction = -direction;
+        }
+        try {
+            sleep(time);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        floor = toFloor;
+        TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
+        TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
+        scheOutPerson();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
+        TimableOutput.println("SCHE-END-" + elevatorId);
+        subRequests.setScheRequest(null);
+    }
+
+    public void scheOutPerson() {
+        if (people == 0) {
+            return;
+        }
+        synchronized (subRequests) {
+            Iterator<Request> iterator = subRequests.getRequests().iterator();
+            while (iterator.hasNext()) {
+                PersonRequest preq = (PersonRequest)iterator.next();
+                String str = preq.getToFloor();
+                int toFloor = Strategy.toInt(str);
+                int personId = preq.getPersonId();
+                if (peopleInEle.contains(personId)) {
+                    people--;
+                    peopleInEle.remove(Integer.valueOf(personId));
+                    if (toFloor == floor) {
+                        TimableOutput.println("OUT-S-" + personId + "-" + str + "-" + elevatorId);
+                        iterator.remove();
+                    } else {
+                        peopleTmpOut.put(personId, toFloor);
+                        TimableOutput.println("OUT-F-" + personId + "-" + str + "-" + elevatorId);
+                    }
+                }
+            }
+        }
+    }
+
     public void move() {
         try {
             sleep(400);
@@ -60,11 +119,11 @@ public class ElevatorThread extends Thread {
             throw new RuntimeException(e);
         }
         floor += direction;
-        TimableOutput.println("ARRIVE-" + Strategy.convertToStr(floor) + "-" + elevatorId);
+        TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
     }
 
     public void openAndClose() {
-        TimableOutput.println("OPEN-" + Strategy.convertToStr(floor) + "-" + elevatorId);
+        TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
         outPerson();
         try {
             sleep(400);
@@ -72,7 +131,7 @@ public class ElevatorThread extends Thread {
             throw new RuntimeException(e);
         }
         inPerson();
-        TimableOutput.println("CLOSE-" + Strategy.convertToStr(floor) + "-" + elevatorId);
+        TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
     }
 
     public void inPerson() {
@@ -86,12 +145,13 @@ public class ElevatorThread extends Thread {
                     break;
                 }
                 PersonRequest preq = (PersonRequest) req;
-                if (floor == Strategy.convertToInt(preq.getFromFloor())) {
-                    int move = Strategy.convertToInt(preq.getToFloor()) - floor;
+                if (floor == Strategy.toInt(preq.getFromFloor())
+                    || floor == peopleTmpOut.get(preq.getPersonId())) {
+                    int move = Strategy.toInt(preq.getToFloor()) - floor;
                     if (move * direction > 0 && !peopleInEle.contains(preq.getPersonId())) {
                         peopleInEle.add(preq.getPersonId());
                         TimableOutput.println("IN-" + preq.getPersonId() + "-"
-                            + Strategy.convertToStr(floor) + "-" + elevatorId);
+                            + Strategy.toStr(floor) + "-" + elevatorId);
                         people++;
                     }
                 }
@@ -107,11 +167,11 @@ public class ElevatorThread extends Thread {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
             while (iterator.hasNext()) {
                 PersonRequest preq = (PersonRequest)iterator.next();
-                if (Strategy.convertToInt(preq.getToFloor()) == floor
+                if (Strategy.toInt(preq.getToFloor()) == floor
                     && peopleInEle.contains(preq.getPersonId())) {
                     peopleInEle.remove(Integer.valueOf(preq.getPersonId()));
-                    TimableOutput.println("OUT-" + preq.getPersonId() + "-"
-                        + Strategy.convertToStr(floor) + "-" + elevatorId);
+                    TimableOutput.println("OUT-S-" + preq.getPersonId() + "-"
+                        + Strategy.toStr(floor) + "-" + elevatorId);
                     people--;
                     iterator.remove();
                 }

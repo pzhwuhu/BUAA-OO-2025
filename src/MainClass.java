@@ -1,4 +1,4 @@
-import com.oocourse.elevator1.TimableOutput;
+import com.oocourse.elevator2.TimableOutput;
 
 import java.util.HashMap;
 
