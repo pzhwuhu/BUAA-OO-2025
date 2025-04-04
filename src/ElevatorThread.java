@@ -60,6 +60,7 @@ public class ElevatorThread extends Thread {
     }
 
     public void tmpShedule() {
+        subRequests.setFree(false);
         TimableOutput.println("SCHE-BEGIN-" + elevatorId);
         ScheRequest scheRequest = subRequests.getScheRequest();
         int toFloor = Strategy.toInt(scheRequest.getToFloor());
@@ -85,6 +86,7 @@ public class ElevatorThread extends Thread {
         TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
         TimableOutput.println("SCHE-END-" + elevatorId);
         subRequests.setScheRequest(null);
+        subRequests.setFree(true);
     }
 
     public void scheOutPerson() {

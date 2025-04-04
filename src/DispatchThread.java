@@ -46,6 +46,7 @@ public class DispatchThread extends Thread {
         int elevatorId = inOrder();
         subRequestMap.get(elevatorId).push(request);
         TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + elevatorId);
+        //+ "-" + subRequestMap.get(elevatorId).getFree()
     }
 
     public int random() {
@@ -56,6 +57,24 @@ public class DispatchThread extends Thread {
     public int inOrder() {
         counter++;
         counter %= 6;
+        Requests requests = subRequestMap.get(counter + 1);
+        if (!requests.getFree()) {
+            for (int i = 1;i <= 6;i++) {
+                if (subRequestMap.get(i).getFree()) {
+                    //TimableOutput.println("elevator-" + i + "-is free now");
+                    return i; }
+            }
+            synchronized (requests) {
+                while (!requests.getFree()) {
+                    //TimableOutput.println("elevator-" + counter + "-is waiting-" + requests.getFree());
+                    try {
+                        requests.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e); }
+                }
+            }
+            //TimableOutput.println("elevator-" + counter + "-is off wait-" + requests.getFree());
+        }
         return counter + 1;
     }
 }

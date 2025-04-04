@@ -9,6 +9,18 @@ public class Requests {
     private final ArrayList<Request> requests = new ArrayList<>();
     private ScheRequest scheRequest = null;
     private boolean done = false;
+    private boolean free = true;
+
+    public synchronized boolean getFree() {
+        return free;
+    }
+
+    public synchronized void setFree(boolean free) {
+        this.free = free;
+        if (free) {
+            notifyAll();
+        }
+    }
 
     public synchronized ArrayList<Request> getRequests() {
         notifyAll();
