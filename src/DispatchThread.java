@@ -37,6 +37,7 @@ public class DispatchThread extends Thread {
             } else {
                 ScheRequest scheRequest = (ScheRequest) request;
                 subRequestMap.get(scheRequest.getElevatorId()).setScheRequest(scheRequest);
+                //TimableOutput.println("SCHE-Set-" + scheRequest.getElevatorId());
             }
         }
     }
