@@ -44,8 +44,8 @@ public class DispatchThread extends Thread {
 
     public void personDispatch(PersonRequest request) {
         int elevatorId = inOrder();
-        TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + elevatorId);
         subRequestMap.get(elevatorId).push(request);
+        TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + elevatorId);
         //+ "-" + subRequestMap.get(elevatorId).getFree()
     }
 
