@@ -5,12 +5,12 @@ import java.util.HashMap;
 public class MainClass {
     public static void main(String[] args) {
         TimableOutput.initStartTimestamp();
-        Requests mainRequests = new Requests();
+        Requests mainRequests = new Requests(0);
         HashMap<Integer, Requests> subRequestMap = new HashMap<>();
         DispatchThread dispatchThread = new DispatchThread(mainRequests, subRequestMap);
         dispatchThread.start();
         for (int i = 1;i <= 6;i++) {
-            Requests subRequests = new Requests();
+            Requests subRequests = new Requests(i);
             subRequestMap.put(i, subRequests);
             ElevatorThread elevatorThread = new ElevatorThread(i, mainRequests, subRequests);
             elevatorThread.start();

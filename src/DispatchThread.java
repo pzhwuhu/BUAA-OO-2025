@@ -43,10 +43,32 @@ public class DispatchThread extends Thread {
     }
 
     public void personDispatch(PersonRequest request) {
-        int elevatorId = inOrder();
-        TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + elevatorId);
-        subRequestMap.get(elevatorId).push(request);
-        //+ "-" + subRequestMap.get(elevatorId).getFree()
+        counter++;
+        counter %= 6;
+        Requests requests = subRequestMap.get(counter + 1);
+        synchronized (requests) {
+            if (!requests.getFree()) {
+                for (int i = 1;i <= 6;i++) {
+                    synchronized (subRequestMap.get(i)) {
+                        if (subRequestMap.get(i).getFree()) {
+                            TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + i);
+                            subRequestMap.get(i).push(request);
+                            return; }
+                    }
+                }
+                while (!requests.getFree()) {
+                    //TimableOutput.println("elevator" + counter + "is wait-" + requests.getFree());
+                    try {
+                        requests.wait();
+                    } catch (InterruptedException e) {
+                        throw new RuntimeException(e); }
+                }
+                //TimableOutput.println("elevator-" + counter + "-is off-" + requests.getFree());
+            }
+            TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + (counter + 1));
+            subRequestMap.get(counter + 1).push(request);
+            //+ "-" + subRequestMap.get(elevatorId).getFree()
+        }
     }
 
     public int random() {
@@ -55,26 +77,6 @@ public class DispatchThread extends Thread {
     }
 
     public int inOrder() {
-        counter++;
-        counter %= 6;
-        Requests requests = subRequestMap.get(counter + 1);
-        if (!requests.getFree()) {
-            for (int i = 1;i <= 6;i++) {
-                if (subRequestMap.get(i).getFree()) {
-                    //TimableOutput.println("elevator-" + i + "-is free now");
-                    return i; }
-            }
-            synchronized (requests) {
-                while (!requests.getFree()) {
-                    //TimableOutput.println("elevator" + counter + "is wait-" + requests.getFree());
-                    try {
-                        requests.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e); }
-                }
-            }
-            //TimableOutput.println("elevator-" + counter + "-is off wait-" + requests.getFree());
-        }
         return counter + 1;
     }
 }

@@ -10,6 +10,11 @@ public class Requests {
     private ScheRequest scheRequest = null;
     private boolean done = false;
     private boolean free = true;
+    private final int elevatorId;
+
+    public Requests(int elevatorId) {
+        this.elevatorId = elevatorId;
+    }
 
     public synchronized boolean getFree() {
         return free;
