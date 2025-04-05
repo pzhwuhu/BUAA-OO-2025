@@ -1,4 +1,5 @@
 import com.oocourse.elevator2.ElevatorInput;
+import com.oocourse.elevator2.PersonRequest;
 import com.oocourse.elevator2.Request;
 
 public class InputThread extends Thread {
@@ -18,6 +19,10 @@ public class InputThread extends Thread {
                 break;
             }
 
+            if (request instanceof PersonRequest) {
+                PersonRequest personRequest = (PersonRequest) request;
+                mainRequests.addNeed(personRequest.getPersonId());
+            }
             mainRequests.push(request);
         }
     }

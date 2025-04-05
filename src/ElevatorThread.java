@@ -117,13 +117,14 @@ public class ElevatorThread extends Thread {
                     people--;
                     peopleInEle.remove(Integer.valueOf(id));
                     if (toFloor == floor) {
-                        TimableOutput.println("OUT-S-" + id + "-" + strFloor + "-" + elevatorId);
                         iterator.remove();
+                        mainRequests.addArrive();
+                        TimableOutput.println("OUT-S-" + id + "-" + strFloor + "-" + elevatorId);
                     } else {
-                        TimableOutput.println("OUT-F-" + id + "-" + strFloor + "-" + elevatorId);
                         ReArrangeRequest raq = new ReArrangeRequest(floor, preq);
                         mainRequests.push(raq);
                         iterator.remove();
+                        TimableOutput.println("OUT-F-" + id + "-" + strFloor + "-" + elevatorId);
                     }
                 }
             }
@@ -186,6 +187,7 @@ public class ElevatorThread extends Thread {
                 PersonRequest preq = (PersonRequest)iterator.next();
                 if (Strategy.toInt(preq.getToFloor()) == floor
                     && peopleInEle.contains(preq.getPersonId())) {
+                    mainRequests.addArrive();
                     peopleInEle.remove(Integer.valueOf(preq.getPersonId()));
                     TimableOutput.println("OUT-S-" + preq.getPersonId() + "-"
                         + Strategy.toStr(floor) + "-" + elevatorId);

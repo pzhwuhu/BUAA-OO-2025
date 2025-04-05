@@ -11,6 +11,25 @@ public class Requests {
     private boolean done = false;
     private boolean free = true;
     private final int elevatorId;
+    private final ArrayList<Integer> needRequests = new ArrayList<>();
+    private int arrivedRequests = 0;
+
+    public synchronized void addNeed(int id) {
+        needRequests.add(id);
+    }
+
+    public synchronized int getNeed() {
+        return needRequests.size();
+    }
+
+    public synchronized int getArrive() {
+        return arrivedRequests;
+    }
+
+    public synchronized void addArrive() {
+        arrivedRequests++;
+        notifyAll();
+    }
 
     public Requests(int elevatorId) {
         this.elevatorId = elevatorId;
@@ -46,6 +65,8 @@ public class Requests {
     }
 
     public synchronized void push(Request request) {
+        //TimableOutput.println("from-" + elevatorId + "-request need
+        // to be dispatched-" + isDone() + "-" + isEmpty());
         requests.add(request);
         notifyAll();
     }
@@ -71,7 +92,8 @@ public class Requests {
     }
 
     public synchronized boolean isDone() {
-        return done;
+        return done & (arrivedRequests == needRequests.size());
+        //return done;
     }
 
     public synchronized boolean isEmpty() {
