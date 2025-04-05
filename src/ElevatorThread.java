@@ -62,6 +62,7 @@ public class ElevatorThread extends Thread {
     public void tmpShedule() {
         subRequests.setFree(false);
         TimableOutput.println("SCHE-BEGIN-" + elevatorId);
+        reSchedule();
         ScheRequest scheRequest = subRequests.getScheRequest();
         int toFloor = Strategy.toInt(scheRequest.getToFloor());
         if ((toFloor - floor) * direction < 0) {
@@ -83,10 +84,25 @@ public class ElevatorThread extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
-        TimableOutput.println("SCHE-END-" + elevatorId);
         subRequests.setScheRequest(null);
         subRequests.setFree(true);
+        TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
+        TimableOutput.println("SCHE-END-" + elevatorId);
+    }
+
+    public void reSchedule() {
+        synchronized (subRequests) {
+            Iterator<Request> iterator = subRequests.getRequests().iterator();
+            while (iterator.hasNext()) {
+                PersonRequest preq = (PersonRequest)iterator.next();
+                int id = preq.getPersonId();
+                if (!peopleInEle.contains(id)) {
+                    mainRequests.push(preq);
+                    iterator.remove();
+                    //TimableOutput.println(personId + " need to be redispatched");
+                }
+            }
+        }
     }
 
     public void scheOutPerson() {
@@ -94,24 +110,21 @@ public class ElevatorThread extends Thread {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
             while (iterator.hasNext()) {
                 PersonRequest preq = (PersonRequest)iterator.next();
-                String str = preq.getToFloor();
-                int toFloor = Strategy.toInt(str);
-                int personId = preq.getPersonId();
-                if (peopleInEle.contains(personId)) {
+                String strFloor = Strategy.toStr(floor);
+                int toFloor = Strategy.toInt(preq.getToFloor());
+                int id = preq.getPersonId();
+                if (peopleInEle.contains(id)) {
                     people--;
-                    peopleInEle.remove(Integer.valueOf(personId));
+                    peopleInEle.remove(Integer.valueOf(id));
                     if (toFloor == floor) {
-                        TimableOutput.println("OUT-S-" + personId + "-" + str + "-" + elevatorId);
+                        TimableOutput.println("OUT-S-" + id + "-" + strFloor + "-" + elevatorId);
                         iterator.remove();
                     } else {
-                        mainRequests.push(preq);
+                        TimableOutput.println("OUT-F-" + id + "-" + strFloor + "-" + elevatorId);
+                        ReArrangeRequest raq = new ReArrangeRequest(floor, preq);
+                        mainRequests.push(raq);
                         iterator.remove();
-                        TimableOutput.println("OUT-F-" + personId + "-" + str + "-" + elevatorId);
                     }
-                } else {
-                    mainRequests.push(preq);
-                    iterator.remove();
-                    //TimableOutput.println(personId + " need to be redispatched");
                 }
             }
         }

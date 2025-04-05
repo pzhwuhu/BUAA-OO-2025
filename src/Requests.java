@@ -29,6 +29,7 @@ public class Requests {
 
     public synchronized void setScheRequest(ScheRequest scheRequest) {
         this.scheRequest = scheRequest;
+        notifyAll();
     }
 
     public synchronized ScheRequest getScheRequest() {
