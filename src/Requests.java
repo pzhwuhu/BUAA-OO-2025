@@ -14,6 +14,10 @@ public class Requests {
     private final ArrayList<Integer> needRequests = new ArrayList<>();
     private int arrivedRequests = 0;
 
+    public synchronized int getSize() {
+        return requests.size();
+    }
+
     public synchronized void addNeed(int id) {
         needRequests.add(id);
     }

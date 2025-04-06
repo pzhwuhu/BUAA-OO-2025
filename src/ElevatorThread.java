@@ -84,10 +84,10 @@ public class ElevatorThread extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
-        subRequests.setScheRequest(null);
-        subRequests.setFree(true);
         TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
         TimableOutput.println("SCHE-END-" + elevatorId);
+        subRequests.setScheRequest(null);
+        subRequests.setFree(true);
     }
 
     public void reSchedule() {

@@ -51,24 +51,32 @@ public class DispatchThread extends Thread {
             if (!requests.getFree()) {
                 for (int i = 1;i <= 6;i++) {
                     synchronized (subRequestMap.get(i)) {
-                        if (subRequestMap.get(i).getFree()) {
+                        if (subRequestMap.get(i).getFree() && subRequestMap.get(i).getSize() < 20) {
                             TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + i);
                             subRequestMap.get(i).push(request);
                             return; }
                     }
                 }
-                while (!requests.getFree()) {
-                    //TimableOutput.println("elevator" + counter + "is wait-" + requests.getFree());
-                    try {
-                        requests.wait();
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e); }
-                }
-                //TimableOutput.println("elevator-" + counter + "-is off-" + requests.getFree());
+            } else {
+                TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + (counter + 1));
+                subRequestMap.get(counter + 1).push(request);
+                return;
+                //+ "-" + subRequestMap.get(elevatorId).getFree()
             }
-            TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + (counter + 1));
-            subRequestMap.get(counter + 1).push(request);
-            //+ "-" + subRequestMap.get(elevatorId).getFree()
+        }
+        int random = random();
+        requests = subRequestMap.get(random);
+        synchronized (requests) {
+            while (!requests.getFree()) {
+                //TimableOutput.println("elevator" + counter + "is wait-" + requests.getFree());
+                try {
+                    requests.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e); }
+            }
+            TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + random);
+            subRequestMap.get(random).push(request);
+            //TimableOutput.println("elevator-" + counter + "-is off-" + requests.getFree());
         }
     }
 
