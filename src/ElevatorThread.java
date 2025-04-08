@@ -122,9 +122,9 @@ public class ElevatorThread extends Thread {
                         TimableOutput.println("OUT-S-" + id + "-" + strFloor + "-" + elevatorId);
                     } else {
                         ReArrangeRequest raq = new ReArrangeRequest(floor, preq);
+                        TimableOutput.println("OUT-F-" + id + "-" + strFloor + "-" + elevatorId);
                         mainRequests.push(raq);
                         iterator.remove();
-                        TimableOutput.println("OUT-F-" + id + "-" + strFloor + "-" + elevatorId);
                     }
                 }
             }
