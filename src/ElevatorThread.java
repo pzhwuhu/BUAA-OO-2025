@@ -103,12 +103,6 @@ public class ElevatorThread extends Thread {
                 }
             }
         }
-        reSchedule();
-        try {
-            sleep(1000);
-        } catch (InterruptedException e) {
-            throw new RuntimeException(e);
-        }
         UpdateRequest upReq = subRequests.getUpdateRequest();
         speed = 200;
         if (isA) {
@@ -117,6 +111,12 @@ public class ElevatorThread extends Thread {
         } else {
             sharedFloor = Strategy.toInt(upReq.getTransferFloor());
             floor = sharedFloor - 1;
+        }
+        reSchedule();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
         }
         coordinate.endUpdate(isA);
         synchronized (coordinate) {
