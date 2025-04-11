@@ -1,6 +1,7 @@
-import com.oocourse.elevator2.PersonRequest;
-import com.oocourse.elevator2.Request;
-import com.oocourse.elevator2.ScheRequest;
+import com.oocourse.elevator3.Request;
+import com.oocourse.elevator3.UpdateRequest;
+import com.oocourse.elevator3.ScheRequest;
+import com.oocourse.elevator3.PersonRequest;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -13,6 +14,7 @@ public class Requests {
     private final int elevatorId;
     private final ArrayList<Integer> needRequests = new ArrayList<>();
     private int arrivedRequests = 0;
+    private UpdateRequest updateRequest = null;
 
     public synchronized int getSize() {
         return requests.size();
@@ -22,17 +24,13 @@ public class Requests {
         needRequests.add(id);
     }
 
-    public synchronized int getNeed() {
-        return needRequests.size();
-    }
-
-    public synchronized int getArrive() {
-        return arrivedRequests;
-    }
-
     public synchronized void addArrive() {
         arrivedRequests++;
         notifyAll();
+    }
+
+    public synchronized int getElevatorId() {
+        return elevatorId;
     }
 
     public Requests(int elevatorId) {
@@ -54,6 +52,13 @@ public class Requests {
         notifyAll();
         return requests;
     }
+
+    public synchronized void setUpdateRequest(UpdateRequest updateRequest) {
+        this.updateRequest = updateRequest;
+        notifyAll();
+    }
+
+    public synchronized UpdateRequest getUpdateRequest() { return updateRequest; }
 
     public synchronized void setScheRequest(ScheRequest scheRequest) {
         this.scheRequest = scheRequest;

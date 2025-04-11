@@ -1,7 +1,8 @@
-import com.oocourse.elevator2.PersonRequest;
-import com.oocourse.elevator2.Request;
-import com.oocourse.elevator2.ScheRequest;
-import com.oocourse.elevator2.TimableOutput;
+import com.oocourse.elevator3.PersonRequest;
+import com.oocourse.elevator3.Request;
+import com.oocourse.elevator3.ScheRequest;
+import com.oocourse.elevator3.UpdateRequest;
+import com.oocourse.elevator3.TimableOutput;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -11,11 +12,23 @@ public class ElevatorThread extends Thread {
     private final Requests mainRequests;
     private final Requests subRequests;
     private final ArrayList<Integer> peopleInEle = new ArrayList<>();
+    private Coordinate coordinate;
+    private boolean isA = false;
 
     private int direction;
     private int floor;
-    private int people;
+    private int people = 0;
     private Strategy strategy;
+    private int sharedFloor = 100;
+    private int speed = 400;
+
+    public int getSharedFloor() {
+        return sharedFloor;
+    }
+
+    public boolean isA() {
+        return isA;
+    }
 
     public ElevatorThread(int elevatorId, Requests mainRequests, Requests subRequests) {
         this.elevatorId = elevatorId;
@@ -23,17 +36,25 @@ public class ElevatorThread extends Thread {
         this.subRequests = subRequests;
         this.direction = 1;
         this.floor = 5; //5 -> F1
-        this.people = 0;
+    }
+
+    public void setCoordinate(Coordinate coordinate, boolean isA) {
+        this.coordinate = coordinate;
+        this.isA = isA;
     }
 
     @Override
     public void run() {
         Strategy strategy = new Strategy(subRequests);
         while (true) {
-            Action action = strategy.getAction(people, floor, direction, peopleInEle);
+            Action action = strategy.getAction(people, floor, direction,
+                peopleInEle, sharedFloor);
 
             if (action == Action.SCHE) {
                 tmpShedule();
+            }
+            else if (action == Action.UPD) {
+                updateBegin();
             }
             else if (action == Action.MOVE) {
                 move();
@@ -57,6 +78,48 @@ public class ElevatorThread extends Thread {
                 openAndClose();
             }
         }
+    }
+
+    public void updateBegin() {
+        subRequests.setFree(false);
+        scheOutPerson();
+        coordinate.setReady(isA);
+        synchronized (coordinate) {
+            if (!coordinate.isReady()) {
+                try {
+                    coordinate.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        reSchedule();
+        try {
+            sleep(1000);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+        coordinate.endUpdate(isA);
+        synchronized (coordinate) {
+            if (!coordinate.isEnd()) {
+                try {
+                    coordinate.wait();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        UpdateRequest upReq = subRequests.getUpdateRequest();
+        speed = 200;
+        if (isA) {
+            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
+            floor = sharedFloor + 1;
+        } else {
+            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
+            floor = sharedFloor - 1;
+        }
+        subRequests.setUpdateRequest(null);
+        subRequests.setFree(true);
     }
 
     public void tmpShedule() {
@@ -132,8 +195,13 @@ public class ElevatorThread extends Thread {
     }
 
     public void move() {
+        if (floor + direction == sharedFloor) {
+            coordinate.inShared();
+        } else if (floor == sharedFloor) {
+            coordinate.outShared();
+        }
         try {
-            sleep(400);
+            sleep(speed);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
@@ -183,6 +251,10 @@ public class ElevatorThread extends Thread {
         }
         synchronized (subRequests) {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
+            if (floor == sharedFloor) {
+                scheOutPerson();
+                return;
+            }
             while (iterator.hasNext()) {
                 PersonRequest preq = (PersonRequest)iterator.next();
                 if (Strategy.toInt(preq.getToFloor()) == floor

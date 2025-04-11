@@ -1,5 +1,5 @@
-import com.oocourse.elevator2.PersonRequest;
-import com.oocourse.elevator2.Request;
+import com.oocourse.elevator3.PersonRequest;
+import com.oocourse.elevator3.Request;
 
 import java.util.ArrayList;
 
@@ -27,11 +27,20 @@ public class Strategy {
         }
     }
 
-    public Action getAction(int people, int floor, int direction, ArrayList<Integer> man) {
+    public Action getAction(int people, int floor, int direction, ArrayList<Integer> man,
+        int sharedFloor) {
+
+
         if (requests.getScheRequest() != null) {
             return Action.SCHE;
         }
-        if (inElevator(people, floor, direction, man) || outElevator(people, floor, man)) {
+
+        if (requests.getUpdateRequest() != null) {
+            return Action.UPD;
+        }
+
+        if (inElevator(people, floor, direction, man) ||
+            outElevator(people, floor, man, sharedFloor)) {
             return Action.OPEN;
         }
         if (people > 0) {
@@ -74,14 +83,17 @@ public class Strategy {
         return false;
     }
 
-    public boolean outElevator(int people, int floor, ArrayList<Integer> man) {
+    public boolean outElevator(int people, int floor, ArrayList<Integer> man, int sharedFloor) {
         if (people == 0) {
             return false;
+        }
+        if (floor == sharedFloor) {
+            return true;
         }
         synchronized (requests) {
             for (Request req : requests.getRequests()) {
                 PersonRequest preq = (PersonRequest) req;
-                if (toInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId())) {
+                if ((toInt(preq.getToFloor()) == floor && man.contains(preq.getPersonId()))) {
                     return true;
                 }
             }

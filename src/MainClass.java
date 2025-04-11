@@ -1,4 +1,4 @@
-import com.oocourse.elevator2.TimableOutput;
+import com.oocourse.elevator3.TimableOutput;
 
 import java.util.HashMap;
 
@@ -7,15 +7,18 @@ public class MainClass {
         TimableOutput.initStartTimestamp();
         Requests mainRequests = new Requests(0);
         HashMap<Integer, Requests> subRequestMap = new HashMap<>();
-        DispatchThread dispatchThread = new DispatchThread(mainRequests, subRequestMap);
-        dispatchThread.start();
+        HashMap<Integer, ElevatorThread> elevatorMap = new HashMap<>();
         for (int i = 1;i <= 6;i++) {
             Requests subRequests = new Requests(i);
             subRequestMap.put(i, subRequests);
             ElevatorThread elevatorThread = new ElevatorThread(i, mainRequests, subRequests);
+            elevatorMap.put(i, elevatorThread);
             elevatorThread.start();
         }
-        InputThread inputThread = new InputThread(mainRequests, subRequestMap);
+        DispatchThread dispatchThread = new DispatchThread(mainRequests,
+            subRequestMap, elevatorMap);
+        dispatchThread.start();
+        InputThread inputThread = new InputThread(mainRequests, subRequestMap, elevatorMap);
         inputThread.start();
     }
 }
