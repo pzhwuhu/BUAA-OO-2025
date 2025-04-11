@@ -48,7 +48,7 @@ public class ElevatorThread extends Thread {
         Strategy strategy = new Strategy(subRequests);
         while (true) {
             Action action = strategy.getAction(people, floor, direction,
-                peopleInEle, sharedFloor);
+                peopleInEle, sharedFloor, isA);
 
             if (action == Action.SCHE) {
                 tmpShedule();
@@ -70,6 +70,7 @@ public class ElevatorThread extends Thread {
             }
             else if (action == Action.REVERSE) {
                 direction = -direction;
+                //TimableOutput.println(elevatorId + "Reverse direction: " + direction);
             }
             else if (action == Action.END) {
                 break;
@@ -82,7 +83,11 @@ public class ElevatorThread extends Thread {
 
     public void updateBegin() {
         subRequests.setFree(false);
-        scheOutPerson();
+        if (!subRequests.isEmpty()) {
+            TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
+            scheOutPerson();
+            TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
+        }
         coordinate.setReady(isA);
         synchronized (coordinate) {
             if (!coordinate.isReady()) {
@@ -99,6 +104,15 @@ public class ElevatorThread extends Thread {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+        UpdateRequest upReq = subRequests.getUpdateRequest();
+        speed = 200;
+        if (isA) {
+            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
+            floor = sharedFloor + 1;
+        } else {
+            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
+            floor = sharedFloor - 1;
+        }
         coordinate.endUpdate(isA);
         synchronized (coordinate) {
             if (!coordinate.isEnd()) {
@@ -108,15 +122,6 @@ public class ElevatorThread extends Thread {
                     throw new RuntimeException(e);
                 }
             }
-        }
-        UpdateRequest upReq = subRequests.getUpdateRequest();
-        speed = 200;
-        if (isA) {
-            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
-            floor = sharedFloor + 1;
-        } else {
-            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
-            floor = sharedFloor - 1;
         }
         subRequests.setUpdateRequest(null);
         subRequests.setFree(true);
@@ -195,18 +200,19 @@ public class ElevatorThread extends Thread {
     }
 
     public void move() {
-        if (floor + direction == sharedFloor) {
-            coordinate.inShared();
-        } else if (floor == sharedFloor) {
-            coordinate.outShared();
-        }
         try {
             sleep(speed);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
         floor += direction;
+        if (floor == sharedFloor) {
+            coordinate.inShared();
+        }
         TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
+        if (floor == sharedFloor + direction) {
+            coordinate.outShared();
+        }
     }
 
     public void openAndClose() {
@@ -253,6 +259,8 @@ public class ElevatorThread extends Thread {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
             if (floor == sharedFloor) {
                 scheOutPerson();
+                direction = -direction;
+                //TimableOutput.println(elevatorId + "Reverse direction: " + direction);
                 return;
             }
             while (iterator.hasNext()) {

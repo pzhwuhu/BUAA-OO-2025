@@ -64,9 +64,12 @@ public class DispatchThread extends Thread {
             }
         }
         int random = random();
+        while (!isInRange(random, request)) {
+            random = random();
+        }
         requests = subRequestMap.get(random);
         synchronized (requests) {
-            while (!(requests.getFree() && isInRange(random, request))) {
+            while (!requests.getFree()) {
                 //TimableOutput.println("elevator" + counter + "is wait-" + requests.getFree());
                 try {
                     requests.wait();
@@ -91,11 +94,22 @@ public class DispatchThread extends Thread {
             return true;
         }
         else {
+            int fromFloor = Strategy.toInt(request.getFromFloor());
+            int toFloor = Strategy.toInt(request.getToFloor());
             if (ele.isA()) {
-                return Strategy.toInt(request.getFromFloor()) >= sharedFloor;
+                if (fromFloor > sharedFloor) {
+                    return true;
+                } else if (fromFloor == sharedFloor) {
+                    return toFloor > sharedFloor;
+                }
             } else {
-                return Strategy.toInt(request.getToFloor()) <= sharedFloor;
+                if (fromFloor < sharedFloor) {
+                    return true;
+                } else if (fromFloor == sharedFloor) {
+                    return toFloor < sharedFloor;
+                }
             }
+            return false;
         }
     }
 }

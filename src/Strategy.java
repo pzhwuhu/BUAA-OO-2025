@@ -28,8 +28,9 @@ public class Strategy {
     }
 
     public Action getAction(int people, int floor, int direction, ArrayList<Integer> man,
-        int sharedFloor) {
-
+        int sharedFloor, boolean isA) {
+        int isUpper = -1;
+        if (isA) { isUpper = 1; }
 
         if (requests.getScheRequest() != null) {
             return Action.SCHE;
@@ -40,7 +41,7 @@ public class Strategy {
         }
 
         if (inElevator(people, floor, direction, man) ||
-            outElevator(people, floor, man, sharedFloor)) {
+            outElevator(people, floor, man, sharedFloor, direction, isUpper)) {
             return Action.OPEN;
         }
         if (people > 0) {
@@ -51,6 +52,8 @@ public class Strategy {
             if (requests.isEmpty()) {
                 if (requests.isDone()) {
                     return Action.END;//结束力
+                } else if (floor == sharedFloor) {
+                    return Action.MOVE;
                 } else {
                     return Action.WAIT;//等待输入
                 }
@@ -83,11 +86,12 @@ public class Strategy {
         return false;
     }
 
-    public boolean outElevator(int people, int floor, ArrayList<Integer> man, int sharedFloor) {
+    public boolean outElevator(int people, int floor, ArrayList<Integer> man,
+        int sharedFloor, int direction, int isUpper) {
         if (people == 0) {
             return false;
         }
-        if (floor == sharedFloor) {
+        if (floor == sharedFloor && !man.isEmpty() && (direction * isUpper < 0)) {
             return true;
         }
         synchronized (requests) {
