@@ -86,6 +86,11 @@ public class ElevatorThread extends Thread {
         if (!subRequests.isEmpty()) {
             TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
             scheOutPerson();
+            try {
+                sleep(400);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
             TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
         }
         coordinate.setReady(isA);
