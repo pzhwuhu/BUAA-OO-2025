@@ -1,6 +1,5 @@
 import com.oocourse.elevator2.PersonRequest;
 import com.oocourse.elevator2.Request;
-import com.oocourse.elevator2.ScheRequest;
 import com.oocourse.elevator2.TimableOutput;
 
 import java.util.HashMap;
