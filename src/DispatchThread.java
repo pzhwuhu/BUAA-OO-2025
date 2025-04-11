@@ -35,10 +35,6 @@ public class DispatchThread extends Thread {
             if (request instanceof PersonRequest) {
                 PersonRequest personRequest = (PersonRequest) request;
                 personDispatch(personRequest);
-            } else {
-                ScheRequest scheRequest = (ScheRequest) request;
-                subRequestMap.get(scheRequest.getElevatorId()).setScheRequest(scheRequest);
-                //TimableOutput.println("SCHE-Set-" + scheRequest.getElevatorId());
             }
         }
     }

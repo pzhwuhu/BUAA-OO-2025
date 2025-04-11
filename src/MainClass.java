@@ -15,7 +15,7 @@ public class MainClass {
             ElevatorThread elevatorThread = new ElevatorThread(i, mainRequests, subRequests);
             elevatorThread.start();
         }
-        InputThread inputThread = new InputThread(mainRequests);
+        InputThread inputThread = new InputThread(mainRequests, subRequestMap);
         inputThread.start();
     }
 }
