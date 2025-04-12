@@ -38,9 +38,10 @@ public class ElevatorThread extends Thread {
         this.floor = 5; //5 -> F1
     }
 
-    public void setCoordinate(Coordinate coordinate, boolean isA) {
+    public void setCoordinate(Coordinate coordinate, boolean isA, String share) {
         this.coordinate = coordinate;
         this.isA = isA;
+        this.sharedFloor = Strategy.toInt(share);
     }
 
     @Override
@@ -105,13 +106,11 @@ public class ElevatorThread extends Thread {
         }
         UpdateRequest upReq = subRequests.getUpdateRequest();
         speed = 200;
-        if (isA) {
-            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
-            floor = sharedFloor + 1;
-        } else {
-            sharedFloor = Strategy.toInt(upReq.getTransferFloor());
-            floor = sharedFloor - 1;
+        if (floor == sharedFloor) {
+            coordinate.outShared(elevatorId);
         }
+        if (isA) { floor = sharedFloor + 1; }
+        else { floor = sharedFloor - 1; }
         reSchedule();
         try {
             sleep(1000);
@@ -212,11 +211,11 @@ public class ElevatorThread extends Thread {
         }
         floor += direction;
         if (floor == sharedFloor) {
-            coordinate.inShared();
+            coordinate.inShared(elevatorId);
         }
         TimableOutput.println("ARRIVE-" + Strategy.toStr(floor) + "-" + elevatorId);
         if (floor == sharedFloor + direction) {
-            coordinate.outShared();
+            coordinate.outShared(elevatorId);
         }
     }
 
@@ -260,14 +259,14 @@ public class ElevatorThread extends Thread {
         if (people == 0) {
             return;
         }
+        if (floor == sharedFloor) {
+            scheOutPerson();
+            direction = -direction;
+            //TimableOutput.println(elevatorId + "Reverse direction: " + direction);
+            return;
+        }
         synchronized (subRequests) {
             Iterator<Request> iterator = subRequests.getRequests().iterator();
-            if (floor == sharedFloor) {
-                scheOutPerson();
-                direction = -direction;
-                //TimableOutput.println(elevatorId + "Reverse direction: " + direction);
-                return;
-            }
             while (iterator.hasNext()) {
                 PersonRequest preq = (PersonRequest)iterator.next();
                 if (Strategy.toInt(preq.getToFloor()) == floor

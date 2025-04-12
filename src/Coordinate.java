@@ -17,19 +17,22 @@ public class Coordinate {
         idB = updateRequest.getElevatorBId();
     }
 
-    public synchronized void inShared() {
+    public synchronized void inShared(int id) {
         if (isbusy) {
             try {
+                //TimableOutput.println(id + "-waiting to get in sharedFllor-" + isbusy);
                 wait();
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
         }
         isbusy = true;
+        //TimableOutput.println(id + "-really get in sharedFllor-" + isbusy);
     }
 
-    public synchronized void outShared() {
+    public synchronized void outShared(int id) {
         isbusy = false;
+        //TimableOutput.println(id + "get out sharedFllor-" + isbusy);
         notifyAll();
     }
 

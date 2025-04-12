@@ -40,8 +40,8 @@ public class InputThread extends Thread {
                 int idA = upRequest.getElevatorAId();
                 int idB = upRequest.getElevatorBId();
                 Coordinate coordinate = new Coordinate(upRequest);
-                elevatorMap.get(idA).setCoordinate(coordinate, true);
-                elevatorMap.get(idB).setCoordinate(coordinate, false);
+                elevatorMap.get(idA).setCoordinate(coordinate, true, upRequest.getTransferFloor());
+                elevatorMap.get(idB).setCoordinate(coordinate, false, upRequest.getTransferFloor());
                 subRequestMap.get(idA).setUpdateRequest(upRequest);
                 subRequestMap.get(idB).setUpdateRequest(upRequest);
             }
