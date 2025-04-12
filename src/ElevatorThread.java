@@ -94,6 +94,8 @@ public class ElevatorThread extends Thread {
             TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
         }
         coordinate.setReady(isA);
+        UpdateRequest upReq = subRequests.getUpdateRequest();
+        sharedFloor = Strategy.toInt(upReq.getTransferFloor());
         synchronized (coordinate) {
             if (!coordinate.isReady()) {
                 try {
@@ -103,9 +105,7 @@ public class ElevatorThread extends Thread {
                 }
             }
         }
-        UpdateRequest upReq = subRequests.getUpdateRequest();
         speed = 200;
-        sharedFloor = Strategy.toInt(upReq.getTransferFloor());
         if (isA) { floor = sharedFloor + 1; }
         else { floor = sharedFloor - 1; }
         reSchedule();
