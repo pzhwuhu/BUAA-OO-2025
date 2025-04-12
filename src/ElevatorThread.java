@@ -38,10 +38,9 @@ public class ElevatorThread extends Thread {
         this.floor = 5; //5 -> F1
     }
 
-    public void setCoordinate(Coordinate coordinate, boolean isA, String share) {
+    public void setCoordinate(Coordinate coordinate, boolean isA) {
         this.coordinate = coordinate;
         this.isA = isA;
-        this.sharedFloor = Strategy.toInt(share);
     }
 
     @Override
@@ -106,9 +105,7 @@ public class ElevatorThread extends Thread {
         }
         UpdateRequest upReq = subRequests.getUpdateRequest();
         speed = 200;
-        if (floor == sharedFloor) {
-            coordinate.outShared(elevatorId);
-        }
+        sharedFloor = Strategy.toInt(upReq.getTransferFloor());
         if (isA) { floor = sharedFloor + 1; }
         else { floor = sharedFloor - 1; }
         reSchedule();
