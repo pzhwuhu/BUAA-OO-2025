@@ -48,9 +48,9 @@ public class DispatchThread extends Thread {
         synchronized (requests) {
             if (!requests.getFree()) {
                 for (int i = 1;i <= 6;i++) {
+                    if (!isInRange(i, request)) { continue; }
                     synchronized (subRequestMap.get(i)) {
-                        if (subRequestMap.get(i).getFree() && subRequestMap.get(i).getSize() < 20
-                            && isInRange(i, request)) {
+                        if (subRequestMap.get(i).getFree() && subRequestMap.get(i).getSize() < 20) {
                             TimableOutput.println("RECEIVE-" + request.getPersonId() + "-" + i);
                             subRequestMap.get(i).push(request);
                             return; }
