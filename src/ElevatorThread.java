@@ -83,6 +83,8 @@ public class ElevatorThread extends Thread {
 
     public void updateBegin() {
         subRequests.setFree(false);
+        UpdateRequest upReq = subRequests.getUpdateRequest();
+        sharedFloor = Strategy.toInt(upReq.getTransferFloor());
         if (!subRequests.isEmpty()) {
             TimableOutput.println("OPEN-" + Strategy.toStr(floor) + "-" + elevatorId);
             scheOutPerson();
@@ -94,8 +96,6 @@ public class ElevatorThread extends Thread {
             TimableOutput.println("CLOSE-" + Strategy.toStr(floor) + "-" + elevatorId);
         }
         coordinate.setReady(isA);
-        UpdateRequest upReq = subRequests.getUpdateRequest();
-        sharedFloor = Strategy.toInt(upReq.getTransferFloor());
         synchronized (coordinate) {
             if (!coordinate.isReady()) {
                 try {
