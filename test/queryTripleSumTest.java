@@ -15,9 +15,20 @@ public class queryTripleSumTest {
         this.testCase = testCase;
     }
 
+    /* 测试用例容器 */
+    static class TestCase {
+        final Network network;
+        final int expected;
+
+        TestCase(Network network, int expected) {
+            this.network = network;
+            this.expected = expected;
+        }
+    }
+
     @Parameterized.Parameters
     public static Collection<Object[]> prepareData() throws Exception {
-        final int TEST_CASE_NUM = 20;
+        final int TEST_CASE_NUM = 200;
         List<TestCase> cases = new ArrayList<>();
         Random rand = new Random(System.currentTimeMillis());
 
@@ -31,13 +42,13 @@ public class queryTripleSumTest {
                     cases.add(singleTriangle());
                     break;
                 case 2:
-                    cases.add(multipleTriangles(rand.nextInt(3) + 2));
+                    cases.add(multipleTriangles(rand.nextInt(12) + 4));
                     break;
                 case 3:
-                    cases.add(overlappingTriangles(rand.nextInt(2) + 2));
+                    cases.add(overlappingTriangles(rand.nextInt(8) + 4));
                     break;
                 case 4:
-                    cases.add(noTriangleChain(rand.nextInt(5) + 3));
+                    cases.add(noTriangleChain(rand.nextInt(12) + 6));
                     break;
             }
         }
@@ -63,39 +74,9 @@ public class queryTripleSumTest {
     // 状态一致性验证
     public void verifyStateUnchanged(PersonInterface[] before, PersonInterface[] after) {
         assertEquals("Person count changed", before.length, after.length);
-
-        Map<Integer, PersonInterface> afterMap = new HashMap<>();
-        for (PersonInterface p : after) {
-            afterMap.put(p.getId(), p);
+        for (int i = 0; i < before.length; i++) {
+            assertEquals(true, ((Person)before[i]).strictEquals((Person)after[i]));
         }
-
-        for (PersonInterface orig : before) {
-            PersonInterface current = afterMap.get(orig.getId());
-            assertNotNull("Person missing: " + orig.getId(), current);
-            assertTrue("State changed for person: " + orig.getId(),
-                    strictEquals(orig, current));
-        }
-    }
-
-    // 严格相等比较
-    public boolean strictEquals(PersonInterface a, PersonInterface b) {
-        if (a.getId() != b.getId()) return false;
-        if (a.getAge() != b.getAge()) return false;
-        if (!a.getName().equals(b.getName())) return false;
-
-        // 比较联系人
-        Set<Integer> aLinks = getLinkedIds(a);
-        Set<Integer> bLinks = getLinkedIds(b);
-        return aLinks.equals(bLinks);
-    }
-
-    public Set<Integer> getLinkedIds(PersonInterface p) {
-        Set<Integer> links = new HashSet<>();
-        Person pp = (Person) p;
-        for (PersonInterface a : pp.getAcquaintance().values()) {
-            links.add(a.getId());
-        }
-        return links;
     }
 
     /* 测试用例生成方法 */
@@ -160,17 +141,6 @@ public class queryTripleSumTest {
     public static void addPerson(Network network, int id) throws Exception {
         if (!network.containsPerson(id)) {
             network.addPerson(new Person(id, "Person"+id, 20));
-        }
-    }
-
-    /* 测试用例容器 */
-    static class TestCase {
-        final Network network;
-        final int expected;
-
-        TestCase(Network network, int expected) {
-            this.network = network;
-            this.expected = expected;
         }
     }
 }

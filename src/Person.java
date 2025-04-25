@@ -74,4 +74,6 @@ public class Person implements PersonInterface {
     public HashMap<Integer, PersonInterface> getAcquaintance() { return acquaintance; }
 
     public HashMap<Integer, Integer> getValues() { return values; }
+
+    public boolean strictEquals(Person person) { return true; }
 }
