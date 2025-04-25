@@ -1,5 +1,5 @@
-import utils.PersonInterface;
-import utils.TagInterface;
+import com.oocourse.spec1.main.PersonInterface;
+import com.oocourse.spec1.main.TagInterface;
 
 import java.util.HashMap;
 

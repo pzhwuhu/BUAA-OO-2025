@@ -1,7 +1,7 @@
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import utils.PersonInterface;
+import com.oocourse.spec1.main.PersonInterface;
 
 import static org.junit.Assert.*;
 

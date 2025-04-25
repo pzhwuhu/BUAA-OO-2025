@@ -1,13 +1,13 @@
-import exceptions.AcquaintanceNotFoundException;
-import exceptions.EqualPersonIdException;
-import exceptions.EqualRelationException;
-import exceptions.EqualTagIdException;
-import exceptions.PersonIdNotFoundException;
-import exceptions.RelationNotFoundException;
-import exceptions.TagIdNotFoundException;
-import utils.NetworkInterface;
-import utils.PersonInterface;
-import utils.TagInterface;
+import com.oocourse.spec1.exceptions.AcquaintanceNotFoundException;
+import com.oocourse.spec1.exceptions.EqualPersonIdException;
+import com.oocourse.spec1.exceptions.EqualRelationException;
+import com.oocourse.spec1.exceptions.EqualTagIdException;
+import com.oocourse.spec1.exceptions.PersonIdNotFoundException;
+import com.oocourse.spec1.exceptions.RelationNotFoundException;
+import com.oocourse.spec1.exceptions.TagIdNotFoundException;
+import com.oocourse.spec1.main.NetworkInterface;
+import com.oocourse.spec1.main.PersonInterface;
+import com.oocourse.spec1.main.TagInterface;
 
 import java.util.ArrayList;
 import java.util.HashMap;
