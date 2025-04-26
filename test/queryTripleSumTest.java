@@ -118,7 +118,7 @@ public class queryTripleSumTest {
         for (int i = 1; i < count; i++) {
             addTriangle(original, baseId, baseId + 1, baseId + 2);
             addTriangle(processed, baseId, baseId + 1, baseId + 2);
-            baseId += 1; // 下一个三元环的起始节点是 baseId + 1
+            baseId += 2; // 下一个三元环的起始节点是 baseId + 1
         }
 
         return new TestCase(original, processed, count);
