@@ -38,7 +38,7 @@ public class queryTripleSumTest {
         // 生成多种测试场景
         for (int i = 0; i < TEST_CASE_NUM; i++) {
             TestCase testCase;
-            switch (i % 6) {
+            switch (i % 8) {
                 case 0:
                     testCase = emptyNetwork();
                     break;
@@ -55,7 +55,11 @@ public class queryTripleSumTest {
                     testCase = noTriangleChain(rand.nextInt(12) + 40);
                     break;
                 case 5:
-                    testCase = fourthCircle(rand.nextInt(12) + 40);
+                    testCase = compeleteGraph(rand.nextInt(12) + 40);
+                    break;
+                case 6:
+                case 7:
+                    testCase = compeleteGraph(rand.nextInt(12) + 40);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + i % 5);
@@ -183,28 +187,66 @@ public class queryTripleSumTest {
         return new TestCase(original, processed, 0);
     }
 
-    public static TestCase fourthCircle(int count) throws Exception {
+    public static TestCase randomTriangles(int personNum) throws Exception {
+        Network original = new Network();
+        Network processed = new Network();
+        int tripleSum = 0;
+        Set<Integer> validIds = new HashSet<>();
+        Random rand = new Random();
+
+        // 随机生成节点
+        for (int i = 0; i < personNum; i++) {
+            int id = rand.nextInt(1000);
+            while (validIds.contains(id)) {
+                id = rand.nextInt(1000);
+            }
+            validIds.add(id);
+            addPerson(original, id);
+            addPerson(processed, id);
+        }
+
+        // 随机生成三元环
+        List<Integer> idList = new ArrayList<>(validIds);
+        for (int i = 0; i < personNum / 3; i++) {
+            if (idList.size() >= 3) {
+                int id1 = idList.get(rand.nextInt(idList.size()));
+                int id2 = idList.get(rand.nextInt(idList.size()));
+                int id3 = idList.get(rand.nextInt(idList.size()));
+                if (id1 != id2 && id2 != id3 && id1 != id3) {
+                    try {
+                        addTriangle(original, id1, id2, id3);
+                        addTriangle(processed, id1, id2, id3);
+                        tripleSum++;
+                    } catch (Exception e) {
+                        throw new Exception(e.getMessage());
+                    }
+                }
+            }
+        }
+        return new TestCase(original, processed, tripleSum);
+    }
+
+
+
+    public static TestCase compeleteGraph(int count) throws Exception {
         Network original = new Network();
         Network processed = new Network();
         int baseId = 1;
-
-        // 添加第一个 4 元环
-        addQuadrilateral(original, baseId);
-        addQuadrilateral(processed, baseId);
-        baseId += 3;
-        //加一个“头”
-        addPerson(original, 0);
-        addPerson(processed, 0);
-        original.addRelation(0, 1, 200);
-        processed.addRelation(0, 1, 200);
-        // 添加后续 4 元环，每个 4 元环与前一个 4 元环共享一个节点
-        for (int i = 1; i < count; i++) {
-            addQuadrilateral(original, baseId);
-            addQuadrilateral(processed, baseId);
-            baseId += 3; // 下一个 4 元环的起始节点是 baseId + 3
+        Random rand = new Random();
+        // 添加节点
+        for (int i = 0; i < count; i++) {
+            addPerson(original, i);
+            addPerson(processed, i);
         }
-
-        return new TestCase(original, processed, 0);
+        // 添加边，使图成为完全图
+        for (int i = 0; i < count; i++) {
+            for (int j = i + 1; j < count; j++) {
+                int weight = rand.nextInt(200);
+                original.addRelation(i, j, weight); // 随机生成边的权重
+                processed.addRelation(i, j, weight); // 随机生成边的权重
+            }
+        }
+        return new TestCase(original, processed, count * (count - 1) * (count - 2) / 6);
     }
 
     /* 工具方法 */
@@ -220,17 +262,6 @@ public class queryTripleSumTest {
     public static void addPerson(Network network, int id) throws Exception {
         if (!network.containsPerson(id)) {
             network.addPerson(new Person(id, "Person"+id, 20));
-        }
-    }
-
-    // 添加一个 4 元环
-    private static void addQuadrilateral(Network network, int startId) throws Exception {
-        for (int i = 0; i < 4; i++) {
-            int currentId = startId + i;
-            int nextId = startId + (i + 1) % 4;
-            addPerson(network, currentId);
-            addPerson(network, nextId);
-            network.addRelation(currentId, nextId, 3);
         }
     }
 }
