@@ -30,7 +30,7 @@ public class queryTripleSumTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> prepareData() throws Exception {
-        final int TEST_CASE_NUM = 40;
+        final int TEST_CASE_NUM = 1000;
         // 创建一个二维数组，用于存储测试数据
         Object[][] testCases = new Object[TEST_CASE_NUM][];
         Random rand = new Random(System.currentTimeMillis());
@@ -52,7 +52,7 @@ public class queryTripleSumTest {
                     testCase = overlappingTriangles(rand.nextInt(8) + 4);
                     break;
                 case 4:
-                    testCase = noTriangleChain(rand.nextInt(12) + 6);
+                    testCase = noTriangleChain(rand.nextInt(12) + 8);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + i % 5);
@@ -121,10 +121,14 @@ public class queryTripleSumTest {
         Network processed = new Network();
         addPerson(original, 1);
         addPerson(original, 2);
+        addPerson(original, 999);
         addPerson(processed, 1);
         addPerson(processed, 2);
+        addPerson(processed, 999);
         original.addRelation(1, 2, 10);
+        original.addRelation(1, 999, 100);
         processed.addRelation(1, 2, 10);
+        processed.addRelation(1, 999, 100);
         for (int i = 0; i < sharedEdges; i++) {
             int nodeId = 3 + i;
             addPerson(original, nodeId);
