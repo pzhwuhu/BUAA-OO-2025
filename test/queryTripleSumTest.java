@@ -30,7 +30,7 @@ public class queryTripleSumTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> prepareData() throws Exception {
-        final int TEST_CASE_NUM = 100;
+        final int TEST_CASE_NUM = 200;
         // 创建一个二维数组，用于存储测试数据
         Object[][] testCases = new Object[TEST_CASE_NUM][];
         Random rand = new Random(System.currentTimeMillis());
@@ -38,7 +38,7 @@ public class queryTripleSumTest {
         // 生成多种测试场景
         for (int i = 0; i < TEST_CASE_NUM; i++) {
             TestCase testCase;
-            switch (i % 8) {
+            switch (i % 9) {
                 case 0:
                     testCase = emptyNetwork();
                     break;
@@ -55,11 +55,12 @@ public class queryTripleSumTest {
                     testCase = noTriangleChain(rand.nextInt(12) + 40);
                     break;
                 case 5:
-                    testCase = compeleteGraph(rand.nextInt(12) + 40);
+                    testCase = compeleteGraph(rand.nextInt(20) + 20);
                     break;
                 case 6:
                 case 7:
-                    testCase = compeleteGraph(rand.nextInt(12) + 40);
+                case 8:
+                    testCase = randomTriangles(rand.nextInt(100) + 10);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + i % 5);
@@ -206,19 +207,21 @@ public class queryTripleSumTest {
         }
 
         // 随机生成三元环
-        List<Integer> idList = new ArrayList<>(validIds);
+        ArrayList<Integer> idList = new ArrayList<>(validIds);
         for (int i = 0; i < personNum / 3; i++) {
             if (idList.size() >= 3) {
                 int id1 = idList.get(rand.nextInt(idList.size()));
+                idList.remove(Integer.valueOf(id1));
                 int id2 = idList.get(rand.nextInt(idList.size()));
+                idList.remove(Integer.valueOf(id2));
                 int id3 = idList.get(rand.nextInt(idList.size()));
+                idList.remove(Integer.valueOf(id3));
                 if (id1 != id2 && id2 != id3 && id1 != id3) {
                     try {
                         addTriangle(original, id1, id2, id3);
                         addTriangle(processed, id1, id2, id3);
                         tripleSum++;
                     } catch (Exception e) {
-                        throw new Exception(e.getMessage());
                     }
                 }
             }
@@ -242,8 +245,8 @@ public class queryTripleSumTest {
         for (int i = 0; i < count; i++) {
             for (int j = i + 1; j < count; j++) {
                 int weight = rand.nextInt(200);
-                original.addRelation(i, j, weight); // 随机生成边的权重
-                processed.addRelation(i, j, weight); // 随机生成边的权重
+                original.addRelation(i, j, weight);
+                processed.addRelation(i, j, weight);
             }
         }
         return new TestCase(original, processed, count * (count - 1) * (count - 2) / 6);
