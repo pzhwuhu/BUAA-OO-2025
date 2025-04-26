@@ -13,10 +13,15 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Network implements NetworkInterface {
-    private HashMap<Integer, PersonInterface> persons;
+    private final HashMap<Integer, PersonInterface> persons;
     private UnionFind unionFind;
+    private Boolean unionDirty = false;
+    private int tripleCount = 0;
 
-    public Network() { persons = new HashMap<>(); }
+    public Network() {
+        persons = new HashMap<>();
+        unionFind = new UnionFind();
+    }
 
     @Override
     public boolean containsPerson(int id) { return persons.containsKey(id); }
@@ -36,6 +41,7 @@ public class Network implements NetworkInterface {
             throw new EqualPersonIdException(id);
         } else {
             persons.put(id, person);
+            unionFind.addNode(id);
         }
     }
 
@@ -51,6 +57,8 @@ public class Network implements NetworkInterface {
         Person person2 = (Person)persons.get(id2);
         person1.addRelation(person2, value);
         person2.addRelation(person1, value);
+        tripleCount += countCommonNeighbors(person1, person2);
+        unionFind.merge(id1, id2);
     }
 
     @Override
@@ -73,6 +81,8 @@ public class Network implements NetworkInterface {
         } else {
             person1.delRelation(person2);
             person2.delRelation(person1);
+            tripleCount -= countCommonNeighbors(person1, person2);
+            unionDirty = true;
         }
     }
 
@@ -94,7 +104,26 @@ public class Network implements NetworkInterface {
         if (!persons.containsKey(id1)) { throw new PersonIdNotFoundException(id1); }
         if (!persons.containsKey(id2)) { throw new PersonIdNotFoundException(id2); }
         ArrayList<Integer> visited = new ArrayList<>();
-        return dfs(id1, id2, visited);
+
+        if (unionDirty) {
+            reMakeUnion();
+            unionDirty = false;
+        }
+        return unionFind.find(id1) == unionFind.find(id2);
+    }
+
+    public void reMakeUnion() {
+        unionFind = new UnionFind();
+        for (Integer id : persons.keySet()) { unionFind.addNode(id); }
+        for (PersonInterface p : persons.values()) {
+            for (PersonInterface neighbor : ((Person) p).getAcquaintance().values()) {
+                int pid = p.getId();
+                int nid = neighbor.getId();
+                if (pid < nid) { // 避免重复合并
+                    unionFind.merge(pid, nid);
+                }
+            }
+        }
     }
 
     public boolean dfs(int begin, int end, ArrayList<Integer> visited) {
@@ -113,23 +142,19 @@ public class Network implements NetworkInterface {
         return false;
     }
 
-    @Override
-    public int queryTripleSum() {
-        int sum = 0;
-        PersonInterface[] personArray = persons.values().toArray(new PersonInterface[0]);
-        for (int i = 0; i < personArray.length; i++) {
-            for (int j = i + 1; j < personArray.length; j++) {
-                if (!personArray[i].isLinked(personArray[j])) { continue; }
-                for (int k = j + 1; k < personArray.length; k++) {
-                    if (personArray[i].isLinked(personArray[k])
-                        && personArray[j].isLinked(personArray[k])) {
-                        sum++;
-                    }
-                }
-            }
+    //计算共同好友
+    private int countCommonNeighbors(Person p1, Person p2) {
+        HashMap<Integer, PersonInterface> neighbors1 = p1.getAcquaintance();
+        HashMap<Integer, PersonInterface> neighbors2 = p2.getAcquaintance();
+        int count = 0;
+        for (int id : neighbors1.keySet()) {
+            if (neighbors2.containsKey(id)) { count++; }
         }
-        return sum;
+        return count;
     }
+
+    @Override
+    public int queryTripleSum() { return tripleCount; }
 
     @Override
     public void addTag(int personId, TagInterface tag)
