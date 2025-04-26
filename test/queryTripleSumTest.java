@@ -46,13 +46,13 @@ public class queryTripleSumTest {
                     testCase = singleTriangle();
                     break;
                 case 2:
-                    testCase = multipleTriangles(rand.nextInt(12) + 4);
+                    testCase = multipleTriangles(rand.nextInt(12) + 200);
                     break;
                 case 3:
-                    testCase = overlappingTriangles(rand.nextInt(8) + 4);
+                    testCase = overlappingTriangles(rand.nextInt(8) + 200);
                     break;
                 case 4:
-                    testCase = noTriangleChain(rand.nextInt(12) + 8);
+                    testCase = noTriangleChain(rand.nextInt(12) + 200);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + i % 5);
@@ -108,13 +108,22 @@ public class queryTripleSumTest {
         Network original = new Network();
         Network processed = new Network();
         int baseId = 1;
-        for (int i = 0; i < count; i++) {
-            addTriangle(original, baseId, baseId+1, baseId+2);
-            addTriangle(processed, baseId, baseId+1, baseId+2);
-            baseId += 3;
+
+        // 添加第一个三元环
+        addTriangle(original, baseId, baseId + 1, baseId + 2);
+        addTriangle(processed, baseId, baseId + 1, baseId + 2);
+        baseId += 2; // 下一个三元环的起始节点是 baseId + 2
+
+        // 添加后续三元环，每个三元环与前一个三元环共享一个节点
+        for (int i = 1; i < count; i++) {
+            addTriangle(original, baseId, baseId + 1, baseId + 2);
+            addTriangle(processed, baseId, baseId + 1, baseId + 2);
+            baseId += 1; // 下一个三元环的起始节点是 baseId + 1
         }
+
         return new TestCase(original, processed, count);
     }
+
 
     public static TestCase overlappingTriangles(int sharedEdges) throws Exception {
         Network original = new Network();
