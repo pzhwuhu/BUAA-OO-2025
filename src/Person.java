@@ -52,6 +52,11 @@ public class Person implements PersonInterface {
         return 0;
     }
 
+    public boolean equals(Object object) {
+        if (object == null || object.getClass() != this.getClass()) { return false; }
+        return id == ((PersonInterface) object).getId();
+    }
+
     /// //////////////////////////////////////////////////////////////
     public void addRelation(Person person, int value) {
         acquaintance.put(person.getId(), person);
@@ -75,5 +80,8 @@ public class Person implements PersonInterface {
 
     public HashMap<Integer, Integer> getValues() { return values; }
 
-    public boolean strictEquals(Person person) { return true; }
+    public boolean strictEquals(Person person) {
+        return id == person.getId() && name.equals(person.getName()) && age == person.getAge() &&
+            (acquaintance.equals(person.getAcquaintance()) && values.equals(person.getValues()));
+    }
 }

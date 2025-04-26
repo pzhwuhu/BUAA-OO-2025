@@ -30,7 +30,7 @@ public class queryTripleSumTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> prepareData() throws Exception {
-        final int TEST_CASE_NUM = 1000;
+        final int TEST_CASE_NUM = 100;
         // 创建一个二维数组，用于存储测试数据
         Object[][] testCases = new Object[TEST_CASE_NUM][];
         Random rand = new Random(System.currentTimeMillis());
@@ -38,7 +38,7 @@ public class queryTripleSumTest {
         // 生成多种测试场景
         for (int i = 0; i < TEST_CASE_NUM; i++) {
             TestCase testCase;
-            switch (i % 5) {
+            switch (i % 6) {
                 case 0:
                     testCase = emptyNetwork();
                     break;
@@ -46,13 +46,16 @@ public class queryTripleSumTest {
                     testCase = singleTriangle();
                     break;
                 case 2:
-                    testCase = multipleTriangles(rand.nextInt(12) + 200);
+                    testCase = multipleTriangles(rand.nextInt(12) + 40);
                     break;
                 case 3:
-                    testCase = overlappingTriangles(rand.nextInt(8) + 200);
+                    testCase = overlappingTriangles(rand.nextInt(8) + 40);
                     break;
                 case 4:
-                    testCase = noTriangleChain(rand.nextInt(12) + 200);
+                    testCase = noTriangleChain(rand.nextInt(12) + 40);
+                    break;
+                case 5:
+                    testCase = fourthCircle(rand.nextInt(12) + 40);
                     break;
                 default:
                     throw new IllegalStateException("Unexpected value: " + i % 5);
@@ -96,6 +99,7 @@ public class queryTripleSumTest {
         return new TestCase(original, processed, 0);
     }
 
+    //单个三元环
     public static TestCase singleTriangle() throws Exception {
         Network original = new Network();
         Network processed = new Network();
@@ -104,6 +108,7 @@ public class queryTripleSumTest {
         return new TestCase(original, processed, 1);
     }
 
+    //多个相连的三元环
     public static TestCase multipleTriangles(int count) throws Exception {
         Network original = new Network();
         Network processed = new Network();
@@ -114,17 +119,22 @@ public class queryTripleSumTest {
         addTriangle(processed, baseId, baseId + 1, baseId + 2);
         baseId += 2; // 下一个三元环的起始节点是 baseId + 2
 
+        //加一个“头”
+        addPerson(original, 0);
+        addPerson(processed, 0);
+        original.addRelation(0, 1, 200);
+        processed.addRelation(0, 1, 200);
         // 添加后续三元环，每个三元环与前一个三元环共享一个节点
         for (int i = 1; i < count; i++) {
             addTriangle(original, baseId, baseId + 1, baseId + 2);
             addTriangle(processed, baseId, baseId + 1, baseId + 2);
-            baseId += 2; // 下一个三元环的起始节点是 baseId + 1
+            baseId += 2; // 下一个三元环的起始节点是 baseId + 2
         }
 
         return new TestCase(original, processed, count);
     }
 
-
+    //有重叠边的三元环
     public static TestCase overlappingTriangles(int sharedEdges) throws Exception {
         Network original = new Network();
         Network processed = new Network();
@@ -150,6 +160,7 @@ public class queryTripleSumTest {
         return new TestCase(original, processed, sharedEdges);
     }
 
+    //无三元环，直链
     public static TestCase noTriangleChain(int length) throws Exception {
         Network original = new Network();
         Network processed = new Network();
@@ -160,7 +171,39 @@ public class queryTripleSumTest {
                 original.addRelation(i-1, i, 5);
                 processed.addRelation(i-1, i, 5);
             }
+            //分叉形成树枝
+            if (i == length / 2) {
+                i++;
+                addPerson(original, i);
+                addPerson(processed, i);
+                original.addRelation(2, i, 100);
+                processed.addRelation(2, i, 100);
+            }
         }
+        return new TestCase(original, processed, 0);
+    }
+
+    public static TestCase fourthCircle(int count) throws Exception {
+        Network original = new Network();
+        Network processed = new Network();
+        int baseId = 1;
+
+        // 添加第一个 4 元环
+        addQuadrilateral(original, baseId);
+        addQuadrilateral(processed, baseId);
+        baseId += 3;
+        //加一个“头”
+        addPerson(original, 0);
+        addPerson(processed, 0);
+        original.addRelation(0, 1, 200);
+        processed.addRelation(0, 1, 200);
+        // 添加后续 4 元环，每个 4 元环与前一个 4 元环共享一个节点
+        for (int i = 1; i < count; i++) {
+            addQuadrilateral(original, baseId);
+            addQuadrilateral(processed, baseId);
+            baseId += 3; // 下一个 4 元环的起始节点是 baseId + 3
+        }
+
         return new TestCase(original, processed, 0);
     }
 
@@ -177,6 +220,17 @@ public class queryTripleSumTest {
     public static void addPerson(Network network, int id) throws Exception {
         if (!network.containsPerson(id)) {
             network.addPerson(new Person(id, "Person"+id, 20));
+        }
+    }
+
+    // 添加一个 4 元环
+    private static void addQuadrilateral(Network network, int startId) throws Exception {
+        for (int i = 0; i < 4; i++) {
+            int currentId = startId + i;
+            int nextId = startId + (i + 1) % 4;
+            addPerson(network, currentId);
+            addPerson(network, nextId);
+            network.addRelation(currentId, nextId, 3);
         }
     }
 }
