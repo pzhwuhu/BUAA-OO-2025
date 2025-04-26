@@ -17,11 +17,13 @@ public class queryTripleSumTest {
 
     /* 测试用例容器 */
     static class TestCase {
-        final Network network;
-        final int expected;
+        final Network originalNetwork;  // 原始未执行方法的网络
+        final Network processedNetwork; // 执行过方法的网络
+        final int expected;             // 预期结果（基于原始网络计算）
 
-        TestCase(Network network, int expected) {
-            this.network = network;
+        TestCase(Network original, Network processed, int expected) {
+            this.originalNetwork = original;
+            this.processedNetwork = processed;
             this.expected = expected;
         }
     }
@@ -64,74 +66,89 @@ public class queryTripleSumTest {
 
     @Test
     public void testQueryTripleSum() throws Exception {
-        // 记录调用前状态
-        PersonInterface[] before = testCase.network.getPersons();
-
         // 执行测试方法
-        int actual = testCase.network.queryTripleSum();
+        int actual = testCase.processedNetwork.queryTripleSum();
 
         // 验证结果正确性
         assertEquals("Triple count mismatch", testCase.expected, actual);
 
-        // 验证状态不变性
-        verifyStateUnchanged(before, testCase.network.getPersons());
+        // 验证状态不变性（比较原始网络和处理后的网络）
+        verifyStateUnchanged(testCase.originalNetwork, testCase.processedNetwork);
     }
 
-    // 状态一致性验证
-    public void verifyStateUnchanged(PersonInterface[] before, PersonInterface[] after) {
-        assertEquals("Person count changed", before.length, after.length);
-        for (int i = 0; i < before.length; i++) {
-            assertEquals(true, ((Person)before[i]).strictEquals((Person)after[i]));
+    /* 状态验证方法 */
+    public void verifyStateUnchanged(Network original, Network processed) {
+        PersonInterface[] originalPersons = original.getPersons();
+        PersonInterface[] processedPersons = processed.getPersons();
+        assertEquals("Person count changed", originalPersons.length, processedPersons.length);
+        for (int i = 0; i < originalPersons.length; i++) {
+            // 假设 Person 类实现了严格相等检查方法 strictEquals()
+            assertTrue("Person state changed",
+                    ((Person) originalPersons[i]).strictEquals((Person) processedPersons[i])
+            );
         }
     }
 
-    /* 测试用例生成 */
+    /* 测试用例生成方法 */
     public static TestCase emptyNetwork() throws Exception {
-        return new TestCase(new Network(), 0);
+        Network original = new Network();
+        Network processed = new Network();
+        return new TestCase(original, processed, 0);
     }
 
     public static TestCase singleTriangle() throws Exception {
-        Network network = new Network();
-        addTriangle(network, 1, 2, 3);
-        return new TestCase(network, 1);
+        Network original = new Network();
+        Network processed = new Network();
+        addTriangle(original, 1, 2, 3);
+        addTriangle(processed, 1, 2, 3);
+        return new TestCase(original, processed, 1);
     }
 
     public static TestCase multipleTriangles(int count) throws Exception {
-        Network network = new Network();
+        Network original = new Network();
+        Network processed = new Network();
         int baseId = 1;
         for (int i = 0; i < count; i++) {
-            addTriangle(network, baseId, baseId+1, baseId+2);
+            addTriangle(original, baseId, baseId+1, baseId+2);
+            addTriangle(processed, baseId, baseId+1, baseId+2);
             baseId += 3;
         }
-        return new TestCase(network, count);
+        return new TestCase(original, processed, count);
     }
 
     public static TestCase overlappingTriangles(int sharedEdges) throws Exception {
-        Network network = new Network();
-        // 共享边1-2
-        addPerson(network, 1);
-        addPerson(network, 2);
-        network.addRelation(1, 2, 10);
-
-        // 添加重叠三角形
+        Network original = new Network();
+        Network processed = new Network();
+        addPerson(original, 1);
+        addPerson(original, 2);
+        addPerson(processed, 1);
+        addPerson(processed, 2);
+        original.addRelation(1, 2, 10);
+        processed.addRelation(1, 2, 10);
         for (int i = 0; i < sharedEdges; i++) {
             int nodeId = 3 + i;
-            addPerson(network, nodeId);
-            network.addRelation(2, nodeId, 5);
-            network.addRelation(nodeId, 1, 5);
+            addPerson(original, nodeId);
+            addPerson(processed, nodeId);
+            original.addRelation(2, nodeId, 5);
+            processed.addRelation(2, nodeId, 5);
+            original.addRelation(nodeId, 1, 5);
+            processed.addRelation(nodeId, 1, 5);
         }
-        return new TestCase(network, sharedEdges);
+        return new TestCase(original, processed, sharedEdges);
     }
 
     public static TestCase noTriangleChain(int length) throws Exception {
-        Network network = new Network();
+        Network original = new Network();
+        Network processed = new Network();
         for (int i = 1; i <= length; i++) {
-            addPerson(network, i);
+            addPerson(original, i);
+            addPerson(processed, i);
             if (i > 1) {
-                network.addRelation(i-1, i, 5);
+                original.addRelation(i-1, i, 5);
+                processed.addRelation(i-1, i, 5);
             }
         }
-        return new TestCase(network, 0);
+        return new TestCase(original, processed, 0);
     }
 
     /* 工具方法 */
