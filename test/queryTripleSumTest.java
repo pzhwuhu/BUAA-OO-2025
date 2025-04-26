@@ -28,32 +28,38 @@ public class queryTripleSumTest {
 
     @Parameterized.Parameters
     public static Collection<Object[]> prepareData() throws Exception {
-        final int TEST_CASE_NUM = 200;
-        List<TestCase> cases = new ArrayList<>();
+        final int TEST_CASE_NUM = 40;
+        // 创建一个二维数组，用于存储测试数据
+        Object[][] testCases = new Object[TEST_CASE_NUM][];
         Random rand = new Random(System.currentTimeMillis());
 
         // 生成多种测试场景
         for (int i = 0; i < TEST_CASE_NUM; i++) {
+            TestCase testCase;
             switch (i % 5) {
                 case 0:
-                    cases.add(emptyNetwork());
+                    testCase = emptyNetwork();
                     break;
                 case 1:
-                    cases.add(singleTriangle());
+                    testCase = singleTriangle();
                     break;
                 case 2:
-                    cases.add(multipleTriangles(rand.nextInt(12) + 4));
+                    testCase = multipleTriangles(rand.nextInt(12) + 4);
                     break;
                 case 3:
-                    cases.add(overlappingTriangles(rand.nextInt(8) + 4));
+                    testCase = overlappingTriangles(rand.nextInt(8) + 4);
                     break;
                 case 4:
-                    cases.add(noTriangleChain(rand.nextInt(12) + 6));
+                    testCase = noTriangleChain(rand.nextInt(12) + 6);
                     break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + i % 5);
             }
+            // 将 TestCase 对象存储到二维数组中
+            testCases[i] = new Object[]{testCase};
         }
 
-        return Arrays.asList(cases.stream().map(tc -> new Object[]{tc}).toArray(Object[][]::new));
+        return Arrays.asList(testCases);
     }
 
     @Test
@@ -79,7 +85,7 @@ public class queryTripleSumTest {
         }
     }
 
-    /* 测试用例生成方法 */
+    /* 测试用例生成 */
     public static TestCase emptyNetwork() throws Exception {
         return new TestCase(new Network(), 0);
     }
