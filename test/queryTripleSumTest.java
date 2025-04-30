@@ -209,19 +209,21 @@ public class queryTripleSumTest {
         // 随机生成三元环
         ArrayList<Integer> idList = new ArrayList<>(validIds);
         for (int i = 0; i < personNum / 3; i++) {
-            if (idList.size() >= 3) {
-                int id1 = idList.get(rand.nextInt(idList.size()));
-                idList.remove(Integer.valueOf(id1));
-                int id2 = idList.get(rand.nextInt(idList.size()));
-                idList.remove(Integer.valueOf(id2));
-                int id3 = idList.get(rand.nextInt(idList.size()));
-                idList.remove(Integer.valueOf(id3));
-                if (id1 != id2 && id2 != id3 && id1 != id3) {
-                    try {
-                        addTriangle(original, id1, id2, id3);
-                        addTriangle(processed, id1, id2, id3);
-                        tripleSum++;
-                    } catch (Exception e) {
+            if (rand.nextBoolean()) {
+                if (idList.size() >= 3) {
+                    int id1 = idList.get(rand.nextInt(idList.size()));
+                    idList.remove(Integer.valueOf(id1));
+                    int id2 = idList.get(rand.nextInt(idList.size()));
+                    idList.remove(Integer.valueOf(id2));
+                    int id3 = idList.get(rand.nextInt(idList.size()));
+                    idList.remove(Integer.valueOf(id3));
+                    if (id1 != id2 && id2 != id3 && id1 != id3) {
+                        try {
+                            addTriangle(original, id1, id2, id3);
+                            addTriangle(processed, id1, id2, id3);
+                            tripleSum++;
+                        } catch (Exception e) {
+                        }
                     }
                 }
             }
