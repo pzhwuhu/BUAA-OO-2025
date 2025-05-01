@@ -35,16 +35,18 @@ public class UnionFind {
     }
 
     public int merge(int id1, int id2) {
-        int root1 = son2dad.get(id1);
-        int root2 = son2dad.get(id2);
+        int root1 = find(id1);
+        int root2 = find(id2);
         if (root1 == root2) { return -1; }
 
         int height1 = height.get(root1);
         int height2 = height.get(root2);
-        if (height1 < height2) {
+        if (height1 <= height2) {
+            if (height1 == height2) {
+                height.put(root2, height2 + 1);
+            }
             son2dad.put(root1, root2);
         } else {
-            if (height1 == height2) { height.put(root2, height2 + 1); }
             son2dad.put(root2, root1);
         }
         return 0;

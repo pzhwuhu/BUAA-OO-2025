@@ -225,7 +225,7 @@ public class Network implements NetworkInterface {
         int bestId = 0;
         HashMap<Integer, Integer> values = person.getValues();
         for (PersonInterface bro: person.getAcquaintance().values()) {
-            if (values.get(bro.getId()) > bestValue) {
+            if (values.get(bro.getId()) > bestValue || (values.get(bro.getId()) == bestValue && bro.getId() < bestId)) {
                 bestValue = values.get(bro.getId());
                 bestId = bro.getId();
             }
