@@ -66,4 +66,16 @@ public class Tag implements TagInterface {
         int var = n * ave * ave + agePowSum - 2 * ave * ageSum;
         return var / n;
     }
+
+    public void updateValueSum() {
+        int sum = 0;
+        for (PersonInterface p1 : persons.values()) {
+            for (PersonInterface p2 : persons.values()) {
+                if (p1.isLinked(p2)) {
+                    sum += p1.queryValue(p2);
+                }
+            }
+        }
+        valueSum = sum;
+    }
 }

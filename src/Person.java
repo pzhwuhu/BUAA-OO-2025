@@ -95,6 +95,12 @@ public class Person implements PersonInterface {
                 bestAcquaintance = person.getId();
             }
         }
+        for (TagInterface tag : tags.values()) {
+            if (tag.hasPerson(person)) {
+                Tag myTag = (Tag) tag;
+                myTag.updateValueSum();
+            }
+        }
     }
 
     public void delRelation(Person person) {
