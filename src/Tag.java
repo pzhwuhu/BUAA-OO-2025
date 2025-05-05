@@ -1,5 +1,5 @@
-import com.oocourse.spec1.main.PersonInterface;
-import com.oocourse.spec1.main.TagInterface;
+import com.oocourse.spec2.main.PersonInterface;
+import com.oocourse.spec2.main.TagInterface;
 
 import java.util.HashMap;
 
@@ -7,6 +7,7 @@ public class Tag implements TagInterface {
     private final int id;
     private int ageSum;
     private int agePowSum;
+    private int valueSum = 0;
     private HashMap<Integer, PersonInterface> persons = new HashMap();
 
     public Tag(int id) {
@@ -26,6 +27,11 @@ public class Tag implements TagInterface {
         persons.put(person.getId(), person);
         ageSum += person.getAge();
         agePowSum += person.getAge() * person.getAge();
+        for (PersonInterface existedPerson : persons.values()) {
+            if (existedPerson.isLinked(person)) {
+                valueSum += 2 * existedPerson.queryValue(person);
+            }
+        }
     }
 
     @Override
@@ -36,7 +42,15 @@ public class Tag implements TagInterface {
         ageSum -= person.getAge();
         agePowSum -= person.getAge() * person.getAge();
         persons.remove(person.getId());
+        for (PersonInterface existedPerson : persons.values()) {
+            if (existedPerson.isLinked(person)) {
+                valueSum -= 2 * existedPerson.queryValue(person);
+            }
+        }
     }
+
+    @Override
+    public int getValueSum() { return valueSum; }
 
     @Override
     public int getAgeMean() {
@@ -50,8 +64,6 @@ public class Tag implements TagInterface {
         int n = persons.size();
         int ave = getAgeMean();
         int var = n * ave * ave + agePowSum - 2 * ave * ageSum;
-        //System.out.println("var = " + var + ", ave = " + ave + ",
-        // ageSum = " + ageSum + ", agePowSum = " + agePowSum);
         return var / n;
     }
 }
