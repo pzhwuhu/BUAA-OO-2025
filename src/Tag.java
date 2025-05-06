@@ -50,9 +50,7 @@ public class Tag implements TagInterface {
     }
 
     @Override
-    public int getValueSum() {
-        updateValueSum();
-        return valueSum; }
+    public int getValueSum() { return valueSum; }
 
     @Override
     public int getAgeMean() {

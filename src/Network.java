@@ -18,16 +18,18 @@ import com.oocourse.spec2.main.PersonInterface;
 import com.oocourse.spec2.main.TagInterface;
 import javafx.util.Pair;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class Network implements NetworkInterface {
     private final HashMap<Integer, PersonInterface> persons;
     private UnionFind unionFind;
     private Boolean unionDirty = false;
     private int tripleCount = 0;//三元环数量
-    private int coupleCount = 0;//互为最好朋友的对数
-    private HashMap<Integer, Integer> bestAcquaintanceMap = new HashMap<>();
     private final HashMap<Pair<Integer, Integer>, Integer> shortestPathCache = new HashMap<>();
     private HashMap<Integer, OfficialAccount> accounts = new HashMap<>();
     private final HashSet<Integer> articles = new HashSet<>(); // 全局文章ID集合
@@ -77,25 +79,7 @@ public class Network implements NetworkInterface {
         person2.addRelation(person1, value);
         tripleCount += countCommonNeighbors(person1, person2);
         unionFind.merge(id1, id2);
-        updateCoupleCount(person1);
-        updateCoupleCount(person2);
         shortestPathCache.clear();
-    }
-
-    public void updateCoupleCount(Person person) {
-        int id = person.getId();
-        int oldBest = bestAcquaintanceMap.getOrDefault(id, -1);
-        int newBest = person.queryBestAcquaintance();
-        // 旧关系失效
-        if (oldBest != -1 && bestAcquaintanceMap.getOrDefault(oldBest, -1) == id) {
-            coupleCount--;
-        }
-        // 更新最佳熟人
-        bestAcquaintanceMap.put(id, newBest);
-        // 新关系生效
-        if (bestAcquaintanceMap.getOrDefault(newBest, -1) == id) {
-            coupleCount++;
-        }
     }
 
     @Override
@@ -107,7 +91,8 @@ public class Network implements NetworkInterface {
                 Person p1 = (Person)personList.get(i);
                 Person p2 = (Person)personList.get(j);
                 if (!p1.getAcquaintance().isEmpty() && !p2.getAcquaintance().isEmpty()) {
-                    if (p1.queryBestAcquaintance() == p2.getId() && p2.queryBestAcquaintance() == p1.getId()) {
+                    if (p1.queryBestAcquaintance() == p2.getId()
+                        && p2.queryBestAcquaintance() == p1.getId()) {
                         num++;
                     }
                 }
@@ -139,8 +124,6 @@ public class Network implements NetworkInterface {
             unionDirty = true;
             shortestPathCache.clear();
         }
-        updateCoupleCount(person1);
-        updateCoupleCount(person2);
     }
 
     @Override
@@ -396,7 +379,7 @@ public class Network implements NetworkInterface {
         if (shortestPathCache.containsKey(key)) { return shortestPathCache.get(key); }
         if (!isCircle(id1, id2)) { throw new PathNotFoundException(id1, id2); }
 
-        int pathLen = dijkstra(id1, id2);
+        int pathLen = bfs(id1, id2);
         shortestPathCache.put(key, pathLen);
         return pathLen;
     }
@@ -405,29 +388,24 @@ public class Network implements NetworkInterface {
         return id1 < id2 ? new Pair<>(id1, id2) : new Pair<>(id2, id1);
     }
 
-    private int dijkstra(int startId, int endId) {
-        // 初始化距离映射
+    private int bfs(int startId, int endId) {
         HashMap<Integer, Integer> distance = new HashMap<>();
         distance.put(startId, 0);
-        // 优先队列（最小堆），按距离排序
-        PriorityQueue<Pair<Integer, Integer>> queue = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
-        queue.add(new Pair<>(startId, 0));
+
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(startId);
+
         while (!queue.isEmpty()) {
-            Pair<Integer, Integer> current = queue.poll();
-            int currentId = current.getKey();
-            int currentDist = current.getValue();
-            // 如果找到目标节点，返回距离
-            if (currentId == endId) {
-                return currentDist;
-            }
-            // 遍历邻居
+            int currentId = queue.poll();
+            int currentDist = distance.get(currentId);
+
+            if (currentId == endId) { return currentDist; }
+
             Person person = (Person) persons.get(currentId);
             for (int neighborId : person.getAcquaintance().keySet()) {
-                int newDist = currentDist + 1; // 假设每条边的权重为 1
-                // 如果找到更短的路径，更新距离并加入队列
-                if (!distance.containsKey(neighborId) || newDist < distance.get(neighborId)) {
-                    distance.put(neighborId, newDist);
-                    queue.add(new Pair<>(neighborId, newDist));
+                if (!distance.containsKey(neighborId)) {
+                    distance.put(neighborId, currentDist + 1);
+                    queue.add(neighborId);
                 }
             }
         }
