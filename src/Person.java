@@ -12,6 +12,8 @@ public class Person implements PersonInterface {
     private HashMap<Integer, TagInterface> tags = new HashMap<>();
     private LinkedMap receivedArticles = new LinkedMap();
     private int bestAcquaintance = -99999;
+    private int bestValue = -99999;
+    private boolean bestDirty = true;
 
     public Person(int id, String name, int age) {
         this.id = id;
@@ -74,25 +76,26 @@ public class Person implements PersonInterface {
     public void addRelation(Person person, int value) {
         acquaintance.put(person.getId(), person);
         values.put(person.getId(), value);
-        if (bestAcquaintance == -99999) {
-            bestAcquaintance = person.getId();
-            return;
-        }
-        int bestValue = values.get(bestAcquaintance);
-        if (value > bestValue || (value == bestValue && person.getId() < bestAcquaintance)) {
-            bestAcquaintance = person.getId();
+        if (!bestDirty) {
+            if (value > bestValue || (value == bestValue && person.getId() < bestAcquaintance)) {
+                bestAcquaintance = person.getId();
+                bestValue = value;
+            }
         }
     }
 
     public void modifyRelation(Person person, int newValue) {
-        int bestValue = values.get(bestAcquaintance);
         values.put(person.getId(), newValue);
-        if (bestAcquaintance == person.getId()) {
-            if (newValue < bestValue) { reSetBestAcquaintance(); }
-        } else {
-            if (newValue > bestValue
-                || (newValue == bestValue && person.getId() < bestAcquaintance)) {
-                bestAcquaintance = person.getId();
+        if (!bestDirty) {
+            if (bestAcquaintance == person.getId()) {
+                if (newValue < bestValue) { bestDirty = true; }
+                else { bestValue = newValue; }
+            } else {
+                if (newValue > bestValue
+                    || (newValue == bestValue && person.getId() < bestAcquaintance)) {
+                    bestAcquaintance = person.getId();
+                    bestValue = newValue;
+                }
             }
         }
         this.updateTagValueSum(person);
@@ -118,24 +121,30 @@ public class Person implements PersonInterface {
                 myTag.updateValueSum();
             }
         }
-        if (bestAcquaintance == delId) { reSetBestAcquaintance(); }
-
+        if (!bestDirty) {
+            if (bestAcquaintance == delId) { bestDirty = true; }
+        }
     }
 
     public void reSetBestAcquaintance() {
-        int bestValue = -1;
-        int bestId = -99999;
+        bestAcquaintance = -99999;
+        bestValue = -99999;
         for (PersonInterface bro: acquaintance.values()) {
             if (values.get(bro.getId()) > bestValue
-                || (values.get(bro.getId()) == bestValue && bro.getId() < bestId)) {
+                || (values.get(bro.getId()) == bestValue && bro.getId() < bestAcquaintance)) {
                 bestValue = values.get(bro.getId());
-                bestId = bro.getId();
+                bestAcquaintance = bro.getId();
             }
         }
-        bestAcquaintance = bestId;
     }
 
-    public int queryBestAcquaintance() { return bestAcquaintance; }
+    public int queryBestAcquaintance() {
+        if (bestDirty) {
+            bestDirty = false;
+            reSetBestAcquaintance();
+        }
+        return bestAcquaintance;
+    }
 
     public HashMap<Integer, PersonInterface> getAcquaintance() { return acquaintance; }
 
