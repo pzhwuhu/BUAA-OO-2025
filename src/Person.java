@@ -82,6 +82,7 @@ public class Person implements PersonInterface {
         if (value > bestValue || (value == bestValue && person.getId() < bestAcquaintance)) {
             bestAcquaintance = person.getId();
         }
+        this.updateTagValueSum(person);
     }
 
     public void modifyRelation(Person person, int newValue) {
@@ -95,6 +96,10 @@ public class Person implements PersonInterface {
                 bestAcquaintance = person.getId();
             }
         }
+        this.updateTagValueSum(person);
+    }
+
+    public void updateTagValueSum(Person person) {
         for (TagInterface tag : tags.values()) {
             if (tag.hasPerson(person)) {
                 Tag myTag = (Tag) tag;

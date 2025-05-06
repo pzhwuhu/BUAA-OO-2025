@@ -47,7 +47,7 @@ public class queryCoupleSumTest {
                     testCase = multipleCouples(rand.nextInt(12) + 40);
                     break;
                 case 3:
-                    testCase = overlappingCouples(rand.nextInt(8) + 40);
+                    testCase = zeroMap(rand.nextInt(12) + 40);
                     break;
                 case 4:
                     testCase = noCoupleChain(rand.nextInt(12) + 40);
@@ -128,24 +128,16 @@ public class queryCoupleSumTest {
         return new TestCase(original, processed, count);
     }
 
-    // 共享节点的互为对（如 A-B 和 B-C 形成两对）
-    public static TestCase overlappingCouples(int sharedNodeCount) throws Exception {
+    // 只有节点没有边
+    public static TestCase zeroMap(int num) throws Exception {
         Network original = new Network();
         Network processed = new Network();
-        int centerId = 999;
-        addPerson(original, centerId);
-        addPerson(processed, centerId);
-
-        for (int i = 0; i < sharedNodeCount; i++) {
-            int nodeId = 1000 + i;
-            addPerson(original, nodeId);
-            original.addRelation(centerId, nodeId, 10); // center节点与所有节点形成互为对
-            addPerson(processed, nodeId);
-            processed.addRelation(centerId, nodeId, 10);
+        for(int i=1;i<=num;i++) {
+            addPerson(original, i);
+            addPerson(processed, i);
         }
 
-        // 预期结果：sharedNodeCount（假设center节点与每个node互为最好朋友）
-        return new TestCase(original, processed, 1);
+        return new TestCase(original, processed, 0);
     }
 
     // 没有互为对的链状结构
