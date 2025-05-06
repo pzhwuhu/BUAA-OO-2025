@@ -86,19 +86,19 @@ public class Network implements NetworkInterface {
     public int queryCoupleSum() {
         int num = 0;
         ArrayList<PersonInterface> personList = new ArrayList<>(persons.values());
-        for (int i = 0; i < personList.size(); i++) {
-            for (int j = i + 1; j < personList.size(); j++) {
-                Person p1 = (Person)personList.get(i);
-                Person p2 = (Person)personList.get(j);
-                if (!p1.getAcquaintance().isEmpty() && !p2.getAcquaintance().isEmpty()) {
-                    if (p1.queryBestAcquaintance() == p2.getId()
-                        && p2.queryBestAcquaintance() == p1.getId()) {
+        for (PersonInterface personInterface : personList) {
+            Person p1 = (Person) personInterface;
+            if (!p1.getAcquaintance().isEmpty()) {
+                int best1 = p1.queryBestAcquaintance();
+                Person p2 = (Person) persons.get(best1);
+                if (!p2.getAcquaintance().isEmpty()) {
+                    if (p2.queryBestAcquaintance() == p1.getId()) {
                         num++;
                     }
                 }
             }
         }
-        return num; }
+        return num / 2; }
 
     @Override
     public void modifyRelation(int id1, int id2, int value)

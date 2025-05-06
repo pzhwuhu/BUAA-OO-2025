@@ -124,7 +124,7 @@ public class Person implements PersonInterface {
 
     public void reSetBestAcquaintance() {
         int bestValue = -1;
-        int bestId = 0;
+        int bestId = -99999;
         for (PersonInterface bro: acquaintance.values()) {
             if (values.get(bro.getId()) > bestValue
                 || (values.get(bro.getId()) == bestValue && bro.getId() < bestId)) {
