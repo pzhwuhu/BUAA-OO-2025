@@ -223,7 +223,9 @@ public class queryCoupleSumTest {
     /* 工具方法（保持与原始测试相同） */
     public static void addPerson(Network network, int id) throws Exception {
         if (!network.containsPerson(id)) {
-            network.addPerson(new Person(id, "Person"+id, 20));
+            Random rand = new Random(System.currentTimeMillis());
+            int age = rand.nextInt(100);
+            network.addPerson(new Person(id, "person"+id, id));
         }
     }
 }
