@@ -132,7 +132,7 @@ public class Person implements PersonInterface {
     }
 
     public int queryBestAcquaintance() {
-        reSetBestAcquaintance();
+        //reSetBestAcquaintance();
         return bestAcquaintance; }
 
     public HashMap<Integer, PersonInterface> getAcquaintance() { return acquaintance; }

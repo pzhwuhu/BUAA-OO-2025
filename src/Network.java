@@ -396,13 +396,42 @@ public class Network implements NetworkInterface {
         if (shortestPathCache.containsKey(key)) { return shortestPathCache.get(key); }
         if (!isCircle(id1, id2)) { throw new PathNotFoundException(id1, id2); }
 
-        int pathLen = biDirectionalBfs(id1, id2);
+        int pathLen = dijkstra(id1, id2);
         shortestPathCache.put(key, pathLen);
         return pathLen;
     }
 
     private Pair<Integer, Integer> getCacheKey(int id1, int id2) {
         return id1 < id2 ? new Pair<>(id1, id2) : new Pair<>(id2, id1);
+    }
+
+    private int dijkstra(int startId, int endId) {
+        // 初始化距离映射
+        HashMap<Integer, Integer> distance = new HashMap<>();
+        distance.put(startId, 0);
+        // 优先队列（最小堆），按距离排序
+        PriorityQueue<Pair<Integer, Integer>> queue = new PriorityQueue<>(Comparator.comparingInt(Pair::getValue));
+        queue.add(new Pair<>(startId, 0));
+        while (!queue.isEmpty()) {
+            Pair<Integer, Integer> current = queue.poll();
+            int currentId = current.getKey();
+            int currentDist = current.getValue();
+            // 如果找到目标节点，返回距离
+            if (currentId == endId) {
+                return currentDist;
+            }
+            // 遍历邻居
+            Person person = (Person) persons.get(currentId);
+            for (int neighborId : person.getAcquaintance().keySet()) {
+                int newDist = currentDist + 1; // 假设每条边的权重为 1
+                // 如果找到更短的路径，更新距离并加入队列
+                if (!distance.containsKey(neighborId) || newDist < distance.get(neighborId)) {
+                    distance.put(neighborId, newDist);
+                    queue.add(new Pair<>(neighborId, newDist));
+                }
+            }
+        }
+        return -1;
     }
 
     private int biDirectionalBfs(int startId, int endId) {
