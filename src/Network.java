@@ -18,12 +18,8 @@ import com.oocourse.spec2.main.PersonInterface;
 import com.oocourse.spec2.main.TagInterface;
 import javafx.util.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Network implements NetworkInterface {
     private final HashMap<Integer, PersonInterface> persons;
@@ -103,7 +99,21 @@ public class Network implements NetworkInterface {
     }
 
     @Override
-    public int queryCoupleSum() { return coupleCount; }
+    public int queryCoupleSum() {
+        int num = 0;
+        ArrayList<PersonInterface> personList = new ArrayList<>(persons.values());
+        for (int i = 0; i < personList.size(); i++) {
+            for (int j = i + 1; j < personList.size(); j++) {
+                Person p1 = (Person)personList.get(i);
+                Person p2 = (Person)personList.get(j);
+                if (!p1.getAcquaintance().isEmpty() && !p2.getAcquaintance().isEmpty()) {
+                    if (p1.queryBestAcquaintance() == p2.getId() && p2.queryBestAcquaintance() == p1.getId()) {
+                        num++;
+                    }
+                }
+            }
+        }
+        return num; }
 
     @Override
     public void modifyRelation(int id1, int id2, int value)

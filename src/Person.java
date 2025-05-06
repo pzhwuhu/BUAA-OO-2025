@@ -131,7 +131,9 @@ public class Person implements PersonInterface {
         bestAcquaintance = bestId;
     }
 
-    public int queryBestAcquaintance() { return bestAcquaintance; }
+    public int queryBestAcquaintance() {
+        reSetBestAcquaintance();
+        return bestAcquaintance; }
 
     public HashMap<Integer, PersonInterface> getAcquaintance() { return acquaintance; }
 
