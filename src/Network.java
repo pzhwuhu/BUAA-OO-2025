@@ -32,6 +32,7 @@ public class Network implements NetworkInterface {
     private int tripleCount = 0;//三元环数量
     private final HashMap<Pair<Integer, Integer>, Integer> shortestPathCache = new HashMap<>();
     private HashMap<Integer, OfficialAccount> accounts = new HashMap<>();
+    private HashMap<Integer, Tag> allTags = new HashMap<>();
     private final HashSet<Integer> articles = new HashSet<>(); // 全局文章ID集合
     private HashMap<Integer, Integer> articleContributors = new HashMap<>();
 
@@ -80,6 +81,15 @@ public class Network implements NetworkInterface {
         tripleCount += countCommonNeighbors(person1, person2);
         unionFind.merge(id1, id2);
         shortestPathCache.clear();
+        updateValueSum(person1, person2);
+    }
+
+    public void updateValueSum(Person p1, Person p2) {
+        for (Tag tag : allTags.values()) {
+            if (tag.hasPerson(p1) && tag.hasPerson(p2)) {
+                tag.updateValueSum();
+            }
+        }
     }
 
     @Override
@@ -124,6 +134,7 @@ public class Network implements NetworkInterface {
             unionDirty = true;
             shortestPathCache.clear();
         }
+        updateValueSum(person1, person2);
     }
 
     @Override
@@ -204,6 +215,7 @@ public class Network implements NetworkInterface {
             throw new EqualTagIdException(tag.getId()); }
 
         persons.get(personId).addTag(tag);
+        allTags.put(tag.getId(), (Tag) tag);
     }
 
     @Override
@@ -375,12 +387,12 @@ public class Network implements NetworkInterface {
         if (!containsPerson(id2)) { throw new PersonIdNotFoundException(id2); }
         if (id1 == id2) { return 0; }
 
-        Pair<Integer, Integer> key = getCacheKey(id1, id2);
-        if (shortestPathCache.containsKey(key)) { return shortestPathCache.get(key); }
+        //Pair<Integer, Integer> key = getCacheKey(id1, id2);
+        //if (shortestPathCache.containsKey(key)) { return shortestPathCache.get(key); }
         if (!isCircle(id1, id2)) { throw new PathNotFoundException(id1, id2); }
 
-        int pathLen = bfs(id1, id2);
-        shortestPathCache.put(key, pathLen);
+        int pathLen = biDirectionalBfs(id1, id2);
+        //shortestPathCache.put(key, pathLen);
         return pathLen;
     }
 

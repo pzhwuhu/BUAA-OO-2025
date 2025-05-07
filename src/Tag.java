@@ -2,12 +2,14 @@ import com.oocourse.spec2.main.PersonInterface;
 import com.oocourse.spec2.main.TagInterface;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class Tag implements TagInterface {
     private final int id;
     private int ageSum;
     private int agePowSum;
     private int valueSum = 0;
+    private boolean dirty = false;
     private HashMap<Integer, PersonInterface> persons = new HashMap();
 
     public Tag(int id) {
@@ -50,7 +52,34 @@ public class Tag implements TagInterface {
     }
 
     @Override
-    public int getValueSum() { return valueSum; }
+    public int getValueSum() {
+        //dirty = true;
+        if (dirty) {
+            int half = 0;
+            HashSet<Integer> visited = new HashSet<>();
+            for (PersonInterface person : persons.values()) {
+                int id1 = person.getId();
+                Person p1 = (Person) person;
+                visited.add(id1);
+                HashMap<Integer, PersonInterface> p1Map = p1.getAcquaintance();
+                if (p1Map.size() < persons.size()) {
+                    for (int id2 : p1Map.keySet()) {
+                        if (!visited.contains(id2) && persons.containsKey(id2)) {
+                            half += p1.queryValue(persons.get(id2));
+                        }
+                    }
+                } else {
+                    for (int id2 : persons.keySet()) {
+                        if (!visited.contains(id2)) {
+                            half += p1.queryValue(persons.get(id2));
+                        }
+                    }
+                }
+            }
+            valueSum = 2 * half;
+            dirty = false;
+        }
+        return valueSum; }
 
     @Override
     public int getAgeMean() {
@@ -68,14 +97,6 @@ public class Tag implements TagInterface {
     }
 
     public void updateValueSum() {
-        int sum = 0;
-        for (PersonInterface p1 : persons.values()) {
-            for (PersonInterface p2 : persons.values()) {
-                if (p1.isLinked(p2)) {
-                    sum += p1.queryValue(p2);
-                }
-            }
-        }
-        valueSum = sum;
+        dirty = true;
     }
 }

@@ -98,16 +98,6 @@ public class Person implements PersonInterface {
                 }
             }
         }
-        this.updateTagValueSum(person);
-    }
-
-    public void updateTagValueSum(Person person) {
-        for (TagInterface tag : tags.values()) {
-            if (tag.hasPerson(person)) {
-                Tag myTag = (Tag) tag;
-                myTag.updateValueSum();
-            }
-        }
     }
 
     public void delRelation(Person person) {
@@ -117,8 +107,6 @@ public class Person implements PersonInterface {
         for (TagInterface tag : tags.values()) {
             if (tag.hasPerson(person)) {
                 tag.delPerson(person);
-                Tag myTag = (Tag) tag;
-                myTag.updateValueSum();
             }
         }
         if (!bestDirty) {
