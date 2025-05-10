@@ -32,7 +32,7 @@ public class Network implements NetworkInterface {
     private int tripleCount = 0;//三元环数量
     private final HashMap<Pair<Integer, Integer>, Integer> shortestPathCache = new HashMap<>();
     private HashMap<Integer, OfficialAccount> accounts = new HashMap<>();
-    private HashMap<Integer, Tag> allTags = new HashMap<>();
+    private HashMap<String, Tag> allTags = new HashMap<>();
     private final HashSet<Integer> articles = new HashSet<>(); // 全局文章ID集合
     private HashMap<Integer, Integer> articleContributors = new HashMap<>();
 
@@ -215,7 +215,7 @@ public class Network implements NetworkInterface {
             throw new EqualTagIdException(tag.getId()); }
 
         persons.get(personId).addTag(tag);
-        allTags.put(tag.getId(), (Tag) tag);
+        allTags.put(personId + "-" + tag.getId(), (Tag) tag);
     }
 
     @Override
