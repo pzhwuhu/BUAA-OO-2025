@@ -1,5 +1,7 @@
+import com.oocourse.spec3.main.MessageInterface;
 import com.oocourse.spec3.main.PersonInterface;
 import com.oocourse.spec3.main.TagInterface;
+
 import java.util.HashMap;
 import java.util.List;
 
@@ -10,10 +12,13 @@ public class Person implements PersonInterface {
     private HashMap<Integer, PersonInterface> acquaintance = new HashMap<>();
     private HashMap<Integer, Integer> values = new HashMap<>();
     private HashMap<Integer, TagInterface> tags = new HashMap<>();
-    private LinkedMap receivedArticles = new LinkedMap();
+    private MultiLinkedMap<Integer> receivedArticles = new MultiLinkedMap();
     private int bestAcquaintance = -99999;
     private int bestValue = -99999;
     private boolean bestDirty = true;
+    private int socialValue = 0; //新增
+    private int money = 0; //新增
+    private MultiLinkedMap<MessageInterface> messages = new MultiLinkedMap();
 
     public Person(int id, String name, int age) {
         this.id = id;
@@ -29,6 +34,24 @@ public class Person implements PersonInterface {
 
     @Override
     public int getAge() { return age; }
+
+    @Override
+    public void addSocialValue(int num) { socialValue += num; }
+
+    @Override
+    public int getSocialValue() { return socialValue; }
+
+    @Override
+    public List<MessageInterface> getMessages() { return messages.toList(); }
+
+    @Override
+    public List<MessageInterface> getReceivedMessages() { return messages.to5List(); }
+
+    @Override
+    public void addMoney(int num) { money += num; }
+
+    @Override
+    public int getMoney() { return money; }
 
     @Override
     public boolean containsTag(int id) { return tags.containsKey(id); }
@@ -68,9 +91,7 @@ public class Person implements PersonInterface {
     }
 
     @Override
-    public List<Integer> queryReceivedArticles() {
-        return receivedArticles.toList().subList(0, Math.min(5, receivedArticles.getSize()));
-    }
+    public List<Integer> queryReceivedArticles() { return receivedArticles.to5List(); }
 
     /// //////////////////////////////////////////////////////////////
     public void addRelation(Person person, int value) {
@@ -144,10 +165,16 @@ public class Person implements PersonInterface {
     }
 
     public void addReceived(int articleId) {
-        receivedArticles.insertHead(articleId);
+        receivedArticles.insertHead(String.valueOf(articleId), articleId);
     }
 
     public void removeReceived(int articleId) {
-        receivedArticles.delete(articleId);
+        receivedArticles.delete(String.valueOf(articleId));
     }
+
+    public void receiveMessage(MessageInterface message) {
+        messages.insertHead(String.valueOf(message.getId()), message);
+    }
+
+    public void removeMessage(int id) { messages.delete(String.valueOf(id)); }
 }

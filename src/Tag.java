@@ -1,3 +1,4 @@
+import com.oocourse.spec3.main.MessageInterface;
 import com.oocourse.spec3.main.PersonInterface;
 import com.oocourse.spec3.main.TagInterface;
 
@@ -98,5 +99,31 @@ public class Tag implements TagInterface {
 
     public void updateValueSum() {
         dirty = true;
+    }
+
+    public void addSocialValue(int socialValue) {
+        for (PersonInterface person : persons.values()) {
+            person.addSocialValue(socialValue);
+        }
+    }
+
+    public void addMoney(int money) {
+        for (PersonInterface person : persons.values()) {
+            person.addMoney(money);
+        }
+    }
+
+    public void addArticle(int articleId) {
+        for (PersonInterface person : persons.values()) {
+            Person p = (Person) person;
+            p.addReceived(articleId);
+        }
+    }
+
+    public void addMessage(MessageInterface message) {
+        for (PersonInterface person : persons.values()) {
+            Person p = (Person) person;
+            p.receiveMessage(message);
+        }
     }
 }

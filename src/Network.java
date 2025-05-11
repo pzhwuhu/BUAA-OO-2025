@@ -3,16 +3,21 @@ import com.oocourse.spec3.exceptions.ArticleIdNotFoundException;
 import com.oocourse.spec3.exceptions.ContributePermissionDeniedException;
 import com.oocourse.spec3.exceptions.DeleteArticlePermissionDeniedException;
 import com.oocourse.spec3.exceptions.DeleteOfficialAccountPermissionDeniedException;
+import com.oocourse.spec3.exceptions.EmojiIdNotFoundException;
 import com.oocourse.spec3.exceptions.EqualArticleIdException;
+import com.oocourse.spec3.exceptions.EqualEmojiIdException;
+import com.oocourse.spec3.exceptions.EqualMessageIdException;
 import com.oocourse.spec3.exceptions.EqualOfficialAccountIdException;
 import com.oocourse.spec3.exceptions.EqualPersonIdException;
 import com.oocourse.spec3.exceptions.EqualRelationException;
 import com.oocourse.spec3.exceptions.EqualTagIdException;
+import com.oocourse.spec3.exceptions.MessageIdNotFoundException;
 import com.oocourse.spec3.exceptions.OfficialAccountIdNotFoundException;
 import com.oocourse.spec3.exceptions.PathNotFoundException;
 import com.oocourse.spec3.exceptions.PersonIdNotFoundException;
 import com.oocourse.spec3.exceptions.RelationNotFoundException;
 import com.oocourse.spec3.exceptions.TagIdNotFoundException;
+import com.oocourse.spec3.main.MessageInterface;
 import com.oocourse.spec3.main.NetworkInterface;
 import com.oocourse.spec3.main.PersonInterface;
 import com.oocourse.spec3.main.TagInterface;
@@ -21,9 +26,12 @@ import javafx.util.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 
 public class Network implements NetworkInterface {
     private final HashMap<Integer, PersonInterface> persons;
@@ -35,10 +43,180 @@ public class Network implements NetworkInterface {
     private HashMap<String, Tag> allTags = new HashMap<>();
     private final HashSet<Integer> articles = new HashSet<>(); // 全局文章ID集合
     private HashMap<Integer, Integer> articleContributors = new HashMap<>();
+    private HashMap<Integer, MessageInterface> messages = new HashMap<>(); //全局消息
+    private ArrayList<Integer> emojiIdList = new ArrayList<>();
+    private ArrayList<Integer> emojiHeatList = new ArrayList<>(); //常用表情
 
     public Network() {
         persons = new HashMap<>();
         unionFind = new UnionFind();
+    }
+
+    @Override
+    public boolean containsMessage(int id) { return messages.containsKey(id); }
+
+    @Override
+    public void addMessage(MessageInterface message) throws EqualMessageIdException,
+        EmojiIdNotFoundException, EqualPersonIdException, ArticleIdNotFoundException {
+        int id = message.getId();
+        if (messages.containsKey(id)) { throw new EqualMessageIdException(id); }
+        if (message instanceof EmojiMessage) {
+            int emojiId = ((EmojiMessage) message).getEmojiId();
+            if (!containsEmojiId(emojiId)) { throw new EmojiIdNotFoundException(emojiId); }
+        }
+        if (message instanceof ForwardMessage) {
+            int articleId = ((ForwardMessage) message).getArticleId();
+            if (!articles.contains(articleId)) { throw new ArticleIdNotFoundException(articleId); }
+            PersonInterface person1 = message.getPerson1();
+            if (!person1.getReceivedArticles().contains(articleId)) {
+                throw new ArticleIdNotFoundException(articleId); }
+        }
+        if (message.getType() == 0 && message.getPerson1().equals(message.getPerson2())) {
+            throw new EqualPersonIdException(message.getPerson1().getId());
+        }
+        messages.put(id, message);
+    }
+
+    @Override
+    public MessageInterface getMessage(int id) { return messages.get(id); }
+
+    public ArrayList<Message> getMessages() {
+        ArrayList<Message> copyMessages = new ArrayList<>();
+        for (MessageInterface m : messages.values()) { copyMessages.add((Message) m); }
+        return copyMessages;
+    }
+
+    public ArrayList<Integer> getEmojiIdList() { return emojiIdList; }
+
+    public ArrayList<Integer> getEmojiHeatList() { return emojiHeatList; }
+
+    @Override
+    public void sendMessage(int id) throws RelationNotFoundException,
+        MessageIdNotFoundException, TagIdNotFoundException {
+        Message message = (Message) messages.get(id);
+        if (message == null) { throw new MessageIdNotFoundException(id); }
+        messages.remove(id); // Remove message after processing
+        int type = message.getType();
+        if (type == 0) {
+            Person p1 = (Person) message.getPerson1();
+            Person p2 = (Person) message.getPerson2();
+            if (!p1.isLinked(p2)) { throw new RelationNotFoundException(p1.getId(), p2.getId()); }
+            if (p1.equals(p2)) { return; }
+
+            int socialValue = message.getSocialValue();
+            p1.addSocialValue(socialValue);
+            p2.addSocialValue(socialValue);
+            p2.receiveMessage(message);
+
+            if (message instanceof RedEnvelopeMessage) {
+                int money = ((RedEnvelopeMessage) message).getMoney();
+                p1.addMoney(-money);
+                p2.addMoney(money);
+            }
+            else if (message instanceof EmojiMessage) {
+                int emojiId = ((EmojiMessage) message).getEmojiId();
+                int index = emojiIdList.indexOf(emojiId);
+                if (index != -1) {
+                    emojiHeatList.set(index, emojiHeatList.get(index) + 1);
+                }
+            } else if (message instanceof ForwardMessage) {
+                int articleId = ((ForwardMessage) message).getArticleId();
+                p2.addReceived(articleId);
+            }
+        } else if (type == 1) {
+            TagInterface tag = message.getTag();
+            PersonInterface sender = message.getPerson1();
+            if (!sender.containsTag(tag.getId())) { throw new TagIdNotFoundException(tag.getId()); }
+
+            int socialValue = message.getSocialValue();
+            sender.addSocialValue(socialValue);
+            ((Tag) tag).addSocialValue(socialValue);
+
+            if (message instanceof RedEnvelopeMessage) {
+                if (tag.getSize() > 0) {
+                    int totalMoney = ((RedEnvelopeMessage) message).getMoney();
+                    int average = totalMoney / tag.getSize();
+                    sender.addMoney(- average * tag.getSize());
+                    ((Tag) tag).addMoney(average);
+                }
+            } else if (message instanceof EmojiMessage) {
+                int emojiId = ((EmojiMessage) message).getEmojiId();
+                int index = emojiIdList.indexOf(emojiId);
+                if (index != -1) {
+                    emojiHeatList.set(index, emojiHeatList.get(index) + 1);
+                }
+            } else if (message instanceof ForwardMessage) {
+                int articleId = ((ForwardMessage) message).getArticleId();
+                ((Tag) tag).addArticle(articleId);
+            }
+            ((Tag) tag).addMessage(message);
+        }
+    }
+
+    @Override
+    public int querySocialValue(int id) throws PersonIdNotFoundException {
+        if (!containsPerson(id)) { throw new PersonIdNotFoundException(id); }
+        return persons.get(id).getSocialValue();
+    }
+
+    @Override
+    public List<MessageInterface> queryReceivedMessages(int id) throws PersonIdNotFoundException {
+        if (!containsPerson(id)) { throw new PersonIdNotFoundException(id); }
+        return persons.get(id).getReceivedMessages();
+    }
+
+    @Override
+    public boolean containsEmojiId(int id) { return emojiIdList.contains(id); }
+
+    @Override
+    public void storeEmojiId(int id) throws EqualEmojiIdException {
+        if (containsEmojiId(id)) { throw new EqualEmojiIdException(id); }
+        emojiIdList.add(id);
+        emojiHeatList.add(0);
+    }
+
+    @Override
+    public int queryMoney(int id) throws PersonIdNotFoundException {
+        if (!containsPerson(id)) { throw new PersonIdNotFoundException(id); }
+        return getPerson(id).getMoney();
+    }
+
+    @Override
+    public int queryPopularity(int id) throws EmojiIdNotFoundException {
+        int index = emojiIdList.indexOf(id);
+        if (index == -1) { throw new EmojiIdNotFoundException(id); }
+        return emojiHeatList.get(index);
+    }
+
+    @Override
+    public int deleteColdEmoji(int limit) {
+        ArrayList<Integer> remainingEmojiIds = new ArrayList<>();
+        ArrayList<Integer> remainingHeat = new ArrayList<>();
+        Set<Integer> removedEmojis = new HashSet<>();
+
+        for (int i = 0; i < emojiIdList.size(); i++) {
+            int heat = emojiHeatList.get(i);
+            if (heat >= limit) {
+                remainingEmojiIds.add(emojiIdList.get(i));
+                remainingHeat.add(heat);
+            } else {
+                removedEmojis.add(emojiIdList.get(i));
+            }
+        }
+
+        emojiIdList = remainingEmojiIds;
+        emojiHeatList = remainingHeat;
+
+        Iterator<Map.Entry<Integer, MessageInterface>> it = messages.entrySet().iterator();
+        while (it.hasNext()) {
+            MessageInterface msg = it.next().getValue();
+            if (msg instanceof EmojiMessage && removedEmojis.
+                contains(((EmojiMessage) msg).getEmojiId())) {
+                it.remove();
+            }
+        }
+
+        return emojiIdList.size();
     }
 
     @Override
