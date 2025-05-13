@@ -64,7 +64,7 @@ public class Network implements NetworkInterface {
             int emojiId = ((EmojiMessage) message).getEmojiId();
             if (!containsEmojiId(emojiId)) { throw new EmojiIdNotFoundException(emojiId); }
         }
-        if (message instanceof ForwardMessage) {
+        else if (message instanceof ForwardMessage) {
             int articleId = ((ForwardMessage) message).getArticleId();
             if (!articles.contains(articleId)) { throw new ArticleIdNotFoundException(articleId); }
             PersonInterface person1 = message.getPerson1();
@@ -129,6 +129,7 @@ public class Network implements NetworkInterface {
             int socialValue = message.getSocialValue();
             sender.addSocialValue(socialValue);
             ((Tag) tag).addSocialValue(socialValue);
+            ((Tag) tag).addMessage(message);
 
             if (message instanceof RedEnvelopeMessage) {
                 if (tag.getSize() > 0) {
@@ -147,7 +148,6 @@ public class Network implements NetworkInterface {
                 int articleId = ((ForwardMessage) message).getArticleId();
                 ((Tag) tag).addArticle(articleId);
             }
-            ((Tag) tag).addMessage(message);
         }
     }
 

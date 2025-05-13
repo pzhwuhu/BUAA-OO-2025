@@ -18,7 +18,7 @@ public class Person implements PersonInterface {
     private boolean bestDirty = true;
     private int socialValue = 0; //新增
     private int money = 0; //新增
-    private MultiLinkedMap<MessageInterface> messages = new MultiLinkedMap();
+    private LinkedMap<MessageInterface> messages = new LinkedMap();
 
     public Person(int id, String name, int age) {
         this.id = id;
