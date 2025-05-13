@@ -44,8 +44,7 @@ public class Network implements NetworkInterface {
     private final HashSet<Integer> articles = new HashSet<>(); // 全局文章ID集合
     private HashMap<Integer, Integer> articleContributors = new HashMap<>();
     private HashMap<Integer, MessageInterface> messages = new HashMap<>(); //全局消息
-    private ArrayList<Integer> emojiIdList = new ArrayList<>();
-    private ArrayList<Integer> emojiHeatList = new ArrayList<>(); //常用表情
+    private HashMap<Integer, Integer> emojiIdMap = new HashMap<>();
 
     public Network() {
         persons = new HashMap<>();
@@ -86,21 +85,9 @@ public class Network implements NetworkInterface {
         return messageArray;
     }
 
-    public int[] getEmojiIdList() {
-        int [] emojiIds = new int[emojiIdList.size()];
-        for (int i = 0; i < emojiIdList.size(); i++) {
-            emojiIds[i] = emojiIdList.get(i);
-        }
-        return emojiIds;
-    }
+    public int[] getEmojiIdList() { return null; }
 
-    public int[] getEmojiHeatList() {
-        int [] emojiHeats = new int[emojiHeatList.size()];
-        for (int i = 0; i < emojiHeatList.size(); i++) {
-            emojiHeats[i] = emojiHeatList.get(i);
-        }
-        return emojiHeats;
-    }
+    public int[] getEmojiHeatList() { return null; }
 
     @Override
     public void sendMessage(int id) throws RelationNotFoundException,
@@ -126,9 +113,8 @@ public class Network implements NetworkInterface {
             }
             else if (message instanceof EmojiMessage) {
                 int emojiId = ((EmojiMessage) message).getEmojiId();
-                int index = emojiIdList.indexOf(emojiId);
-                if (index != -1) {
-                    emojiHeatList.set(index, emojiHeatList.get(index) + 1);
+                if (!containsEmojiId(emojiId)) {
+                    emojiIdMap.put(emojiId, emojiIdMap.get(emojiId) + 1);
                 }
             } else if (message instanceof ForwardMessage) {
                 int articleId = ((ForwardMessage) message).getArticleId();
@@ -153,9 +139,8 @@ public class Network implements NetworkInterface {
                 }
             } else if (message instanceof EmojiMessage) {
                 int emojiId = ((EmojiMessage) message).getEmojiId();
-                int index = emojiIdList.indexOf(emojiId);
-                if (index != -1) {
-                    emojiHeatList.set(index, emojiHeatList.get(index) + 1);
+                if (!containsEmojiId(emojiId)) {
+                    emojiIdMap.put(emojiId, emojiIdMap.get(emojiId) + 1);
                 }
             } else if (message instanceof ForwardMessage) {
                 int articleId = ((ForwardMessage) message).getArticleId();
@@ -178,13 +163,12 @@ public class Network implements NetworkInterface {
     }
 
     @Override
-    public boolean containsEmojiId(int id) { return emojiIdList.contains(id); }
+    public boolean containsEmojiId(int id) { return emojiIdMap.containsKey(id); }
 
     @Override
     public void storeEmojiId(int id) throws EqualEmojiIdException {
         if (containsEmojiId(id)) { throw new EqualEmojiIdException(id); }
-        emojiIdList.add(id);
-        emojiHeatList.add(0);
+        emojiIdMap.put(id, 0);
     }
 
     @Override
@@ -195,40 +179,39 @@ public class Network implements NetworkInterface {
 
     @Override
     public int queryPopularity(int id) throws EmojiIdNotFoundException {
-        int index = emojiIdList.indexOf(id);
-        if (index == -1) { throw new EmojiIdNotFoundException(id); }
-        return emojiHeatList.get(index);
+        if (!containsEmojiId(id)) { throw new EmojiIdNotFoundException(id); }
+        return emojiIdMap.get(id);
     }
 
     @Override
     public int deleteColdEmoji(int limit) {
-        ArrayList<Integer> remainingEmojiIds = new ArrayList<>();
-        ArrayList<Integer> remainingHeat = new ArrayList<>();
+        HashMap<Integer, Integer> remainingEmojis = new HashMap<>();
         Set<Integer> removedEmojis = new HashSet<>();
 
-        for (int i = 0; i < emojiIdList.size(); i++) {
-            int heat = emojiHeatList.get(i);
+        for (Map.Entry<Integer, Integer> entry : emojiIdMap.entrySet()) {
+            int emojiId = entry.getKey();
+            int heat = entry.getValue();
+
             if (heat >= limit) {
-                remainingEmojiIds.add(emojiIdList.get(i));
-                remainingHeat.add(heat);
+                remainingEmojis.put(emojiId, heat);
             } else {
-                removedEmojis.add(emojiIdList.get(i));
+                removedEmojis.add(emojiId);
             }
         }
 
-        emojiIdList = remainingEmojiIds;
-        emojiHeatList = remainingHeat;
+        emojiIdMap = remainingEmojis;
 
+        // 过滤消息，删除关联了被移除表情的消息
         Iterator<Map.Entry<Integer, MessageInterface>> it = messages.entrySet().iterator();
         while (it.hasNext()) {
             MessageInterface msg = it.next().getValue();
-            if (msg instanceof EmojiMessage && removedEmojis.
-                contains(((EmojiMessage) msg).getEmojiId())) {
+            if (msg instanceof EmojiMessage &&
+                removedEmojis.contains(((EmojiMessage) msg).getEmojiId())) {
                 it.remove();
             }
         }
 
-        return emojiIdList.size();
+        return emojiIdMap.size();
     }
 
     @Override
