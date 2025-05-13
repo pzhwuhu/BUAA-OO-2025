@@ -105,9 +105,8 @@ public class Network implements NetworkInterface {
     @Override
     public void sendMessage(int id) throws RelationNotFoundException,
         MessageIdNotFoundException, TagIdNotFoundException {
+        if (!containsMessage(id)) { throw new MessageIdNotFoundException(id); }
         Message message = (Message) messages.get(id);
-        if (message == null) { throw new MessageIdNotFoundException(id); }
-        messages.remove(id); // Remove message after processing
         int type = message.getType();
         if (type == 0) {
             Person p1 = (Person) message.getPerson1();
@@ -163,6 +162,7 @@ public class Network implements NetworkInterface {
                 ((Tag) tag).addArticle(articleId);
             }
         }
+        messages.remove(id); // Remove message after processing
     }
 
     @Override

@@ -10,7 +10,7 @@ public class NetworkTest {
     private final int TEST_CASES = 50;
     private final int PERSON_COUNT = 50;
     private final int EMOJI_COUNT = 50;
-    private final int MESSAGE_COUNT = 1000;
+    private final int MESSAGE_COUNT = 200;
 
     static class TestDataSet {
         Network network;
@@ -51,15 +51,53 @@ public class NetworkTest {
             data.networkCopy.storeEmojiId(i);
         }
 
-        // 创建消息
+        // 创建表情消息
         Random rand = new Random();
-        for (int i = 0; i < MESSAGE_COUNT; i++) {
-            createMessages(data, i, rand);
+        for (int i = 0; i < EMOJI_COUNT; i++) {
+            createEmojiMessages(data, i, rand);
+        }
+        //其他消息
+        for (int i = EMOJI_COUNT; i < MESSAGE_COUNT; i++) {
+            createOtherMessages(data, i, rand);
         }
         return data;
     }
 
-    private void createMessages(TestDataSet data, int id, Random rand) throws Exception {
+    private void createOtherMessages(TestDataSet data, int id, Random rand) throws Exception {
+        int p1 = rand.nextInt(PERSON_COUNT);
+        int p2 = rand.nextInt(PERSON_COUNT);
+        while(p1 == p2) {
+            p1 = rand.nextInt(PERSON_COUNT);
+        }
+        int value = rand.nextInt(100);
+
+        // 建立关系
+        if (!data.network.getPerson(p1).isLinked(data.network.getPerson(p2))) {
+            data.network.addRelation(p1, p2, 1);
+            data.networkCopy.addRelation(p1, p2, 1);
+        }
+
+        int op = id % 2;
+        MessageInterface msg1;
+        MessageInterface msg2;
+        if (op == 0) {
+            msg1 = new Message(id, value, data.network.getPerson(p1), data.network.getPerson(p2));
+            msg2 = new Message(id, value, data.network.getPerson(p1), data.network.getPerson(p2));
+        } else{
+            msg1 = new RedEnvelopeMessage(id, value, data.network.getPerson(p1), data.network.getPerson(p2));
+            msg2 = new RedEnvelopeMessage(id, value, data.network.getPerson(p1), data.network.getPerson(p2));
+        }
+        data.network.addMessage(msg1);
+        data.networkCopy.addMessage(msg2);
+
+        // 随机发送消息
+        if (rand.nextBoolean()) {
+            data.network.sendMessage(id);
+            data.networkCopy.sendMessage(id);
+        }
+    }
+
+    private void createEmojiMessages(TestDataSet data, int id, Random rand) throws Exception {
         int p1 = rand.nextInt(PERSON_COUNT);
         int p2 = rand.nextInt(PERSON_COUNT);
         while(p1 == p2) {
@@ -128,6 +166,8 @@ public class NetworkTest {
             if (msg instanceof EmojiMessage) {
                 int emojiId = ((EmojiMessage) msg).getEmojiId();
                 shouldExist = remainingEmojis.contains(emojiId);
+            } else {
+                assertTrue(containsMessage(messages, msg));
             }
 
             assertEquals("Message state error:" + msg.getId(),
