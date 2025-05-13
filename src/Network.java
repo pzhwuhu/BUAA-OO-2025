@@ -80,10 +80,8 @@ public class Network implements NetworkInterface {
     @Override
     public MessageInterface getMessage(int id) { return messages.get(id); }
 
-    public ArrayList<Message> getMessages() {
-        ArrayList<Message> copyMessages = new ArrayList<>();
-        for (MessageInterface m : messages.values()) { copyMessages.add((Message) m); }
-        return copyMessages;
+    public ArrayList<MessageInterface> getMessages() {
+        return new ArrayList<>(messages.values());
     }
 
     public ArrayList<Integer> getEmojiIdList() { return emojiIdList; }
