@@ -1,7 +1,6 @@
 import com.oocourse.spec3.main.*;
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Random;
 
@@ -12,6 +11,11 @@ public class NetworkTest {
     private final int PERSON_COUNT = 50;
     private final int EMOJI_COUNT = 50;
     private final int MESSAGE_COUNT = 1000;
+
+    static class TestDataSet {
+        Network network;
+        Network networkCopy;
+    }
 
     @Test
     public void testDeleteColdEmoji() throws Exception {
@@ -36,9 +40,9 @@ public class NetworkTest {
 
         // 添加人员
         for (int i = 0; i < PERSON_COUNT; i++) {
-            Person person = new Person(i, "name" + i, 50);
+            Person person = new Person(i, "person_" + i, 50);
             data.network.addPerson(person);
-            data.networkCopy.addPerson(new Person(i, "name" + i, 50));
+            data.networkCopy.addPerson(new Person(i, "person_" + i, 50));
         }
 
         // 初始化表情
@@ -52,13 +56,15 @@ public class NetworkTest {
         for (int i = 0; i < MESSAGE_COUNT; i++) {
             createMessages(data, i, rand);
         }
-
         return data;
     }
 
     private void createMessages(TestDataSet data, int id, Random rand) throws Exception {
         int p1 = rand.nextInt(PERSON_COUNT);
         int p2 = rand.nextInt(PERSON_COUNT);
+        while(p1 == p2) {
+            p1 = rand.nextInt(PERSON_COUNT);
+        }
         int emojiId = rand.nextInt(EMOJI_COUNT);
 
         // 建立关系
@@ -83,34 +89,38 @@ public class NetworkTest {
 
     private void validateResult(TestDataSet data, int limit, int result) {
         // 获取操作前后的数据
-        ArrayList<Integer> oldEmojiIds = data.networkCopy.getEmojiIdList();
-        ArrayList<Integer> oldEmojiHeats = data.networkCopy.getEmojiHeatList();
-        ArrayList<Integer> newEmojiIds = data.network.getEmojiIdList();
-        ArrayList<Integer> newEmojiHeats = data.network.getEmojiHeatList();
+        int[] oldEmojiIds = data.networkCopy.getEmojiIdList();
+        int[] oldEmojiHeats = data.networkCopy.getEmojiHeatList();
+        int[] newEmojiIds = data.network.getEmojiIdList();
+        int[] newEmojiHeats = data.network.getEmojiHeatList();
 
         // 验证保留的表情
-        for (int i = 0; i < oldEmojiIds.size(); i++) {
-            int id = oldEmojiIds.get(i);
-            int heat = oldEmojiHeats.get(i);
+        for (int i = 0; i < oldEmojiIds.length; i++) {
+            int id = oldEmojiIds[i];
+            int heat = oldEmojiHeats[i];
 
             if (heat >= limit) {
-                assertTrue("Should retain emoji:" + id, newEmojiIds.contains(id));
+                assertTrue("Should retain emoji:" + id, contains(newEmojiIds, id));
             }
         }
 
-        // 验证删除的表情
-        for (int i = 0; i < newEmojiIds.size(); i++) {
-            int id = newEmojiIds.get(i);
-            int index = oldEmojiIds.indexOf(id);
+        // 验证删除剩下的表情
+        for (int i = 0; i < newEmojiIds.length; i++) {
+            int id = newEmojiIds[i];
+            int index = indexOf(oldEmojiIds, id);
             assertTrue("Invalid emoji found:" + id, index != -1);
             assertEquals("Heat value mismatch",
-                    oldEmojiHeats.get(index).intValue(), newEmojiHeats.get(i).intValue());
+                    oldEmojiHeats[index], newEmojiHeats[i]);
         }
 
         // 验证消息过滤
-        HashSet<Integer> remainingEmojis = new HashSet<>(newEmojiIds);
-        ArrayList<MessageInterface> messages = data.network.getMessages();
-        ArrayList<MessageInterface> originalMessages = data.networkCopy.getMessages();
+        HashSet<Integer> remainingEmojis = new HashSet<>();
+        for (int id : newEmojiIds) {
+            remainingEmojis.add(id);
+        }
+
+        MessageInterface[] messages = data.network.getMessages();
+        MessageInterface[] originalMessages = data.networkCopy.getMessages();
 
         for (MessageInterface msg : originalMessages) {
             boolean shouldExist = true;
@@ -124,11 +134,11 @@ public class NetworkTest {
                     shouldExist, containsMessage(messages, msg));
         }
 
-        assertEquals("Result count mismatch", newEmojiIds.size(), result);
+        assertEquals("Result count mismatch", newEmojiIds.length, result);
     }
 
-    private boolean containsMessage(ArrayList<MessageInterface> list, MessageInterface target) {
-        for (MessageInterface msg : list) {
+    private boolean containsMessage(MessageInterface[] array, MessageInterface target) {
+        for (MessageInterface msg : array) {
             if (msg.getId() == target.getId()) {
                 return true;
             }
@@ -136,8 +146,21 @@ public class NetworkTest {
         return false;
     }
 
-    static class TestDataSet {
-        Network network;
-        Network networkCopy;
+    private boolean contains(int[] array, int value) {
+        for (int item : array) {
+            if (item == value) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int indexOf(int[] array, int value) {
+        for (int i = 0; i < array.length; i++) {
+            if (array[i] == value) {
+                return i;
+            }
+        }
+        return -1;
     }
 }

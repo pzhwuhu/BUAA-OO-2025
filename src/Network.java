@@ -80,13 +80,27 @@ public class Network implements NetworkInterface {
     @Override
     public MessageInterface getMessage(int id) { return messages.get(id); }
 
-    public ArrayList<MessageInterface> getMessages() {
-        return new ArrayList<>(messages.values());
+    public MessageInterface[] getMessages() {
+        MessageInterface[] messageArray = new MessageInterface[messages.size()];
+        messageArray = messages.values().toArray(messageArray);
+        return messageArray;
     }
 
-    public ArrayList<Integer> getEmojiIdList() { return emojiIdList; }
+    public int[] getEmojiIdList() {
+        int [] emojiIds = new int[emojiIdList.size()];
+        for (int i = 0; i < emojiIdList.size(); i++) {
+            emojiIds[i] = emojiIdList.get(i);
+        }
+        return emojiIds;
+    }
 
-    public ArrayList<Integer> getEmojiHeatList() { return emojiHeatList; }
+    public int[] getEmojiHeatList() {
+        int [] emojiHeats = new int[emojiHeatList.size()];
+        for (int i = 0; i < emojiHeatList.size(); i++) {
+            emojiHeats[i] = emojiHeatList.get(i);
+        }
+        return emojiHeats;
+    }
 
     @Override
     public void sendMessage(int id) throws RelationNotFoundException,
