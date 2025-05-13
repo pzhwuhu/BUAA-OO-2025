@@ -113,7 +113,7 @@ public class Network implements NetworkInterface {
             }
             else if (message instanceof EmojiMessage) {
                 int emojiId = ((EmojiMessage) message).getEmojiId();
-                if (!containsEmojiId(emojiId)) {
+                if (containsEmojiId(emojiId)) {
                     emojiIdMap.put(emojiId, emojiIdMap.get(emojiId) + 1);
                 }
             } else if (message instanceof ForwardMessage) {
@@ -139,7 +139,7 @@ public class Network implements NetworkInterface {
                 }
             } else if (message instanceof EmojiMessage) {
                 int emojiId = ((EmojiMessage) message).getEmojiId();
-                if (!containsEmojiId(emojiId)) {
+                if (containsEmojiId(emojiId)) {
                     emojiIdMap.put(emojiId, emojiIdMap.get(emojiId) + 1);
                 }
             } else if (message instanceof ForwardMessage) {
