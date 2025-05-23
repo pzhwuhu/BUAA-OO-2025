@@ -10,7 +10,7 @@ public class AppointmentCounter {
 
     public void addRequest(LibraryReqCmd req) { requests.add(req); }
 
-    public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, LocalDate date) {
+    public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, LocalDate date, boolean isOpen) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (LibraryReqCmd req : requests) {
             String userId = req.getStudentId();
@@ -20,7 +20,7 @@ public class AppointmentCounter {
                 shelf.removeBook(bookId);
                 userBooks.putIfAbsent(userId, new HashMap<>());
                 userBooks.get(userId).put(bookId.getBookIsbn(), book);
-                book.setReservedDate(date);
+                book.setReservedDate(date, isOpen);
                 book.setCurrentState(LibraryBookState.APPOINTMENT_OFFICE, date);
                 info.add(new LibraryMoveInfo(bookId, "bs", "ao", userId));
             }
@@ -52,7 +52,7 @@ public class AppointmentCounter {
                     info.add(new LibraryMoveInfo(book.getBookId(), "ao", "bs"));
                     shelf.addBook(book);
                     book.setCurrentState(LibraryBookState.BOOKSHELF, date);
-                    book.setReservedDate(null);
+                    book.setReservedDate(null, true);
                     return true;
                 }
                 return false;

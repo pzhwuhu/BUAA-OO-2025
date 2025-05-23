@@ -60,12 +60,13 @@ public class Library {
     public void open (LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
         infos.addAll(appointmentCounter.move2Shelf(bookShelf, date));
-        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date));
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, true));
         PRINTER.move(date, infos);
     }
 
     public void close (LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, false));
         infos.addAll(borrowCounter.move2Shelf(bookShelf, date));
         PRINTER.move(date, infos);
     }
@@ -108,6 +109,7 @@ public class Library {
         //if (book.noLongerReserved(date)) { System.out.println("Book was no longer reserved"); }
         if (book != null && !book.noLongerReserved(date) && student.canBorrowBook(book)) {
             book.setCurrentState(LibraryBookState.USER, date);
+            student.setReservedNotfetch(false);
             student.addBook(isbn, book);
             appointmentCounter.removeBook(userId, isbn);
             PRINTER.accept(req, book.getBookId());
@@ -132,7 +134,6 @@ public class Library {
         Book book = student.getHeldBook(isbn);
         if (book != null) {
             student.removeBook(isbn);
-            student.setReservedNotfetch(false);
             borrowCounter.returnBook(book, date);
             PRINTER.accept(req);
         } else {
