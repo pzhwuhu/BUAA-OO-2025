@@ -23,8 +23,12 @@ public class Book {
 
     public LibraryBookIsbn.Type getBookIsbnType() { return bookId.getType(); }
 
-    public void setReservedDate(LocalDate reservedDate) {
-        this.reservedDate = reservedDate;
+    public void setReservedDate(LocalDate reservedDate, boolean isOpen) {
+        if (isOpen) {
+            this.reservedDate = reservedDate;
+        } else {
+            this.reservedDate = reservedDate.plusDays(1);
+        }
     }
 
     public boolean noLongerReserved(LocalDate date) {

@@ -1,4 +1,11 @@
-import com.oocourse.library1.*;
+import com.oocourse.library1.LibraryBookId;
+import com.oocourse.library1.LibraryBookIsbn;
+import com.oocourse.library1.LibraryBookState;
+import com.oocourse.library1.LibraryCloseCmd;
+import com.oocourse.library1.LibraryCommand;
+import com.oocourse.library1.LibraryMoveInfo;
+import com.oocourse.library1.LibraryOpenCmd;
+import com.oocourse.library1.LibraryReqCmd;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -18,13 +25,14 @@ public class Library {
     private HashMap<LibraryBookId, Book> allBooks = new HashMap<>();
     private HashMap<LibraryBookIsbn, ArrayList<Book>> isbnBooks = new HashMap<>();
 
-    public Library (BookShelf bookShelf, AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
+    public Library(BookShelf bookShelf, AppointmentCounter appointmentCounter,
+        BorrowReturnCounter borrowCounter) {
         this.bookShelf = bookShelf;
         this.appointmentCounter = appointmentCounter;
         this.borrowCounter = borrowCounter;
     }
 
-    public void run () {
+    public void run() {
         //转换isbn->id
         Map<LibraryBookIsbn, Integer> bookList = SCANNER.getInventory();
         for (Map.Entry<LibraryBookIsbn, Integer> entry : bookList.entrySet()) {
@@ -32,7 +40,8 @@ public class Library {
             int count = entry.getValue();
             ArrayList<Book> books = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
-                LibraryBookId bookId = new LibraryBookId(isbn.getType(), isbn.getUid(), String.format("%02d", i));
+                LibraryBookId bookId = new LibraryBookId(isbn.getType(),
+                    isbn.getUid(), String.format("%02d", i));
                 Book book = new Book(bookId);
                 bookShelf.addBook(book);
                 allBooks.put(bookId, book);
@@ -62,19 +71,21 @@ public class Library {
         }
     }
 
-    public void open (LibraryCommand req) {
+    public void open(LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
         infos.addAll(appointmentCounter.move2Shelf(bookShelf, date));
-        infos.addAll(borrowCounter.move2Shelf(bookShelf, date));
-        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date));
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, true));
         PRINTER.move(date, infos);
     }
 
-    public void close (LibraryCommand req) {
-        PRINTER.move(date); //下班了还不去玩？？？别 pua自己了
+    public void close(LibraryCommand req) {
+        ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, false));
+        infos.addAll(borrowCounter.move2Shelf(bookShelf, date));
+        PRINTER.move(date, infos);
     }
 
-    public void dealBorrow (LibraryReqCmd req) {
+    public void dealBorrow(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
@@ -92,7 +103,7 @@ public class Library {
         }
     }
 
-    public void dealOrder (LibraryReqCmd req) {
+    public void dealOrder(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
@@ -110,7 +121,7 @@ public class Library {
         } else { PRINTER.reject(req); }
     }
 
-    public void dealPick (LibraryReqCmd req) {
+    public void dealPick(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
@@ -127,7 +138,7 @@ public class Library {
         }
     }
 
-    public void dealquery (LibraryReqCmd req) {
+    public void dealquery(LibraryReqCmd req) {
         LibraryBookId bookId = req.getBookId();
         Book book = allBooks.get(bookId);
         if (book != null) {
@@ -135,7 +146,7 @@ public class Library {
         }
     }
 
-    public void dealReturn (LibraryReqCmd req) {
+    public void dealReturn(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookId bookId = req.getBookId();
         Student student = students.get(userId);
