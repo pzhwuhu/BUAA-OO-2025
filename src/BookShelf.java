@@ -13,7 +13,7 @@ public class BookShelf {
     }
 
     public Book getBook(LibraryBookIsbn isbn) {
-        if (books.get(isbn).size() == 0) {
+        if (books.get(isbn).isEmpty()) {
             return null;
         }
         return books.get(isbn).get(0);
@@ -21,7 +21,7 @@ public class BookShelf {
 
     public boolean containsBook(LibraryBookIsbn isbn) {
         if (books.containsKey(isbn)) {
-            return books.get(isbn).size() > 0;
+            return !books.get(isbn).isEmpty();
         }
         return false;
     }

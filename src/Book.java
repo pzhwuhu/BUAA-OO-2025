@@ -33,7 +33,8 @@ public class Book {
 
     public boolean noLongerReserved(LocalDate date) {
         long days = ChronoUnit.DAYS.between(reservedDate, date);
-        return days > 5;
+        System.out.println("today: " + date + " reserve: " + reservedDate + " days: " + days);
+        return days >= 5;
     }
 
     public LibraryBookState getCurrentState() { return currentState; }
