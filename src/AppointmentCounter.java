@@ -47,7 +47,8 @@ public class AppointmentCounter {
         }
     }
 
-    public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date) {
+    public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date,
+        HashMap<String, Student> students) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (String userId : userBooks.keySet()) {
             HashMap<LibraryBookIsbn, Book> books = userBooks.get(userId);
@@ -58,6 +59,7 @@ public class AppointmentCounter {
                     shelf.addBook(book);
                     book.setCurrentState(LibraryBookState.BOOKSHELF, date);
                     book.setReservedDate(null, true);
+                    students.get(userId).setReservedNotfetch(false);
                     return true;
                 }
                 return false;

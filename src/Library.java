@@ -73,7 +73,7 @@ public class Library {
 
     public void open(LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
-        infos.addAll(appointmentCounter.move2Shelf(bookShelf, date));
+        infos.addAll(appointmentCounter.move2Shelf(bookShelf, date, students));
         infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, true));
         PRINTER.move(date, infos);
     }
@@ -127,7 +127,7 @@ public class Library {
         Student student = students.get(userId);
         Book book = appointmentCounter.getBook(userId, isbn);
         //if (book.noLongerReserved(date)) { System.out.println("Book was no longer reserved"); }
-        if (book != null && !book.noLongerReserved(date) && student.canBorrowBook(book)) {
+        if (book != null && student.canBorrowBook(book)) {
             book.setCurrentState(LibraryBookState.USER, date);
             student.setReservedNotfetch(false);
             student.addBook(isbn, book);
