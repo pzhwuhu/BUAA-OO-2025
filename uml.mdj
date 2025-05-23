@@ -1,0 +1,1196 @@
+{
+  "ownedElements": [{
+    "_parent": {"$ref": "286331153"},
+    "ownedElements": [
+      {
+        "_parent": {"$ref": "286331154"},
+        "defaultDiagram": true,
+        "_type": "UMLClassDiagram",
+        "name": "Main",
+        "_id": "286331155"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "addRequest",
+            "_id": "286331159",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331159"},
+                "_type": "UMLParameter",
+                "_id": "286331160",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331159"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331161",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "moveFromShelf",
+            "_id": "286331162",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331162"},
+                "_type": "UMLParameter",
+                "_id": "286331163",
+                "type": "ArrayList<LibraryMoveInfo>",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331162"},
+                "_type": "UMLParameter",
+                "name": "shelf",
+                "_id": "286331164",
+                "type": {"$ref": "286331203"}
+              },
+              {
+                "_parent": {"$ref": "286331162"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331165",
+                "type": "LocalDate"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getBook",
+            "_id": "286331166",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331166"},
+                "_type": "UMLParameter",
+                "_id": "286331167",
+                "type": {"$ref": "286331178"},
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331166"},
+                "_type": "UMLParameter",
+                "name": "uid",
+                "_id": "286331168",
+                "type": "String"
+              },
+              {
+                "_parent": {"$ref": "286331166"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331169",
+                "type": "LibraryBookIsbn"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "removeBook",
+            "_id": "286331170",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331170"},
+                "_type": "UMLParameter",
+                "_id": "286331171",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331170"},
+                "_type": "UMLParameter",
+                "name": "uid",
+                "_id": "286331172",
+                "type": "String"
+              },
+              {
+                "_parent": {"$ref": "286331170"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331173",
+                "type": "LibraryBookIsbn"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "move2Shelf",
+            "_id": "286331174",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331174"},
+                "_type": "UMLParameter",
+                "_id": "286331175",
+                "type": "ArrayList<LibraryMoveInfo>",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331174"},
+                "_type": "UMLParameter",
+                "name": "shelf",
+                "_id": "286331176",
+                "type": {"$ref": "286331203"}
+              },
+              {
+                "_parent": {"$ref": "286331174"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331177",
+                "type": "LocalDate"
+              }
+            ]
+          }
+        ],
+        "ownedElements": [{
+          "_parent": {"$ref": "286331156"},
+          "_type": "UMLAssociation",
+          "end2": {
+            "reference": {"$ref": "286331226"},
+            "_parent": {"$ref": "286331300"},
+            "_type": "UMLAssociationEnd",
+            "aggregation": "shared",
+            "_id": "286331302"
+          },
+          "end1": {
+            "reference": {"$ref": "286331156"},
+            "_parent": {"$ref": "286331300"},
+            "_type": "UMLAssociationEnd",
+            "_id": "286331301"
+          },
+          "_id": "286331300"
+        }],
+        "_type": "UMLClass",
+        "name": "AppointmentCounter",
+        "attributes": [
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "userBooks",
+            "_id": "286331157",
+            "type": "HashMap<String, HashMap<LibraryBookIsbn, Book>>"
+          },
+          {
+            "_parent": {"$ref": "286331156"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "requests",
+            "_id": "286331158",
+            "type": "ArrayList<LibraryReqCmd>"
+          }
+        ],
+        "_id": "286331156"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getBookId",
+            "_id": "286331183",
+            "parameters": [{
+              "_parent": {"$ref": "286331183"},
+              "_type": "UMLParameter",
+              "_id": "286331184",
+              "type": "LibraryBookId",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getIsbn",
+            "_id": "286331185",
+            "parameters": [{
+              "_parent": {"$ref": "286331185"},
+              "_type": "UMLParameter",
+              "_id": "286331186",
+              "type": "LibraryBookIsbn",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getBookIsbnType",
+            "_id": "286331187",
+            "parameters": [{
+              "_parent": {"$ref": "286331187"},
+              "_type": "UMLParameter",
+              "_id": "286331188",
+              "type": "LibraryBookIsbn.Type",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "setReservedDate",
+            "_id": "286331189",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331189"},
+                "_type": "UMLParameter",
+                "_id": "286331190",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331189"},
+                "_type": "UMLParameter",
+                "name": "reservedDate",
+                "_id": "286331191",
+                "type": "LocalDate"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "noLongerReserved",
+            "_id": "286331192",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331192"},
+                "_type": "UMLParameter",
+                "_id": "286331193",
+                "type": "boolean",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331192"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331194",
+                "type": "LocalDate"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getCurrentState",
+            "_id": "286331195",
+            "parameters": [{
+              "_parent": {"$ref": "286331195"},
+              "_type": "UMLParameter",
+              "_id": "286331196",
+              "type": "LibraryBookState",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "setCurrentState",
+            "_id": "286331197",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331197"},
+                "_type": "UMLParameter",
+                "_id": "286331198",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331197"},
+                "_type": "UMLParameter",
+                "name": "state",
+                "_id": "286331199",
+                "type": "LibraryBookState"
+              },
+              {
+                "_parent": {"$ref": "286331197"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331200",
+                "type": "LocalDate"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getHistory",
+            "_id": "286331201",
+            "parameters": [{
+              "_parent": {"$ref": "286331201"},
+              "_type": "UMLParameter",
+              "_id": "286331202",
+              "type": "ArrayList<LibraryTrace>",
+              "direction": "return"
+            }]
+          }
+        ],
+        "ownedElements": [
+          {
+            "_parent": {"$ref": "286331178"},
+            "_type": "UMLAssociation",
+            "end2": {
+              "reference": {"$ref": "286331156"},
+              "_parent": {"$ref": "286331288"},
+              "_type": "UMLAssociationEnd",
+              "aggregation": "shared",
+              "_id": "286331290"
+            },
+            "end1": {
+              "reference": {"$ref": "286331178"},
+              "_parent": {"$ref": "286331288"},
+              "_type": "UMLAssociationEnd",
+              "_id": "286331289"
+            },
+            "_id": "286331288"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "_type": "UMLAssociation",
+            "end2": {
+              "reference": {"$ref": "286331203"},
+              "_parent": {"$ref": "286331291"},
+              "_type": "UMLAssociationEnd",
+              "aggregation": "shared",
+              "_id": "286331293"
+            },
+            "end1": {
+              "reference": {"$ref": "286331178"},
+              "_parent": {"$ref": "286331291"},
+              "_type": "UMLAssociationEnd",
+              "_id": "286331292"
+            },
+            "_id": "286331291"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "_type": "UMLAssociation",
+            "end2": {
+              "reference": {"$ref": "286331216"},
+              "_parent": {"$ref": "286331294"},
+              "_type": "UMLAssociationEnd",
+              "aggregation": "shared",
+              "_id": "286331296"
+            },
+            "end1": {
+              "reference": {"$ref": "286331178"},
+              "_parent": {"$ref": "286331294"},
+              "_type": "UMLAssociationEnd",
+              "_id": "286331295"
+            },
+            "_id": "286331294"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "_type": "UMLAssociation",
+            "end2": {
+              "reference": {"$ref": "286331226"},
+              "_parent": {"$ref": "286331309"},
+              "_type": "UMLAssociationEnd",
+              "aggregation": "shared",
+              "_id": "286331311"
+            },
+            "end1": {
+              "reference": {"$ref": "286331178"},
+              "_parent": {"$ref": "286331309"},
+              "_type": "UMLAssociationEnd",
+              "_id": "286331310"
+            },
+            "_id": "286331309"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "_type": "UMLAssociation",
+            "end2": {
+              "reference": {"$ref": "286331260"},
+              "_parent": {"$ref": "286331312"},
+              "_type": "UMLAssociationEnd",
+              "aggregation": "shared",
+              "_id": "286331314"
+            },
+            "end1": {
+              "reference": {"$ref": "286331178"},
+              "_parent": {"$ref": "286331312"},
+              "_type": "UMLAssociationEnd",
+              "_id": "286331313"
+            },
+            "_id": "286331312"
+          }
+        ],
+        "_type": "UMLClass",
+        "name": "Book",
+        "attributes": [
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "bookId",
+            "_id": "286331179",
+            "type": "LibraryBookId"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "reservedDate",
+            "_id": "286331180",
+            "type": "LocalDate"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "currentState",
+            "_id": "286331181",
+            "type": "LibraryBookState"
+          },
+          {
+            "_parent": {"$ref": "286331178"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "history",
+            "_id": "286331182",
+            "type": "ArrayList<LibraryTrace>"
+          }
+        ],
+        "_id": "286331178"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331203"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "addBook",
+            "_id": "286331205",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331205"},
+                "_type": "UMLParameter",
+                "_id": "286331206",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331205"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331207",
+                "type": {"$ref": "286331178"}
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331203"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getBook",
+            "_id": "286331208",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331208"},
+                "_type": "UMLParameter",
+                "_id": "286331209",
+                "type": {"$ref": "286331178"},
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331208"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331210",
+                "type": "LibraryBookIsbn"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331203"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "removeBook",
+            "_id": "286331211",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331211"},
+                "_type": "UMLParameter",
+                "_id": "286331212",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331211"},
+                "_type": "UMLParameter",
+                "name": "bookId",
+                "_id": "286331213",
+                "type": "LibraryBookId"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331203"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "print",
+            "_id": "286331214",
+            "parameters": [{
+              "_parent": {"$ref": "286331214"},
+              "_type": "UMLParameter",
+              "_id": "286331215",
+              "type": "void",
+              "direction": "return"
+            }]
+          }
+        ],
+        "ownedElements": [{
+          "_parent": {"$ref": "286331203"},
+          "_type": "UMLAssociation",
+          "end2": {
+            "reference": {"$ref": "286331226"},
+            "_parent": {"$ref": "286331297"},
+            "_type": "UMLAssociationEnd",
+            "aggregation": "shared",
+            "_id": "286331299"
+          },
+          "end1": {
+            "reference": {"$ref": "286331203"},
+            "_parent": {"$ref": "286331297"},
+            "_type": "UMLAssociationEnd",
+            "_id": "286331298"
+          },
+          "_id": "286331297"
+        }],
+        "_type": "UMLClass",
+        "name": "BookShelf",
+        "attributes": [{
+          "_parent": {"$ref": "286331203"},
+          "visibility": "private",
+          "_type": "UMLAttribute",
+          "name": "books",
+          "_id": "286331204",
+          "type": "HashMap<LibraryBookIsbn, ArrayList<Book>>"
+        }],
+        "_id": "286331203"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331216"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "returnBook",
+            "_id": "286331218",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331218"},
+                "_type": "UMLParameter",
+                "_id": "286331219",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331218"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331220",
+                "type": {"$ref": "286331178"}
+              },
+              {
+                "_parent": {"$ref": "286331218"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331221",
+                "type": "LocalDate"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331216"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "move2Shelf",
+            "_id": "286331222",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331222"},
+                "_type": "UMLParameter",
+                "_id": "286331223",
+                "type": "ArrayList<LibraryMoveInfo>",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331222"},
+                "_type": "UMLParameter",
+                "name": "shelf",
+                "_id": "286331224",
+                "type": {"$ref": "286331203"}
+              },
+              {
+                "_parent": {"$ref": "286331222"},
+                "_type": "UMLParameter",
+                "name": "date",
+                "_id": "286331225",
+                "type": "LocalDate"
+              }
+            ]
+          }
+        ],
+        "ownedElements": [{
+          "_parent": {"$ref": "286331216"},
+          "_type": "UMLAssociation",
+          "end2": {
+            "reference": {"$ref": "286331226"},
+            "_parent": {"$ref": "286331303"},
+            "_type": "UMLAssociationEnd",
+            "aggregation": "shared",
+            "_id": "286331305"
+          },
+          "end1": {
+            "reference": {"$ref": "286331216"},
+            "_parent": {"$ref": "286331303"},
+            "_type": "UMLAssociationEnd",
+            "_id": "286331304"
+          },
+          "_id": "286331303"
+        }],
+        "_type": "UMLClass",
+        "name": "BorrowReturnCounter",
+        "attributes": [{
+          "_parent": {"$ref": "286331216"},
+          "visibility": "private",
+          "_type": "UMLAttribute",
+          "name": "returnedBooks",
+          "_id": "286331217",
+          "type": "ArrayList<Book>"
+        }],
+        "_id": "286331216"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "run",
+            "_id": "286331233",
+            "parameters": [{
+              "_parent": {"$ref": "286331233"},
+              "_type": "UMLParameter",
+              "_id": "286331234",
+              "type": "void",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "open",
+            "_id": "286331235",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331235"},
+                "_type": "UMLParameter",
+                "_id": "286331236",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331235"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331237",
+                "type": "LibraryCommand"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "close",
+            "_id": "286331238",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331238"},
+                "_type": "UMLParameter",
+                "_id": "286331239",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331238"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331240",
+                "type": "LibraryCommand"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "dealBorrow",
+            "_id": "286331241",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331241"},
+                "_type": "UMLParameter",
+                "_id": "286331242",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331241"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331243",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "dealOrder",
+            "_id": "286331244",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331244"},
+                "_type": "UMLParameter",
+                "_id": "286331245",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331244"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331246",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "dealPick",
+            "_id": "286331247",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331247"},
+                "_type": "UMLParameter",
+                "_id": "286331248",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331247"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331249",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "dealquery",
+            "_id": "286331250",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331250"},
+                "_type": "UMLParameter",
+                "_id": "286331251",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331250"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331252",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "dealReturn",
+            "_id": "286331253",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331253"},
+                "_type": "UMLParameter",
+                "_id": "286331254",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331253"},
+                "_type": "UMLParameter",
+                "name": "req",
+                "_id": "286331255",
+                "type": "LibraryReqCmd"
+              }
+            ]
+          }
+        ],
+        "_type": "UMLClass",
+        "name": "Library",
+        "attributes": [
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "bookShelf",
+            "_id": "286331227",
+            "type": {"$ref": "286331203"}
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "appointmentCounter",
+            "_id": "286331228",
+            "type": {"$ref": "286331156"}
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "borrowCounter",
+            "_id": "286331229",
+            "type": {"$ref": "286331216"}
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "date",
+            "_id": "286331230",
+            "type": "LocalDate"
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "students",
+            "_id": "286331231",
+            "type": "HashMap<String, Student>"
+          },
+          {
+            "_parent": {"$ref": "286331226"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "allBooks",
+            "_id": "286331232",
+            "type": "HashMap<LibraryBookId, Book>"
+          }
+        ],
+        "_id": "286331226"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [{
+          "_parent": {"$ref": "286331256"},
+          "isStatic": true,
+          "visibility": "public",
+          "_type": "UMLOperation",
+          "name": "main",
+          "_id": "286331257",
+          "parameters": [
+            {
+              "_parent": {"$ref": "286331257"},
+              "_type": "UMLParameter",
+              "_id": "286331258",
+              "type": "void",
+              "direction": "return"
+            },
+            {
+              "_parent": {"$ref": "286331257"},
+              "_type": "UMLParameter",
+              "name": "args",
+              "_id": "286331259",
+              "type": "String[]"
+            }
+          ]
+        }],
+        "_type": "UMLClass",
+        "name": "MainClass",
+        "attributes": [],
+        "_id": "286331256"
+      },
+      {
+        "_parent": {"$ref": "286331154"},
+        "operations": [
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "addBook",
+            "_id": "286331264",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331264"},
+                "_type": "UMLParameter",
+                "_id": "286331265",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331264"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331266",
+                "type": "LibraryBookIsbn"
+              },
+              {
+                "_parent": {"$ref": "286331264"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331267",
+                "type": {"$ref": "286331178"}
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "removeBook",
+            "_id": "286331268",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331268"},
+                "_type": "UMLParameter",
+                "_id": "286331269",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331268"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331270",
+                "type": "LibraryBookIsbn"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "getHeldBook",
+            "_id": "286331271",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331271"},
+                "_type": "UMLParameter",
+                "_id": "286331272",
+                "type": {"$ref": "286331178"},
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331271"},
+                "_type": "UMLParameter",
+                "name": "isbn",
+                "_id": "286331273",
+                "type": "LibraryBookIsbn"
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "canBorrowBook",
+            "_id": "286331274",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331274"},
+                "_type": "UMLParameter",
+                "_id": "286331275",
+                "type": "boolean",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331274"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331276",
+                "type": {"$ref": "286331178"}
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "canReserve",
+            "_id": "286331277",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331277"},
+                "_type": "UMLParameter",
+                "_id": "286331278",
+                "type": "boolean",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331277"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331279",
+                "type": {"$ref": "286331178"}
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "hadBookB",
+            "_id": "286331280",
+            "parameters": [{
+              "_parent": {"$ref": "286331280"},
+              "_type": "UMLParameter",
+              "_id": "286331281",
+              "type": "boolean",
+              "direction": "return"
+            }]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "hadBookC",
+            "_id": "286331282",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331282"},
+                "_type": "UMLParameter",
+                "_id": "286331283",
+                "type": "boolean",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331282"},
+                "_type": "UMLParameter",
+                "name": "book",
+                "_id": "286331284",
+                "type": {"$ref": "286331178"}
+              }
+            ]
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "public",
+            "_type": "UMLOperation",
+            "name": "setReservedNotfetch",
+            "_id": "286331285",
+            "parameters": [
+              {
+                "_parent": {"$ref": "286331285"},
+                "_type": "UMLParameter",
+                "_id": "286331286",
+                "type": "void",
+                "direction": "return"
+              },
+              {
+                "_parent": {"$ref": "286331285"},
+                "_type": "UMLParameter",
+                "name": "reservedNotfetch",
+                "_id": "286331287",
+                "type": "boolean"
+              }
+            ]
+          }
+        ],
+        "ownedElements": [{
+          "_parent": {"$ref": "286331260"},
+          "_type": "UMLAssociation",
+          "end2": {
+            "reference": {"$ref": "286331226"},
+            "_parent": {"$ref": "286331306"},
+            "_type": "UMLAssociationEnd",
+            "aggregation": "shared",
+            "_id": "286331308"
+          },
+          "end1": {
+            "reference": {"$ref": "286331260"},
+            "_parent": {"$ref": "286331306"},
+            "_type": "UMLAssociationEnd",
+            "_id": "286331307"
+          },
+          "_id": "286331306"
+        }],
+        "_type": "UMLClass",
+        "name": "Student",
+        "attributes": [
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "id",
+            "_id": "286331261",
+            "type": "String"
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "heldBooks",
+            "_id": "286331262",
+            "type": "HashMap<LibraryBookIsbn, Book>"
+          },
+          {
+            "_parent": {"$ref": "286331260"},
+            "visibility": "private",
+            "_type": "UMLAttribute",
+            "name": "reservedNotfetch",
+            "_id": "286331263",
+            "type": "boolean"
+          }
+        ],
+        "_id": "286331260"
+      }
+    ],
+    "name": "Model",
+    "_type": "UMLModel",
+    "_id": "286331154"
+  }],
+  "name": "uml",
+  "_type": "Project",
+  "_id": "286331153"
+}
