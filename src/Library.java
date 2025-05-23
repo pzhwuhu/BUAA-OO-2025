@@ -71,7 +71,7 @@ public class Library {
     }
 
     public void close (LibraryCommand req) {
-        return; //下班了还不去玩？？？别 pua自己了
+        PRINTER.move(date); //下班了还不去玩？？？别 pua自己了
     }
 
     public void dealBorrow (LibraryReqCmd req) {
