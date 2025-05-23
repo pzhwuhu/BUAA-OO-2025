@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 
 import static com.oocourse.library1.LibraryIO.PRINTER;
 import static com.oocourse.library1.LibraryIO.SCANNER;
@@ -15,6 +16,7 @@ public class Library {
     private LocalDate date;
     private HashMap<String, Student> students = new HashMap<>();
     private HashMap<LibraryBookId, Book> allBooks = new HashMap<>();
+    private HashMap<LibraryBookIsbn, ArrayList<Book>> isbnBooks = new HashMap<>();
 
     public Library (BookShelf bookShelf, AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
         this.bookShelf = bookShelf;
@@ -28,12 +30,15 @@ public class Library {
         for (Map.Entry<LibraryBookIsbn, Integer> entry : bookList.entrySet()) {
             LibraryBookIsbn isbn = entry.getKey();
             int count = entry.getValue();
+            ArrayList<Book> books = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
                 LibraryBookId bookId = new LibraryBookId(isbn.getType(), isbn.getUid(), String.format("%02d", i));
                 Book book = new Book(bookId);
                 bookShelf.addBook(book);
                 allBooks.put(bookId, book);
+                books.add(book);
             }
+            isbnBooks.put(isbn, books);
         }
         while (true) {
             LibraryCommand command = SCANNER.nextCommand();
@@ -60,15 +65,13 @@ public class Library {
     public void open (LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
         infos.addAll(appointmentCounter.move2Shelf(bookShelf, date));
-        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, true));
+        infos.addAll(borrowCounter.move2Shelf(bookShelf, date));
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date));
         PRINTER.move(date, infos);
     }
 
     public void close (LibraryCommand req) {
-        ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
-        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, date, false));
-        infos.addAll(borrowCounter.move2Shelf(bookShelf, date));
-        PRINTER.move(date, infos);
+        return; //下班了还不去玩？？？别 pua自己了
     }
 
     public void dealBorrow (LibraryReqCmd req) {
@@ -93,8 +96,14 @@ public class Library {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
-        Book book = bookShelf.getBook(isbn);
-        if (book != null && student.canReserve(book)) {
+        Book book;
+        if (bookShelf.containsBook(isbn)) {
+            book = bookShelf.getBook(isbn);
+        } else {
+            int index = isbnBooks.get(isbn).size();
+            book = isbnBooks.get(isbn).get(new Random().nextInt(index));
+        }
+        if (student.canReserve(book)) {
             appointmentCounter.addRequest(req);
             student.setReservedNotfetch(true);
             PRINTER.accept(req);

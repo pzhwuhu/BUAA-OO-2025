@@ -19,6 +19,13 @@ public class BookShelf {
         return books.get(isbn).get(0);
     }
 
+    public boolean containsBook(LibraryBookIsbn isbn) {
+        if (books.containsKey(isbn)) {
+            return books.get(isbn).size() > 0;
+        }
+        return false;
+    }
+
     public void removeBook(LibraryBookId bookId) {
         ArrayList<Book> booksToRemove = books.get(bookId.getBookIsbn());
         for (Book book : booksToRemove) {
