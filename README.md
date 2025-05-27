@@ -1,4 +1,3 @@
-# BUAA-OO-2025
-* 25年北航OO的代码仓库
-* 作业、实验代码在不同分支下
+# BUAA-OO-2025-hw8
+* hw8是第二单元总结，欢迎去我博客can can我的总结， [戳我直达](https://pzhwuhu.github.io/2025/04/18/OO-Unit2/)
 * Have fun 😀
