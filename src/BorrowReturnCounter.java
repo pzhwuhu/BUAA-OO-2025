@@ -1,5 +1,5 @@
-import com.oocourse.library1.LibraryBookState;
-import com.oocourse.library1.LibraryMoveInfo;
+import com.oocourse.library2.LibraryBookState;
+import com.oocourse.library2.LibraryMoveInfo;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

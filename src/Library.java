@@ -1,11 +1,11 @@
-import com.oocourse.library1.LibraryBookId;
-import com.oocourse.library1.LibraryBookIsbn;
-import com.oocourse.library1.LibraryBookState;
-import com.oocourse.library1.LibraryCloseCmd;
-import com.oocourse.library1.LibraryCommand;
-import com.oocourse.library1.LibraryMoveInfo;
-import com.oocourse.library1.LibraryOpenCmd;
-import com.oocourse.library1.LibraryReqCmd;
+import com.oocourse.library2.LibraryBookId;
+import com.oocourse.library2.LibraryBookIsbn;
+import com.oocourse.library2.LibraryBookState;
+import com.oocourse.library2.LibraryCloseCmd;
+import com.oocourse.library2.LibraryCommand;
+import com.oocourse.library2.LibraryMoveInfo;
+import com.oocourse.library2.LibraryOpenCmd;
+import com.oocourse.library2.LibraryReqCmd;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -13,8 +13,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import static com.oocourse.library1.LibraryIO.PRINTER;
-import static com.oocourse.library1.LibraryIO.SCANNER;
+import static com.oocourse.library2.LibraryIO.PRINTER;
+import static com.oocourse.library2.LibraryIO.SCANNER;
 
 public class Library {
     private BookShelf bookShelf;
