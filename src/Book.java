@@ -2,6 +2,7 @@ import com.oocourse.library2.LibraryBookId;
 import com.oocourse.library2.LibraryBookIsbn;
 import com.oocourse.library2.LibraryBookState;
 import com.oocourse.library2.LibraryTrace;
+import com.oocourse.library2.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -17,11 +18,17 @@ public class Book {
         this.bookId = bookId;
     }
 
-    public LibraryBookId getBookId() { return bookId; }
+    public LibraryBookId getBookId() {
+        return bookId;
+    }
 
-    public LibraryBookIsbn getIsbn() { return bookId.getBookIsbn(); }
+    public LibraryBookIsbn getIsbn() {
+        return bookId.getBookIsbn();
+    }
 
-    public LibraryBookIsbn.Type getBookIsbnType() { return bookId.getType(); }
+    public LibraryBookIsbn.Type getBookIsbnType() {
+        return bookId.getType();
+    }
 
     public void setReservedDate(LocalDate reservedDate, boolean isOpen) {
         if (isOpen) {
@@ -32,13 +39,24 @@ public class Book {
     }
 
     public boolean noLongerReserved(LocalDate date) {
+        if (reservedDate == null)
+            return false;
         long days = ChronoUnit.DAYS.between(reservedDate, date);
-        //System.out.println("today: " + date + " reserve: " + reservedDate + " days: " + days);
+        // System.out.println("today: " + date + " reserve: " + reservedDate + " days: "
+        // + days);
         return days >= 5;
     }
 
-    public LibraryBookState getCurrentState() { return currentState; }
+    public LibraryBookState getCurrentState() {
+        return currentState;
+    }
 
+    @Trigger(from = "OnShelf", to = { "BorrowedByUser", "InReadingRoom", "InAppointmentOffice" })
+    @Trigger(from = "InHotShelf", to = { "BorrowedByUser", "InReadingRoom", "InAppointmentOffice" })
+    @Trigger(from = "BorrowedByUser", to = "InBorrowReturnOffice")
+    @Trigger(from = "InAppointmentOffice", to = { "BorrowedByUser", "OnShelf" })
+    @Trigger(from = "InBorrowReturnOffice", to = { "OnShelf", "InHotShelf" })
+    @Trigger(from = "InReadingRoom", to = "InBorrowReturnOffice")
     public void setCurrentState(LibraryBookState state, LocalDate date) {
         if (currentState != state) {
             history.add(new LibraryTrace(date, currentState, state));
@@ -46,5 +64,7 @@ public class Book {
         }
     }
 
-    public ArrayList<LibraryTrace> getHistory() { return history; }
+    public ArrayList<LibraryTrace> getHistory() {
+        return history;
+    }
 }

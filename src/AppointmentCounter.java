@@ -12,22 +12,36 @@ public class AppointmentCounter {
     private HashMap<String, HashMap<LibraryBookIsbn, Book>> userBooks = new HashMap<>();
     private ArrayList<LibraryReqCmd> requests = new ArrayList<>();
 
-    public void addRequest(LibraryReqCmd req) { requests.add(req); }
+    public void addRequest(LibraryReqCmd req) {
+        requests.add(req);
+    }
 
-    public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf,
-        LocalDate date, boolean isOpen) {
+    public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, HotBookShelf hotShelf,
+            LocalDate date, boolean isOpen) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (LibraryReqCmd req : requests) {
             String userId = req.getStudentId();
             Book book = shelf.getBook(req.getBookIsbn());
+            String fromLocation = "bs";
+
+            // 如果普通书架没有，从热门书架找
+            if (book == null) {
+                book = hotShelf.getBook(req.getBookIsbn());
+                fromLocation = "hbs";
+            }
+
             if (book != null) {
                 LibraryBookId bookId = book.getBookId();
-                shelf.removeBook(bookId);
+                if (fromLocation.equals("bs")) {
+                    shelf.removeBook(bookId);
+                } else {
+                    hotShelf.removeBook(bookId);
+                }
                 userBooks.putIfAbsent(userId, new HashMap<>());
                 userBooks.get(userId).put(bookId.getBookIsbn(), book);
                 book.setReservedDate(date, isOpen);
                 book.setCurrentState(LibraryBookState.APPOINTMENT_OFFICE, date);
-                info.add(new LibraryMoveInfo(bookId, "bs", "ao", userId));
+                info.add(new LibraryMoveInfo(bookId, fromLocation, "ao", userId));
             }
         }
         requests.clear();
@@ -48,7 +62,7 @@ public class AppointmentCounter {
     }
 
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date,
-        HashMap<String, Student> students) {
+            HashMap<String, Student> students) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (String userId : userBooks.keySet()) {
             HashMap<LibraryBookIsbn, Book> books = userBooks.get(userId);
