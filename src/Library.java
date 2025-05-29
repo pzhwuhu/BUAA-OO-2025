@@ -98,18 +98,21 @@ public class Library {
         HashSet<LibraryBookIsbn> currentHotBooks = new HashSet<>(lastHotBooks);
         lastHotBooks.clear(); // 清空，准备记录本次开馆的热门书籍
 
-        // 整理热门书架
-        infos.addAll(arrangeHotBooks(currentHotBooks));
-
-        // 处理预约
-        infos.addAll(appointmentCounter.move2Shelf(bookShelf, date, students));
-        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, hotBookShelf, date, true));
-
         // 清理借还处
         infos.addAll(borrowCounter.move2Shelf(bookShelf, hotBookShelf, date, currentHotBooks));
 
         // 清理阅览室
         infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom, bookShelf, hotBookShelf, date, currentHotBooks));
+
+        // 整理热门书架
+        infos.addAll(arrangeHotBooks(currentHotBooks));
+
+        // 清理预约处
+        infos.addAll(appointmentCounter.move2Shelf(bookShelf, date, students));
+        // 整理热门书架
+        infos.addAll(arrangeHotBooks(currentHotBooks));
+        //处理预约
+        infos.addAll(appointmentCounter.moveFromShelf(bookShelf, hotBookShelf, date, true));
 
         PRINTER.move(date, infos);
         lastOpenDate = date;
