@@ -1,0 +1,7 @@
+*.jar
+.idea
+.vscode
+test/
+out/
+*.iml
+*.txt

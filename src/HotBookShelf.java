@@ -4,7 +4,7 @@ import com.oocourse.library2.LibraryBookIsbn;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class BookShelf {
+public class HotBookShelf {
     private HashMap<LibraryBookIsbn, ArrayList<Book>> books = new HashMap<>();
 
     public void addBook(Book book) {
@@ -48,9 +48,5 @@ public class BookShelf {
 
     public void clear() {
         books.clear();
-    }
-
-    public void print() {
-        return;
     }
 }
