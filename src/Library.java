@@ -6,6 +6,7 @@ import com.oocourse.library2.LibraryCommand;
 import com.oocourse.library2.LibraryMoveInfo;
 import com.oocourse.library2.LibraryOpenCmd;
 import com.oocourse.library2.LibraryReqCmd;
+import com.oocourse.library2.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -112,7 +113,7 @@ public class Library {
         infos.addAll(appointmentCounter.move2Shelf(bookShelf, date, students));
         // 整理热门书架
         infos.addAll(arrangeHotBooks(currentHotBooks));
-        //处理预约
+        // 处理预约
         infos.addAll(appointmentCounter.moveFromShelf(bookShelf, hotBookShelf, date, true));
 
         PRINTER.move(date, infos);
@@ -125,6 +126,8 @@ public class Library {
         PRINTER.move(date, infos);
     }
 
+    @Trigger(from = "BookShelf", to = "HotBookShelf")
+    @Trigger(from = "HotBookShelf", to = "BookShelf")
     private ArrayList<LibraryMoveInfo> arrangeHotBooks(HashSet<LibraryBookIsbn> currentHotBooks) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
 
@@ -162,6 +165,8 @@ public class Library {
         return infos;
     }
 
+    @Trigger(from = "HotBookShelf", to = "User")
+    @Trigger(from = "BookShelf", to = "User")
     public void dealBorrow(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -191,6 +196,8 @@ public class Library {
         }
     }
 
+    @Trigger(from = "HotBookShelf", to = "AppointmentOffice")
+    @Trigger(from = "BookShelf", to = "AppointmentOffice")
     public void dealOrder(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -214,6 +221,7 @@ public class Library {
         }
     }
 
+    @Trigger(from = "AppointmentOffice", to = "User")
     public void dealPick(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -240,6 +248,7 @@ public class Library {
         }
     }
 
+    @Trigger(from = "User", to = "BorrowReturnOffice")
     public void dealReturn(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookId bookId = req.getBookId();
@@ -255,6 +264,8 @@ public class Library {
         }
     }
 
+    @Trigger(from = "HotBookShelf", to = "ReadingRoom")
+    @Trigger(from = "BookShelf", to = "ReadingRoom")
     public void dealRead(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -290,6 +301,7 @@ public class Library {
         }
     }
 
+    @Trigger(from = "ReadingRoom", to = "BorrowReturnOffice")
     public void dealRestore(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookId bookId = req.getBookId();

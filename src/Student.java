@@ -1,6 +1,5 @@
 import com.oocourse.library2.LibraryBookId;
 import com.oocourse.library2.LibraryBookIsbn;
-import com.oocourse.library2.annotation.Trigger;
 
 import java.util.HashMap;
 
@@ -13,12 +12,10 @@ public class Student {
         this.id = id;
     }
 
-    @Trigger(from = "library", to = "student")
     public void addBook(LibraryBookIsbn isbn, Book book) {
         heldBooks.put(isbn, book);
     }
 
-    @Trigger(from = "student", to = "library")
     public void removeBook(LibraryBookIsbn isbn) {
         heldBooks.remove(isbn);
     }

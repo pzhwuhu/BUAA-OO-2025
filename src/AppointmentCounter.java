@@ -17,6 +17,8 @@ public class AppointmentCounter {
         requests.add(req);
     }
 
+    @Trigger(from = "BookShelf", to = "AppointmentOffice")
+    @Trigger(from = "HotBookShelf", to = "AppointmentOffice")
     public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, HotBookShelf hotShelf,
         LocalDate date, boolean isOpen) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
@@ -62,6 +64,7 @@ public class AppointmentCounter {
         }
     }
 
+    @Trigger(from = "AppointmentOffice", to = "BookShelf")
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date,
         HashMap<String, Student> students) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();

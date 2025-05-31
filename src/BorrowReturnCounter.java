@@ -1,6 +1,7 @@
 import com.oocourse.library2.LibraryBookState;
 import com.oocourse.library2.LibraryMoveInfo;
 import com.oocourse.library2.LibraryBookIsbn;
+import com.oocourse.library2.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -14,6 +15,8 @@ public class BorrowReturnCounter {
         returnedBooks.add(book);
     }
 
+    @Trigger(from = "BorrowReturnOffice", to = "BookShelf")
+    @Trigger(from = "BorrowReturnOffice", to = "HotBookShelf")
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, HotBookShelf hotShelf,
         LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
@@ -34,6 +37,8 @@ public class BorrowReturnCounter {
         return info;
     }
 
+    @Trigger(from = "ReadingRoom", to = "BookShelf")
+    @Trigger(from = "ReadingRoom", to = "HotBookShelf")
     public ArrayList<LibraryMoveInfo> moveReadingRoom2Shelf(ReadingRoom readingRoom,
         BookShelf shelf, HotBookShelf hotShelf, LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
