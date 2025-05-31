@@ -3,6 +3,7 @@ import com.oocourse.library2.LibraryBookIsbn;
 import com.oocourse.library2.LibraryBookState;
 import com.oocourse.library2.LibraryMoveInfo;
 import com.oocourse.library2.LibraryReqCmd;
+import com.oocourse.library2.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ public class AppointmentCounter {
         requests.add(req);
     }
 
+    @Trigger(from = "shelf", to = "appointment")
     public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, HotBookShelf hotShelf,
             LocalDate date, boolean isOpen) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
@@ -61,6 +63,7 @@ public class AppointmentCounter {
         }
     }
 
+    @Trigger(from = "appointment", to = "shelf")
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date,
             HashMap<String, Student> students) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();

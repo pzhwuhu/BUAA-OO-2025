@@ -51,12 +51,6 @@ public class Book {
         return currentState;
     }
 
-    @Trigger(from = "OnShelf", to = { "BorrowedByUser", "InReadingRoom", "InAppointmentOffice" })
-    @Trigger(from = "InHotShelf", to = { "BorrowedByUser", "InReadingRoom", "InAppointmentOffice" })
-    @Trigger(from = "BorrowedByUser", to = "InBorrowReturnOffice")
-    @Trigger(from = "InAppointmentOffice", to = { "BorrowedByUser", "OnShelf" })
-    @Trigger(from = "InBorrowReturnOffice", to = { "OnShelf", "InHotShelf" })
-    @Trigger(from = "InReadingRoom", to = "InBorrowReturnOffice")
     public void setCurrentState(LibraryBookState state, LocalDate date) {
         if (currentState != state) {
             history.add(new LibraryTrace(date, currentState, state));
