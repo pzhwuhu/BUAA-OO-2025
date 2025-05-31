@@ -1834,13 +1834,13 @@
         "vertices": [
           {
             "_parent": {"$ref": "286331405"},
-            "name": "shelf",
+            "name": "library",
             "_type": "UMLState",
             "_id": "286331406"
           },
           {
             "_parent": {"$ref": "286331405"},
-            "name": "appointment",
+            "name": "student",
             "_type": "UMLState",
             "_id": "286331407"
           }
@@ -1850,13 +1850,13 @@
         "transitions": [
           {
             "_parent": {"$ref": "286331405"},
-            "name": "moveFromShelf()",
+            "name": "addBook()",
             "_type": "UMLTransition",
             "_id": "286331408",
             "source": {"$ref": "286331406"},
             "triggers": [{
               "_parent": {"$ref": "286331408"},
-              "name": "moveFromShelf()",
+              "name": "addBook()",
               "_type": "UMLEvent",
               "_id": "286331409"
             }],
@@ -1864,13 +1864,13 @@
           },
           {
             "_parent": {"$ref": "286331405"},
-            "name": "move2Shelf()",
+            "name": "removeBook()",
             "_type": "UMLTransition",
             "_id": "286331410",
             "source": {"$ref": "286331407"},
             "triggers": [{
               "_parent": {"$ref": "286331410"},
-              "name": "move2Shelf()",
+              "name": "removeBook()",
               "_type": "UMLEvent",
               "_id": "286331411"
             }],

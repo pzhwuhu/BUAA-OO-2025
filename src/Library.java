@@ -31,7 +31,7 @@ public class Library {
     private HashSet<LibraryBookIsbn> lastHotBooks = new HashSet<>();
 
     public Library(BookShelf bookShelf, HotBookShelf hotBookShelf, ReadingRoom readingRoom,
-            AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
+        AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
         this.bookShelf = bookShelf;
         this.hotBookShelf = hotBookShelf;
         this.readingRoom = readingRoom;
@@ -48,7 +48,7 @@ public class Library {
             ArrayList<Book> books = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
                 LibraryBookId bookId = new LibraryBookId(isbn.getType(),
-                        isbn.getUid(), String.format("%02d", i));
+                    isbn.getUid(), String.format("%02d", i));
                 Book book = new Book(bookId);
                 bookShelf.addBook(book);
                 allBooks.put(bookId, book);
@@ -102,7 +102,8 @@ public class Library {
         infos.addAll(borrowCounter.move2Shelf(bookShelf, hotBookShelf, date, currentHotBooks));
 
         // 清理阅览室
-        infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom, bookShelf, hotBookShelf, date, currentHotBooks));
+        infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom,
+            bookShelf, hotBookShelf, date, currentHotBooks));
 
         // 整理热门书架
         infos.addAll(arrangeHotBooks(currentHotBooks));
@@ -129,10 +130,8 @@ public class Library {
 
         // 获取当前普通书架和热门书架上的所有书籍
         ArrayList<Book> normalShelfBooks = new ArrayList<>(bookShelf.getAllBooks());
-        ArrayList<Book> hotShelfBooks = new ArrayList<>(hotBookShelf.getAllBooks());
-
-        // 清空两个书架
         bookShelf.clear();
+        ArrayList<Book> hotShelfBooks = new ArrayList<>(hotBookShelf.getAllBooks());
         hotBookShelf.clear();
 
         // 重新分配书籍

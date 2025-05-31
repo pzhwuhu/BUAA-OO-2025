@@ -6,7 +6,7 @@ public class MainClass {
         AppointmentCounter appointmentCounter = new AppointmentCounter();
         BorrowReturnCounter borrowCounter = new BorrowReturnCounter();
         Library library = new Library(bookShelf, hotBookShelf, readingRoom,
-                appointmentCounter, borrowCounter);
+            appointmentCounter, borrowCounter);
         library.run();
     }
 }

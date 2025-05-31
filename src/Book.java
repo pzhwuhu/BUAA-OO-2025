@@ -2,7 +2,6 @@ import com.oocourse.library2.LibraryBookId;
 import com.oocourse.library2.LibraryBookIsbn;
 import com.oocourse.library2.LibraryBookState;
 import com.oocourse.library2.LibraryTrace;
-import com.oocourse.library2.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -39,8 +38,9 @@ public class Book {
     }
 
     public boolean noLongerReserved(LocalDate date) {
-        if (reservedDate == null)
+        if (reservedDate == null) {
             return false;
+        }
         long days = ChronoUnit.DAYS.between(reservedDate, date);
         // System.out.println("today: " + date + " reserve: " + reservedDate + " days: "
         // + days);

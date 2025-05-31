@@ -15,7 +15,7 @@ public class BorrowReturnCounter {
     }
 
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, HotBookShelf hotShelf,
-            LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
+        LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (Book book : returnedBooks) {
             if (hotBooks.contains(book.getIsbn())) {
@@ -35,7 +35,7 @@ public class BorrowReturnCounter {
     }
 
     public ArrayList<LibraryMoveInfo> moveReadingRoom2Shelf(ReadingRoom readingRoom,
-            BookShelf shelf, HotBookShelf hotShelf, LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
+        BookShelf shelf, HotBookShelf hotShelf, LocalDate date, HashSet<LibraryBookIsbn> hotBooks) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         ArrayList<Book> allReadingBooks = readingRoom.getAllBooks();
         for (Book book : allReadingBooks) {
