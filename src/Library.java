@@ -40,6 +40,7 @@ public class Library {
         this.borrowCounter = borrowCounter;
     }
 
+    @Trigger(from = "InitState", to = "BookShelf")
     public void run() {
         // 转换isbn->id
         Map<LibraryBookIsbn, Integer> bookList = SCANNER.getInventory();
@@ -196,8 +197,6 @@ public class Library {
         }
     }
 
-    @Trigger(from = "HotBookShelf", to = "AppointmentOffice")
-    @Trigger(from = "BookShelf", to = "AppointmentOffice")
     public void dealOrder(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();

@@ -1864,9 +1864,16 @@
           },
           {
             "_parent": {"$ref": "286331405"},
+            "kind": "initial",
+            "name": "InitState",
+            "_type": "UMLPseudostate",
+            "_id": "286331425"
+          },
+          {
+            "_parent": {"$ref": "286331405"},
             "name": "User",
             "_type": "UMLState",
-            "_id": "286331429"
+            "_id": "286331432"
           }
         ],
         "_type": "UMLRegion",
@@ -1972,15 +1979,29 @@
           },
           {
             "_parent": {"$ref": "286331405"},
+            "name": "run()",
+            "_type": "UMLTransition",
+            "_id": "286331426",
+            "source": {"$ref": "286331425"},
+            "triggers": [{
+              "_parent": {"$ref": "286331426"},
+              "name": "run()",
+              "_type": "UMLEvent",
+              "_id": "286331427"
+            }],
+            "target": {"$ref": "286331406"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
             "name": "arrangeHotBooks()",
             "_type": "UMLTransition",
-            "_id": "286331425",
+            "_id": "286331428",
             "source": {"$ref": "286331406"},
             "triggers": [{
-              "_parent": {"$ref": "286331425"},
+              "_parent": {"$ref": "286331428"},
               "name": "arrangeHotBooks()",
               "_type": "UMLEvent",
-              "_id": "286331426"
+              "_id": "286331429"
             }],
             "target": {"$ref": "286331410"}
           },
@@ -1988,13 +2009,13 @@
             "_parent": {"$ref": "286331405"},
             "name": "arrangeHotBooks()",
             "_type": "UMLTransition",
-            "_id": "286331427",
+            "_id": "286331430",
             "source": {"$ref": "286331410"},
             "triggers": [{
-              "_parent": {"$ref": "286331427"},
+              "_parent": {"$ref": "286331430"},
               "name": "arrangeHotBooks()",
               "_type": "UMLEvent",
-              "_id": "286331428"
+              "_id": "286331431"
             }],
             "target": {"$ref": "286331406"}
           },
@@ -2002,83 +2023,55 @@
             "_parent": {"$ref": "286331405"},
             "name": "dealBorrow()",
             "_type": "UMLTransition",
-            "_id": "286331430",
+            "_id": "286331433",
             "source": {"$ref": "286331410"},
             "triggers": [{
-              "_parent": {"$ref": "286331430"},
+              "_parent": {"$ref": "286331433"},
               "name": "dealBorrow()",
               "_type": "UMLEvent",
-              "_id": "286331431"
+              "_id": "286331434"
             }],
-            "target": {"$ref": "286331429"}
+            "target": {"$ref": "286331432"}
           },
           {
             "_parent": {"$ref": "286331405"},
             "name": "dealBorrow()",
             "_type": "UMLTransition",
-            "_id": "286331432",
+            "_id": "286331435",
             "source": {"$ref": "286331406"},
             "triggers": [{
-              "_parent": {"$ref": "286331432"},
+              "_parent": {"$ref": "286331435"},
               "name": "dealBorrow()",
               "_type": "UMLEvent",
-              "_id": "286331433"
+              "_id": "286331436"
             }],
-            "target": {"$ref": "286331429"}
-          },
-          {
-            "_parent": {"$ref": "286331405"},
-            "name": "dealOrder()",
-            "_type": "UMLTransition",
-            "_id": "286331434",
-            "source": {"$ref": "286331410"},
-            "triggers": [{
-              "_parent": {"$ref": "286331434"},
-              "name": "dealOrder()",
-              "_type": "UMLEvent",
-              "_id": "286331435"
-            }],
-            "target": {"$ref": "286331407"}
-          },
-          {
-            "_parent": {"$ref": "286331405"},
-            "name": "dealOrder()",
-            "_type": "UMLTransition",
-            "_id": "286331436",
-            "source": {"$ref": "286331406"},
-            "triggers": [{
-              "_parent": {"$ref": "286331436"},
-              "name": "dealOrder()",
-              "_type": "UMLEvent",
-              "_id": "286331437"
-            }],
-            "target": {"$ref": "286331407"}
+            "target": {"$ref": "286331432"}
           },
           {
             "_parent": {"$ref": "286331405"},
             "name": "dealPick()",
             "_type": "UMLTransition",
-            "_id": "286331438",
+            "_id": "286331437",
             "source": {"$ref": "286331407"},
             "triggers": [{
-              "_parent": {"$ref": "286331438"},
+              "_parent": {"$ref": "286331437"},
               "name": "dealPick()",
               "_type": "UMLEvent",
-              "_id": "286331439"
+              "_id": "286331438"
             }],
-            "target": {"$ref": "286331429"}
+            "target": {"$ref": "286331432"}
           },
           {
             "_parent": {"$ref": "286331405"},
             "name": "dealReturn()",
             "_type": "UMLTransition",
-            "_id": "286331440",
-            "source": {"$ref": "286331429"},
+            "_id": "286331439",
+            "source": {"$ref": "286331432"},
             "triggers": [{
-              "_parent": {"$ref": "286331440"},
+              "_parent": {"$ref": "286331439"},
               "name": "dealReturn()",
               "_type": "UMLEvent",
-              "_id": "286331441"
+              "_id": "286331440"
             }],
             "target": {"$ref": "286331415"}
           },
@@ -2086,13 +2079,13 @@
             "_parent": {"$ref": "286331405"},
             "name": "dealRead()",
             "_type": "UMLTransition",
-            "_id": "286331442",
+            "_id": "286331441",
             "source": {"$ref": "286331410"},
             "triggers": [{
-              "_parent": {"$ref": "286331442"},
+              "_parent": {"$ref": "286331441"},
               "name": "dealRead()",
               "_type": "UMLEvent",
-              "_id": "286331443"
+              "_id": "286331442"
             }],
             "target": {"$ref": "286331420"}
           },
@@ -2100,13 +2093,13 @@
             "_parent": {"$ref": "286331405"},
             "name": "dealRead()",
             "_type": "UMLTransition",
-            "_id": "286331444",
+            "_id": "286331443",
             "source": {"$ref": "286331406"},
             "triggers": [{
-              "_parent": {"$ref": "286331444"},
+              "_parent": {"$ref": "286331443"},
               "name": "dealRead()",
               "_type": "UMLEvent",
-              "_id": "286331445"
+              "_id": "286331444"
             }],
             "target": {"$ref": "286331420"}
           },
@@ -2114,13 +2107,13 @@
             "_parent": {"$ref": "286331405"},
             "name": "dealRestore()",
             "_type": "UMLTransition",
-            "_id": "286331446",
+            "_id": "286331445",
             "source": {"$ref": "286331420"},
             "triggers": [{
-              "_parent": {"$ref": "286331446"},
+              "_parent": {"$ref": "286331445"},
               "name": "dealRestore()",
               "_type": "UMLEvent",
-              "_id": "286331447"
+              "_id": "286331446"
             }],
             "target": {"$ref": "286331415"}
           }
