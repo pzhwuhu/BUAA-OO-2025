@@ -1834,15 +1834,39 @@
         "vertices": [
           {
             "_parent": {"$ref": "286331405"},
-            "name": "library",
+            "name": "BookShelf",
             "_type": "UMLState",
             "_id": "286331406"
           },
           {
             "_parent": {"$ref": "286331405"},
-            "name": "student",
+            "name": "AppointmentOffice",
             "_type": "UMLState",
             "_id": "286331407"
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "HotBookShelf",
+            "_type": "UMLState",
+            "_id": "286331410"
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "BorrowReturnOffice",
+            "_type": "UMLState",
+            "_id": "286331415"
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "ReadingRoom",
+            "_type": "UMLState",
+            "_id": "286331420"
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "User",
+            "_type": "UMLState",
+            "_id": "286331429"
           }
         ],
         "_type": "UMLRegion",
@@ -1850,13 +1874,13 @@
         "transitions": [
           {
             "_parent": {"$ref": "286331405"},
-            "name": "addBook()",
+            "name": "moveFromShelf()",
             "_type": "UMLTransition",
             "_id": "286331408",
             "source": {"$ref": "286331406"},
             "triggers": [{
               "_parent": {"$ref": "286331408"},
-              "name": "addBook()",
+              "name": "moveFromShelf()",
               "_type": "UMLEvent",
               "_id": "286331409"
             }],
@@ -1864,17 +1888,241 @@
           },
           {
             "_parent": {"$ref": "286331405"},
-            "name": "removeBook()",
+            "name": "moveFromShelf()",
             "_type": "UMLTransition",
-            "_id": "286331410",
+            "_id": "286331411",
+            "source": {"$ref": "286331410"},
+            "triggers": [{
+              "_parent": {"$ref": "286331411"},
+              "name": "moveFromShelf()",
+              "_type": "UMLEvent",
+              "_id": "286331412"
+            }],
+            "target": {"$ref": "286331407"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "move2Shelf()",
+            "_type": "UMLTransition",
+            "_id": "286331413",
             "source": {"$ref": "286331407"},
             "triggers": [{
-              "_parent": {"$ref": "286331410"},
-              "name": "removeBook()",
+              "_parent": {"$ref": "286331413"},
+              "name": "move2Shelf()",
               "_type": "UMLEvent",
-              "_id": "286331411"
+              "_id": "286331414"
             }],
             "target": {"$ref": "286331406"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "move2Shelf()",
+            "_type": "UMLTransition",
+            "_id": "286331416",
+            "source": {"$ref": "286331415"},
+            "triggers": [{
+              "_parent": {"$ref": "286331416"},
+              "name": "move2Shelf()",
+              "_type": "UMLEvent",
+              "_id": "286331417"
+            }],
+            "target": {"$ref": "286331406"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "move2Shelf()",
+            "_type": "UMLTransition",
+            "_id": "286331418",
+            "source": {"$ref": "286331415"},
+            "triggers": [{
+              "_parent": {"$ref": "286331418"},
+              "name": "move2Shelf()",
+              "_type": "UMLEvent",
+              "_id": "286331419"
+            }],
+            "target": {"$ref": "286331410"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "moveReadingRoom2Shelf()",
+            "_type": "UMLTransition",
+            "_id": "286331421",
+            "source": {"$ref": "286331420"},
+            "triggers": [{
+              "_parent": {"$ref": "286331421"},
+              "name": "moveReadingRoom2Shelf()",
+              "_type": "UMLEvent",
+              "_id": "286331422"
+            }],
+            "target": {"$ref": "286331406"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "moveReadingRoom2Shelf()",
+            "_type": "UMLTransition",
+            "_id": "286331423",
+            "source": {"$ref": "286331420"},
+            "triggers": [{
+              "_parent": {"$ref": "286331423"},
+              "name": "moveReadingRoom2Shelf()",
+              "_type": "UMLEvent",
+              "_id": "286331424"
+            }],
+            "target": {"$ref": "286331410"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "arrangeHotBooks()",
+            "_type": "UMLTransition",
+            "_id": "286331425",
+            "source": {"$ref": "286331406"},
+            "triggers": [{
+              "_parent": {"$ref": "286331425"},
+              "name": "arrangeHotBooks()",
+              "_type": "UMLEvent",
+              "_id": "286331426"
+            }],
+            "target": {"$ref": "286331410"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "arrangeHotBooks()",
+            "_type": "UMLTransition",
+            "_id": "286331427",
+            "source": {"$ref": "286331410"},
+            "triggers": [{
+              "_parent": {"$ref": "286331427"},
+              "name": "arrangeHotBooks()",
+              "_type": "UMLEvent",
+              "_id": "286331428"
+            }],
+            "target": {"$ref": "286331406"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealBorrow()",
+            "_type": "UMLTransition",
+            "_id": "286331430",
+            "source": {"$ref": "286331410"},
+            "triggers": [{
+              "_parent": {"$ref": "286331430"},
+              "name": "dealBorrow()",
+              "_type": "UMLEvent",
+              "_id": "286331431"
+            }],
+            "target": {"$ref": "286331429"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealBorrow()",
+            "_type": "UMLTransition",
+            "_id": "286331432",
+            "source": {"$ref": "286331406"},
+            "triggers": [{
+              "_parent": {"$ref": "286331432"},
+              "name": "dealBorrow()",
+              "_type": "UMLEvent",
+              "_id": "286331433"
+            }],
+            "target": {"$ref": "286331429"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealOrder()",
+            "_type": "UMLTransition",
+            "_id": "286331434",
+            "source": {"$ref": "286331410"},
+            "triggers": [{
+              "_parent": {"$ref": "286331434"},
+              "name": "dealOrder()",
+              "_type": "UMLEvent",
+              "_id": "286331435"
+            }],
+            "target": {"$ref": "286331407"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealOrder()",
+            "_type": "UMLTransition",
+            "_id": "286331436",
+            "source": {"$ref": "286331406"},
+            "triggers": [{
+              "_parent": {"$ref": "286331436"},
+              "name": "dealOrder()",
+              "_type": "UMLEvent",
+              "_id": "286331437"
+            }],
+            "target": {"$ref": "286331407"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealPick()",
+            "_type": "UMLTransition",
+            "_id": "286331438",
+            "source": {"$ref": "286331407"},
+            "triggers": [{
+              "_parent": {"$ref": "286331438"},
+              "name": "dealPick()",
+              "_type": "UMLEvent",
+              "_id": "286331439"
+            }],
+            "target": {"$ref": "286331429"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealReturn()",
+            "_type": "UMLTransition",
+            "_id": "286331440",
+            "source": {"$ref": "286331429"},
+            "triggers": [{
+              "_parent": {"$ref": "286331440"},
+              "name": "dealReturn()",
+              "_type": "UMLEvent",
+              "_id": "286331441"
+            }],
+            "target": {"$ref": "286331415"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealRead()",
+            "_type": "UMLTransition",
+            "_id": "286331442",
+            "source": {"$ref": "286331410"},
+            "triggers": [{
+              "_parent": {"$ref": "286331442"},
+              "name": "dealRead()",
+              "_type": "UMLEvent",
+              "_id": "286331443"
+            }],
+            "target": {"$ref": "286331420"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealRead()",
+            "_type": "UMLTransition",
+            "_id": "286331444",
+            "source": {"$ref": "286331406"},
+            "triggers": [{
+              "_parent": {"$ref": "286331444"},
+              "name": "dealRead()",
+              "_type": "UMLEvent",
+              "_id": "286331445"
+            }],
+            "target": {"$ref": "286331420"}
+          },
+          {
+            "_parent": {"$ref": "286331405"},
+            "name": "dealRestore()",
+            "_type": "UMLTransition",
+            "_id": "286331446",
+            "source": {"$ref": "286331420"},
+            "triggers": [{
+              "_parent": {"$ref": "286331446"},
+              "name": "dealRestore()",
+              "_type": "UMLEvent",
+              "_id": "286331447"
+            }],
+            "target": {"$ref": "286331415"}
           }
         ]
       }],
