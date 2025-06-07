@@ -2474,6 +2474,209 @@
       "name": "StateMachine1",
       "_type": "UMLStateMachine",
       "_id": "286331451"
+    },
+    {
+      "_parent": {"$ref": "286331153"},
+      "ownedElements": [
+        {
+          "_parent": {"$ref": "286331493"},
+          "name": "SequenceDiagram1",
+          "_type": "UMLSequenceDiagram",
+          "_id": "286331494"
+        },
+        {
+          "_parent": {"$ref": "286331493"},
+          "participants": [
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":Library",
+              "_type": "UMLLifeline",
+              "_id": "286331496"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":Student",
+              "_type": "UMLLifeline",
+              "_id": "286331497"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":BookShelf",
+              "_type": "UMLLifeline",
+              "_id": "286331498"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":HotBookShelf",
+              "_type": "UMLLifeline",
+              "_id": "286331499"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":AppointmentCounter",
+              "_type": "UMLLifeline",
+              "_id": "286331500"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": ":Book",
+              "_type": "UMLLifeline",
+              "_id": "286331501"
+            }
+          ],
+          "messages": [
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "orderNewBook",
+              "_type": "UMLMessage",
+              "_id": "286331502",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331496"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "handleOverdueDeduction",
+              "_type": "UMLMessage",
+              "_id": "286331503",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "containsBook",
+              "_type": "UMLMessage",
+              "_id": "286331504",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331498"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "containsBook",
+              "_type": "UMLMessage",
+              "_id": "286331505",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331499"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "getBook",
+              "_type": "UMLMessage",
+              "_id": "286331506",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331498"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "canReserve",
+              "_type": "UMLMessage",
+              "_id": "286331507",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "canBorrowBook",
+              "_type": "UMLMessage",
+              "_id": "286331508",
+              "source": {"$ref": "286331497"},
+              "target": {"$ref": "286331501"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "addRequest",
+              "_type": "UMLMessage",
+              "_id": "286331509",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331500"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "setReservedNotfetch",
+              "_type": "UMLMessage",
+              "_id": "286331510",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "getOrderedBook",
+              "_type": "UMLMessage",
+              "_id": "286331511",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331496"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "getBook",
+              "_type": "UMLMessage",
+              "_id": "286331512",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331500"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "canBorrowBook",
+              "_type": "UMLMessage",
+              "_id": "286331513",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "setCurrentState",
+              "_type": "UMLMessage",
+              "_id": "286331514",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331501"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "setReservedNotfetch",
+              "_type": "UMLMessage",
+              "_id": "286331515",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "addBook",
+              "_type": "UMLMessage",
+              "_id": "286331516",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331497"},
+              "messageSort": "synchCall"
+            },
+            {
+              "_parent": {"$ref": "286331495"},
+              "name": "removeBook",
+              "_type": "UMLMessage",
+              "_id": "286331517",
+              "source": {"$ref": "286331496"},
+              "target": {"$ref": "286331500"},
+              "messageSort": "synchCall"
+            }
+          ],
+          "_type": "UMLInteraction",
+          "_id": "286331495"
+        }
+      ],
+      "name": "Collaboration1",
+      "_type": "UMLCollaboration",
+      "_id": "286331493"
     }
   ],
   "name": "uml",
