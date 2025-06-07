@@ -12,6 +12,8 @@ public class Student {
     private final String id;
     private HashMap<LibraryBookIsbn, Book> heldBooks = new HashMap<>();
     private HashMap<LibraryBookIsbn, LocalDate> borrowDates = new HashMap<>(); // 记录借阅日期
+    private HashMap<LibraryBookIsbn, LocalDate> lastOverdueCheckDate = new HashMap<>(); // 记录上次逾期检查日期
+    private HashMap<LibraryBookIsbn, Integer> deductedDays = new HashMap<>(); // 记录已扣分的逾期天数
     private boolean reservedNotfetch = false;
     private int creditScore = 100; // 初始信用分100
 
@@ -32,6 +34,8 @@ public class Student {
     public void removeBook(LibraryBookIsbn isbn) {
         heldBooks.remove(isbn);
         borrowDates.remove(isbn);
+        lastOverdueCheckDate.remove(isbn);
+        deductedDays.remove(isbn);
     }
 
     public Book getHeldBook(LibraryBookIsbn isbn) {
@@ -62,6 +66,7 @@ public class Student {
             return false; // A类书不可借阅
 
         LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
+        // 在还书期限最后一天（dueDate）还书不算逾期，超过这一天才算逾期
         return currentDate.isAfter(dueDate);
     }
 
@@ -154,26 +159,37 @@ public class Student {
         creditScore = Math.max(creditScore - points, 0);
     }
 
-    // 处理逾期扣分
-    public void handleOverdueDeduction(LibraryBookIsbn isbn, LocalDate currentDate) {
-        LocalDate borrowDate = borrowDates.get(isbn);
-        if (borrowDate == null)
-            return;
+    // 处理逾期扣分，返回是否有扣分
+    public boolean handleOverdueDeduction(LocalDate currentDate) {
+        boolean deductionOccurred = false;
+        for (LibraryBookIsbn isbn : new HashMap<>(borrowDates).keySet()) {
+            LocalDate borrowDate = borrowDates.get(isbn);
+            Book book = heldBooks.get(isbn);
+            if (book != null && borrowDate != null) {
+                int borrowPeriod = getBorrowPeriod(book);
+                if (borrowPeriod > 0) {
+                    LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
 
-        Book book = heldBooks.get(isbn);
-        if (book == null)
-            return;
+                    // 如果当前日期已经逾期
+                    if (currentDate.isAfter(dueDate)) {
+                        // 计算总逾期天数
+                        long totalOverdueDays = ChronoUnit.DAYS.between(dueDate, currentDate);
 
-        int borrowPeriod = getBorrowPeriod(book);
-        if (borrowPeriod == 0)
-            return;
+                        // 获取已扣分的天数
+                        int alreadyDeductedDays = deductedDays.getOrDefault(isbn, 0);
 
-        LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
-        if (currentDate.isAfter(dueDate)) {
-            long overdueDays = ChronoUnit.DAYS.between(dueDate, currentDate);
-            // 逾期第一天扣5分，之后每天扣5分，还书当天不扣
-            int deduction = (int) (overdueDays * 5 + 5);
-            deductCreditScore(deduction);
+                        // 计算需要新扣分的天数
+                        long newDeductDays = totalOverdueDays - alreadyDeductedDays;
+
+                        if (newDeductDays > 0) {
+                            deductCreditScore((int) (newDeductDays * 5));
+                            deductionOccurred = true;
+                            deductedDays.put(isbn, (int) totalOverdueDays);
+                        }
+                    }
+                }
+            }
         }
+        return deductionOccurred;
     }
 }
