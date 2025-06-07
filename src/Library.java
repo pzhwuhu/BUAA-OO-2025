@@ -117,9 +117,6 @@ public class Library {
     public void open(LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
 
-        // 处理逾期还书扣分（在开馆时处理，这样当日查询就能反映扣分结果）
-        handleOverdueReturnPenalty();
-
         // 每次开馆时，上次记录的热门书籍用于本次整理，然后清空准备记录新的热门书籍
         HashSet<LibraryBookIsbn> currentHotBooks = new HashSet<>(lastHotBooks);
         lastHotBooks.clear(); // 清空，准备记录本次开馆的热门书籍
@@ -154,6 +151,10 @@ public class Library {
         // 处理阅读不归还扣分
         handleReadingNotReturnedPenalty();
 
+        // 清理阅览室，将书籍移动到书架
+        infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom,
+                bookShelf, hotBookShelf, date, new HashSet<>()));
+
         // 处理预约不取扣分
         handleReservationNotPickedPenalty();
 
@@ -175,29 +176,6 @@ public class Library {
     private void handleReservationNotPickedPenalty() {
         // 这个逻辑需要在AppointmentCounter中实现
         appointmentCounter.handleExpiredReservations(date, students);
-    }
-
-    // 处理逾期还书扣分
-    private void handleOverdueReturnPenalty() {
-        for (Student student : students.values()) {
-            // 检查每个学生持有的书籍是否逾期
-            for (LibraryBookIsbn isbn : new HashSet<>(student.getBorrowDates().keySet())) {
-                LocalDate borrowDate = student.getBorrowDate(isbn);
-                Book book = student.getHeldBook(isbn);
-                if (book != null && borrowDate != null) {
-                    int borrowPeriod = getBorrowPeriod(book);
-                    if (borrowPeriod > 0) {
-                        LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
-
-                        // 如果今天是还书期限后的第一天或之后的天数，且用户仍未还书
-                        if (date.isAfter(dueDate)) {
-                            // 每逾期一天扣5分（在闭馆时扣分）
-                            student.deductCreditScore(5);
-                        }
-                    }
-                }
-            }
-        }
     }
 
     private int getBorrowPeriod(Book book) {
@@ -261,6 +239,9 @@ public class Library {
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
 
+        // 先处理逾期扣分，确保信用分是最新的
+        student.handleOverdueDeduction(date);
+
         // 先从普通书架找，再从热门书架找
         Book book = bookShelf.getBook(isbn);
         String fromLocation = "bs";
@@ -293,6 +274,10 @@ public class Library {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
+
+        // 先处理逾期扣分，确保信用分是最新的
+        student.handleOverdueDeduction(date);
+
         Book book;
         if (bookShelf.containsBook(isbn) || hotBookShelf.containsBook(isbn)) {
             book = bookShelf.getBook(isbn);
@@ -350,13 +335,15 @@ public class Library {
         LibraryBookIsbn isbn = bookId.getBookIsbn();
         Book book = student.getHeldBook(isbn);
         if (book != null) {
+            // 先处理逾期扣分
+            student.handleOverdueDeduction(date);
+
             boolean isOverdue = student.isOverdue(isbn, date);
 
             if (!isOverdue) {
                 // 按时还书，加10分
                 student.addCreditScore(10);
             }
-            // 注意：逾期还书不在还书时扣分，而是在每天闭馆时逐日扣分
 
             student.removeBook(isbn);
             borrowCounter.returnBook(book, date);
@@ -377,6 +364,9 @@ public class Library {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
+
+        // 先处理逾期扣分，确保信用分是最新的
+        student.handleOverdueDeduction(date);
 
         // 检查用户是否已有阅读中的书籍
         if (readingRoom.hasReadingBook(userId)) {
