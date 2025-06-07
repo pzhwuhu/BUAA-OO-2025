@@ -1,11 +1,17 @@
 import com.oocourse.library3.LibraryBookId;
+import com.oocourse.library3.LibraryBookIsbn;
+import com.oocourse.library3.annotation.SendMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 public class ReadingRoom {
     private HashMap<String, ArrayList<Book>> userBooks = new HashMap<>();
 
+    @SendMessage(from = "ReadingRoom", to = "Book")
+    @SendMessage(from = "ReadingRoom", to = "Student")
     public void addBook(String userId, Book book) {
         userBooks.putIfAbsent(userId, new ArrayList<>());
         userBooks.get(userId).add(book);
@@ -43,5 +49,15 @@ public class ReadingRoom {
 
     public void clear() {
         userBooks.clear();
+    }
+
+    public ArrayList<String> getAllReaders() {
+        ArrayList<String> readers = new ArrayList<>();
+        for (String userId : userBooks.keySet()) {
+            if (!userBooks.get(userId).isEmpty()) {
+                readers.add(userId);
+            }
+        }
+        return readers;
     }
 }

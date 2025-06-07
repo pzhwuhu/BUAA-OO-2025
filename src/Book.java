@@ -2,6 +2,7 @@ import com.oocourse.library3.LibraryBookId;
 import com.oocourse.library3.LibraryBookIsbn;
 import com.oocourse.library3.LibraryBookState;
 import com.oocourse.library3.LibraryTrace;
+import com.oocourse.library3.annotation.SendMessage;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

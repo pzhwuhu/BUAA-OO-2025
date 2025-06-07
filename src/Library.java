@@ -6,7 +6,9 @@ import com.oocourse.library3.LibraryCommand;
 import com.oocourse.library3.LibraryMoveInfo;
 import com.oocourse.library3.LibraryOpenCmd;
 import com.oocourse.library3.LibraryReqCmd;
+import com.oocourse.library3.LibraryQcsCmd;
 import com.oocourse.library3.annotation.Trigger;
+import com.oocourse.library3.annotation.SendMessage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -15,8 +17,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Random;
 
-import static com.oocourse.library2.LibraryIO.PRINTER;
-import static com.oocourse.library2.LibraryIO.SCANNER;
+import static com.oocourse.library3.LibraryIO.PRINTER;
+import static com.oocourse.library3.LibraryIO.SCANNER;
 
 public class Library {
     private BookShelf bookShelf;
@@ -32,7 +34,7 @@ public class Library {
     private HashSet<LibraryBookIsbn> lastHotBooks = new HashSet<>();
 
     public Library(BookShelf bookShelf, HotBookShelf hotBookShelf, ReadingRoom readingRoom,
-        AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
+            AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
         this.bookShelf = bookShelf;
         this.hotBookShelf = hotBookShelf;
         this.readingRoom = readingRoom;
@@ -41,6 +43,8 @@ public class Library {
     }
 
     @Trigger(from = "InitState", to = "BookShelf")
+    @SendMessage(from = "Library", to = "BookShelf")
+    @SendMessage(from = "Library", to = "Student")
     public void run() {
         // 转换isbn->id
         Map<LibraryBookIsbn, Integer> bookList = SCANNER.getInventory();
@@ -50,7 +54,7 @@ public class Library {
             ArrayList<Book> books = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
                 LibraryBookId bookId = new LibraryBookId(isbn.getType(),
-                    isbn.getUid(), String.format("%02d", i));
+                        isbn.getUid(), String.format("%02d", i));
                 Book book = new Book(bookId);
                 bookShelf.addBook(book);
                 allBooks.put(bookId, book);
@@ -68,6 +72,15 @@ public class Library {
                 open(command);
             } else if (command instanceof LibraryCloseCmd) {
                 close(command);
+            } else if (command instanceof LibraryQcsCmd) {
+                // 处理查询信用分命令
+                LibraryQcsCmd qcsCmd = (LibraryQcsCmd) command;
+                String userId = qcsCmd.getStudentId();
+                students.putIfAbsent(userId, new Student(userId));
+                Student student = students.get(userId);
+                if (student != null) {
+                    PRINTER.info(qcsCmd, student.getCreditScore());
+                }
             } else {
                 LibraryReqCmd req = (LibraryReqCmd) command;
                 students.putIfAbsent(req.getStudentId(), new Student(req.getStudentId()));
@@ -75,9 +88,9 @@ public class Library {
                 if (type.equals(LibraryReqCmd.Type.BORROWED)) {
                     dealBorrow(req);
                 } else if (type.equals(LibraryReqCmd.Type.ORDERED)) {
-                    dealOrder(req);
+                    orderNewBook(req);
                 } else if (type.equals(LibraryReqCmd.Type.PICKED)) {
-                    dealPick(req);
+                    getOrderedBook(req);
                 } else if (type.equals(LibraryReqCmd.Type.QUERIED)) {
                     dealquery(req);
                 } else if (type.equals(LibraryReqCmd.Type.RETURNED)) {
@@ -93,6 +106,11 @@ public class Library {
         }
     }
 
+    @SendMessage(from = "Library", to = "BorrowReturnCounter")
+    @SendMessage(from = "Library", to = "ReadingRoom")
+    @SendMessage(from = "Library", to = "AppointmentCounter")
+    @SendMessage(from = "Library", to = "BookShelf")
+    @SendMessage(from = "Library", to = "HotBookShelf")
     public void open(LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
 
@@ -105,7 +123,7 @@ public class Library {
 
         // 清理阅览室
         infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom,
-            bookShelf, hotBookShelf, date, currentHotBooks));
+                bookShelf, hotBookShelf, date, currentHotBooks));
 
         // 整理热门书架
         infos.addAll(arrangeHotBooks(currentHotBooks));
@@ -121,10 +139,75 @@ public class Library {
         lastOpenDate = date;
     }
 
+    @SendMessage(from = "Library", to = "ReadingRoom")
+    @SendMessage(from = "Library", to = "AppointmentCounter")
+    @SendMessage(from = "Library", to = "Student")
     public void close(LibraryCommand req) {
         ArrayList<LibraryMoveInfo> infos = new ArrayList<>();
+
+        // 处理阅读不归还扣分
+        handleReadingNotReturnedPenalty();
+
+        // 处理预约不取扣分
+        handleReservationNotPickedPenalty();
+
+        // 处理逾期还书扣分
+        handleOverdueReturnPenalty();
+
         infos.addAll(appointmentCounter.moveFromShelf(bookShelf, hotBookShelf, date, false));
         PRINTER.move(date, infos);
+    }
+
+    // 处理阅读不归还扣分
+    private void handleReadingNotReturnedPenalty() {
+        for (String userId : readingRoom.getAllReaders()) {
+            Student student = students.get(userId);
+            if (student != null) {
+                student.deductCreditScore(10); // 阅读不归还扣10分
+            }
+        }
+    }
+
+    // 处理预约不取扣分
+    private void handleReservationNotPickedPenalty() {
+        // 这个逻辑需要在AppointmentCounter中实现
+        appointmentCounter.handleExpiredReservations(date, students);
+    }
+
+    // 处理逾期还书扣分
+    private void handleOverdueReturnPenalty() {
+        for (Student student : students.values()) {
+            // 检查每个学生持有的书籍是否逾期
+            for (LibraryBookIsbn isbn : new HashSet<>(student.getBorrowDates().keySet())) {
+                if (student.isOverdue(isbn, date)) {
+                    LocalDate borrowDate = student.getBorrowDate(isbn);
+                    Book book = student.getHeldBook(isbn);
+                    if (book != null) {
+                        int borrowPeriod = getBorrowPeriod(book);
+                        LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
+                        if (date.equals(dueDate.plusDays(1))) {
+                            // 逾期第一天，扣5分
+                            student.deductCreditScore(5);
+                        } else if (date.isAfter(dueDate.plusDays(1))) {
+                            // 逾期后的每一天，扣5分
+                            student.deductCreditScore(5);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private int getBorrowPeriod(Book book) {
+        LibraryBookId bookId = book.getBookId();
+        if (bookId.isTypeA()) {
+            return 0; // A类书不可借阅
+        } else if (bookId.isTypeB()) {
+            return 30; // B类书30天
+        } else if (bookId.isTypeC()) {
+            return 60; // C类书60天
+        }
+        return 0;
     }
 
     @Trigger(from = "BookShelf", to = "HotBookShelf")
@@ -168,6 +251,9 @@ public class Library {
 
     @Trigger(from = "HotBookShelf", to = "User")
     @Trigger(from = "BookShelf", to = "User")
+    @SendMessage(from = "Library", to = "BookShelf")
+    @SendMessage(from = "Library", to = "HotBookShelf")
+    @SendMessage(from = "Library", to = "Student")
     public void dealBorrow(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -189,7 +275,7 @@ public class Library {
                 hotBookShelf.removeBook(bookId);
             }
             book.setCurrentState(LibraryBookState.USER, date);
-            student.addBook(bookId.getBookIsbn(), book);
+            student.addBook(bookId.getBookIsbn(), book, date); // 传入借阅日期
             lastHotBooks.add(isbn); // 标记为热门
             PRINTER.accept(req, bookId);
         } else {
@@ -197,7 +283,11 @@ public class Library {
         }
     }
 
-    public void dealOrder(LibraryReqCmd req) {
+    @SendMessage(from = "Library", to = "Student")
+    @SendMessage(from = "Library", to = "BookShelf")
+    @SendMessage(from = "Library", to = "HotBookShelf")
+    @SendMessage(from = "Library", to = "AppointmentCounter")
+    public void orderNewBook(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
@@ -220,8 +310,9 @@ public class Library {
         }
     }
 
-    @Trigger(from = "AppointmentOffice", to = "User")
-    public void dealPick(LibraryReqCmd req) {
+    @SendMessage(from = "Library", to = "AppointmentCounter")
+    @SendMessage(from = "Library", to = "Student")
+    public void getOrderedBook(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
         Student student = students.get(userId);
@@ -231,7 +322,7 @@ public class Library {
         if (book != null && student.canBorrowBook(book)) {
             book.setCurrentState(LibraryBookState.USER, date);
             student.setReservedNotfetch(false);
-            student.addBook(isbn, book);
+            student.addBook(isbn, book, date); // 传入取书日期作为借阅日期
             appointmentCounter.removeBook(userId, isbn);
             PRINTER.accept(req, book.getBookId());
         } else {
@@ -248,6 +339,8 @@ public class Library {
     }
 
     @Trigger(from = "User", to = "BorrowReturnOffice")
+    @SendMessage(from = "Library", to = "Student")
+    @SendMessage(from = "Library", to = "BorrowReturnCounter")
     public void dealReturn(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookId bookId = req.getBookId();
@@ -255,9 +348,26 @@ public class Library {
         LibraryBookIsbn isbn = bookId.getBookIsbn();
         Book book = student.getHeldBook(isbn);
         if (book != null) {
+            boolean isOverdue = student.isOverdue(isbn, date);
+
+            if (!isOverdue) {
+                // 按时还书，加10分
+                student.addCreditScore(10);
+            } else {
+                // 逾期还书，需要扣分
+                LocalDate borrowDate = student.getBorrowDate(isbn);
+                int borrowPeriod = getBorrowPeriod(book);
+                LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
+                long overdueDays = java.time.temporal.ChronoUnit.DAYS.between(dueDate, date);
+                // 逾期第一天扣5分，之后每天扣5分，还书当天不扣
+                int deduction = (int) (overdueDays * 5 + 5);
+                student.deductCreditScore(deduction);
+            }
+
             student.removeBook(isbn);
             borrowCounter.returnBook(book, date);
-            PRINTER.accept(req);
+            PRINTER.accept(req, book.getBookId());
+
         } else {
             PRINTER.reject(req);
         }
@@ -265,6 +375,10 @@ public class Library {
 
     @Trigger(from = "HotBookShelf", to = "ReadingRoom")
     @Trigger(from = "BookShelf", to = "ReadingRoom")
+    @SendMessage(from = "Library", to = "Student")
+    @SendMessage(from = "Library", to = "BookShelf")
+    @SendMessage(from = "Library", to = "HotBookShelf")
+    @SendMessage(from = "Library", to = "ReadingRoom")
     public void dealRead(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookIsbn isbn = req.getBookIsbn();
@@ -284,7 +398,7 @@ public class Library {
             fromLocation = "hbs";
         }
 
-        if (book != null) {
+        if (book != null && student.canRead(book)) {
             LibraryBookId bookId = book.getBookId();
             if (fromLocation.equals("bs")) {
                 bookShelf.removeBook(bookId);
@@ -301,6 +415,9 @@ public class Library {
     }
 
     @Trigger(from = "ReadingRoom", to = "BorrowReturnOffice")
+    @SendMessage(from = "Library", to = "ReadingRoom")
+    @SendMessage(from = "Library", to = "Student")
+    @SendMessage(from = "Library", to = "BorrowReturnCounter")
     public void dealRestore(LibraryReqCmd req) {
         String userId = req.getStudentId();
         LibraryBookId bookId = req.getBookId();
@@ -309,6 +426,12 @@ public class Library {
         if (book != null) {
             readingRoom.removeBook(userId, bookId);
             borrowCounter.returnBook(book, date);
+
+            // 阅读后主动归还，加10分
+            Student student = students.get(userId);
+            if (student != null) {
+                student.addCreditScore(10);
+            }
             PRINTER.accept(req);
         } else {
             PRINTER.reject(req);
