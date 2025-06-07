@@ -83,7 +83,6 @@ public class Student {
         return 0;
     }
 
-    @SendMessage(from = "Student", to = "Book")
     public boolean canBorrowBook(Book book) {
         LibraryBookId bookId = book.getBookId();
 
@@ -103,7 +102,6 @@ public class Student {
         return false;
     }
 
-    @SendMessage(from = "Student", to = "Book")
     public boolean canReserve(Book book) {
         // 检查信用分权限
         if (creditScore < 100) {
@@ -113,7 +111,6 @@ public class Student {
         return canBorrowBook(book) && !reservedNotfetch;
     }
 
-    @SendMessage(from = "Student", to = "Book")
     public boolean canRead(Book book) {
         LibraryBookId bookId = book.getBookId();
 
