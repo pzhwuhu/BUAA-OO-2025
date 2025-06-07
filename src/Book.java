@@ -1,7 +1,7 @@
-import com.oocourse.library2.LibraryBookId;
-import com.oocourse.library2.LibraryBookIsbn;
-import com.oocourse.library2.LibraryBookState;
-import com.oocourse.library2.LibraryTrace;
+import com.oocourse.library3.LibraryBookId;
+import com.oocourse.library3.LibraryBookIsbn;
+import com.oocourse.library3.LibraryBookState;
+import com.oocourse.library3.LibraryTrace;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;

@@ -1,7 +1,7 @@
-import com.oocourse.library2.LibraryBookState;
-import com.oocourse.library2.LibraryMoveInfo;
-import com.oocourse.library2.LibraryBookIsbn;
-import com.oocourse.library2.annotation.Trigger;
+import com.oocourse.library3.LibraryBookState;
+import com.oocourse.library3.LibraryMoveInfo;
+import com.oocourse.library3.LibraryBookIsbn;
+import com.oocourse.library3.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

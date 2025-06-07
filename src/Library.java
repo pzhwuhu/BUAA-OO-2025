@@ -1,12 +1,12 @@
-import com.oocourse.library2.LibraryBookId;
-import com.oocourse.library2.LibraryBookIsbn;
-import com.oocourse.library2.LibraryBookState;
-import com.oocourse.library2.LibraryCloseCmd;
-import com.oocourse.library2.LibraryCommand;
-import com.oocourse.library2.LibraryMoveInfo;
-import com.oocourse.library2.LibraryOpenCmd;
-import com.oocourse.library2.LibraryReqCmd;
-import com.oocourse.library2.annotation.Trigger;
+import com.oocourse.library3.LibraryBookId;
+import com.oocourse.library3.LibraryBookIsbn;
+import com.oocourse.library3.LibraryBookState;
+import com.oocourse.library3.LibraryCloseCmd;
+import com.oocourse.library3.LibraryCommand;
+import com.oocourse.library3.LibraryMoveInfo;
+import com.oocourse.library3.LibraryOpenCmd;
+import com.oocourse.library3.LibraryReqCmd;
+import com.oocourse.library3.annotation.Trigger;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
