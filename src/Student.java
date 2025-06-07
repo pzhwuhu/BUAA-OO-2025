@@ -1,18 +1,15 @@
 import com.oocourse.library3.LibraryBookId;
 import com.oocourse.library3.LibraryBookIsbn;
-import com.oocourse.library3.annotation.SendMessage;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
 
 public class Student {
     private final String id;
     private HashMap<LibraryBookIsbn, Book> heldBooks = new HashMap<>();
     private HashMap<LibraryBookIsbn, LocalDate> borrowDates = new HashMap<>(); // 记录借阅日期
-    private HashMap<LibraryBookIsbn, LocalDate> lastOverdueCheckDate = new HashMap<>(); // 记录上次逾期检查日期
+    private HashMap<LibraryBookIsbn, LocalDate> lastOverdueCheckDate = new HashMap<>();// 记录上次逾期检查日期
     private HashMap<LibraryBookIsbn, Integer> deductedDays = new HashMap<>(); // 记录已扣分的逾期天数
     private boolean reservedNotfetch = false;
     private int creditScore = 100; // 初始信用分100
@@ -54,16 +51,19 @@ public class Student {
     // 检查是否逾期
     public boolean isOverdue(LibraryBookIsbn isbn, LocalDate currentDate) {
         LocalDate borrowDate = borrowDates.get(isbn);
-        if (borrowDate == null)
+        if (borrowDate == null) {
             return false;
+        }
 
         Book book = heldBooks.get(isbn);
-        if (book == null)
+        if (book == null) {
             return false;
+        }
 
         int borrowPeriod = getBorrowPeriod(book);
-        if (borrowPeriod == 0)
+        if (borrowPeriod == 0) {
             return false; // A类书不可借阅
+        }
 
         LocalDate dueDate = borrowDate.plusDays(borrowPeriod);
         // 在还书期限最后一天（dueDate）还书不算逾期，超过这一天才算逾期

@@ -34,7 +34,7 @@ public class Library {
     private HashSet<LibraryBookIsbn> lastHotBooks = new HashSet<>();
 
     public Library(BookShelf bookShelf, HotBookShelf hotBookShelf, ReadingRoom readingRoom,
-            AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
+        AppointmentCounter appointmentCounter, BorrowReturnCounter borrowCounter) {
         this.bookShelf = bookShelf;
         this.hotBookShelf = hotBookShelf;
         this.readingRoom = readingRoom;
@@ -54,7 +54,7 @@ public class Library {
             ArrayList<Book> books = new ArrayList<>();
             for (int i = 1; i <= count; i++) {
                 LibraryBookId bookId = new LibraryBookId(isbn.getType(),
-                        isbn.getUid(), String.format("%02d", i));
+                    isbn.getUid(), String.format("%02d", i));
                 Book book = new Book(bookId);
                 bookShelf.addBook(book);
                 allBooks.put(bookId, book);
@@ -64,9 +64,7 @@ public class Library {
         }
         while (true) {
             LibraryCommand command = SCANNER.nextCommand();
-            if (command == null) {
-                break;
-            }
+            if (command == null) { break; }
             date = command.getDate(); // 今天的日期
             if (command instanceof LibraryOpenCmd) {
                 open(command);
@@ -79,8 +77,7 @@ public class Library {
                 students.putIfAbsent(userId, new Student(userId));
                 Student student = students.get(userId);
                 if (student != null) {
-                    // 在查询前先处理逾期扣分
-                    student.handleOverdueDeduction(date);
+                    student.handleOverdueDeduction(date); // 在查询前先处理逾期扣分
                     PRINTER.info(qcsCmd, student.getCreditScore());
                 }
             } else {
@@ -126,7 +123,7 @@ public class Library {
 
         // 清理阅览室
         infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom,
-                bookShelf, hotBookShelf, date, currentHotBooks));
+            bookShelf, hotBookShelf, date, currentHotBooks));
 
         // 整理热门书架
         infos.addAll(arrangeHotBooks(currentHotBooks));
@@ -153,7 +150,7 @@ public class Library {
 
         // 清理阅览室，将书籍移动到书架
         infos.addAll(borrowCounter.moveReadingRoom2Shelf(readingRoom,
-                bookShelf, hotBookShelf, date, new HashSet<>()));
+            bookShelf, hotBookShelf, date, new HashSet<>()));
 
         // 处理预约不取扣分
         handleReservationNotPickedPenalty();

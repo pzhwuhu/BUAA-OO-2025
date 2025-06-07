@@ -25,7 +25,7 @@ public class AppointmentCounter {
     @SendMessage(from = "AppointmentCounter", to = "HotBookShelf")
     @SendMessage(from = "AppointmentCounter", to = "Book")
     public ArrayList<LibraryMoveInfo> moveFromShelf(BookShelf shelf, HotBookShelf hotShelf,
-            LocalDate date, boolean isOpen) {
+        LocalDate date, boolean isOpen) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (LibraryReqCmd req : requests) {
             String userId = req.getStudentId();
@@ -76,7 +76,7 @@ public class AppointmentCounter {
     @SendMessage(from = "AppointmentCounter", to = "Student")
     @SendMessage(from = "AppointmentCounter", to = "Book")
     public ArrayList<LibraryMoveInfo> move2Shelf(BookShelf shelf, LocalDate date,
-            HashMap<String, Student> students) {
+        HashMap<String, Student> students) {
         ArrayList<LibraryMoveInfo> info = new ArrayList<>();
         for (String userId : userBooks.keySet()) {
             HashMap<LibraryBookIsbn, Book> books = userBooks.get(userId);
